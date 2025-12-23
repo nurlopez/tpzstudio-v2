@@ -60,7 +60,6 @@ export const homePageQuery = groq`
         _id,
         title,
         slug,
-        featured,
         excerpt,
         coverImage,
         video{
