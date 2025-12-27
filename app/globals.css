@@ -23,6 +23,71 @@ h3 {
     transition: transform .25s ease, box-shadow .25s ease;
 }
 
+/* Header nav */
+.navDesktop {
+    display: none;
+    align-items: center;
+    gap: 14px;
+}
+
+.navLink {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+}
+
+.navLink:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.navCta {
+    margin-left: 6px;
+    display: inline-block;
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #0b0b0b;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.navBurger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.navLinkActive {
+    border-color: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.98);
+}
+
+
+/* Desktop breakpoint */
+@media (min-width: 768px) {
+    .navDesktop {
+        display: inline-flex;
+    }
+
+    .navBurger {
+        display: none;
+    }
+}
+
+
 @media (hover: hover) and (pointer: fine) {
     .projectCard:hover {
         transform: translateY(-2px);
@@ -37,11 +102,15 @@ h3 {
     gap: 14px;
 
     overflow-x: auto;
-    padding-bottom: 6px;
+    overflow-y: visible;
+    /* <-- key */
+    padding: 6px 0 6px;
+    /* <-- add top padding (and keep bottom) */
 
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
+
 
 .carouselItem {
     scroll-snap-align: start;
@@ -62,4 +131,20 @@ h3 {
 .carousel {
     scrollbar-width: none;
     /* Firefox */
+}
+
+.carouselWrap {
+    position: relative;
+}
+
+.carouselWrap::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to right,
+            rgba(7, 7, 7, 1) 0%,
+            rgba(7, 7, 7, 0) 10%,
+            rgba(7, 7, 7, 0) 90%,
+            rgba(7, 7, 7, 1) 100%);
 }

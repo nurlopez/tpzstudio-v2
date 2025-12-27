@@ -1,5 +1,8 @@
 import Image from 'next/image'
+import { Reveal } from './Motion'
+
 import { urlFor } from '@/sanity/lib/image'
+import { BreathingOverlay } from './BreathingOverlay'
 
 type HeroBg =
     | { mode?: 'image'; image?: any; videoUrl?: string }
@@ -47,7 +50,8 @@ function toEmbedUrl(url: string) {
 }
 
 export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Props) {
-    const mode = background?.mode ?? 'image'
+    const mode = background?.mode ?? (background?.videoUrl ? 'videoUrl' : 'image')
+
     const hasImage = !!background?.image
     const hasVideo = !!background?.videoUrl
 
@@ -103,15 +107,7 @@ export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Pr
             </div>
 
             {/* Overlays (cinema) */}
-            <div
-                aria-hidden
-                style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background:
-                        'radial-gradient(1000px 600px at 20% 15%, rgba(255,255,255,0.10), transparent 60%), linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.92))',
-                }}
-            />
+            <BreathingOverlay />
 
             {/* “Grain” suave (CSS only) */}
             <div
@@ -130,36 +126,43 @@ export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Pr
             {/* Content */}
             <div style={{ position: 'relative', padding: '88px 24px 56px' }}>
                 <div style={{ maxWidth: 980, margin: '0 auto' }}>
-                    <h1 style={{ fontSize: 46, lineHeight: 1.03, margin: 0, letterSpacing: '-0.02em' }}>
-                        {headline}
-                    </h1>
+                    <Reveal y={14}>
+                        <h1 style={{ fontSize: 46, lineHeight: 1.03, margin: 0, letterSpacing: '-0.02em' }}>
+                            {headline}
+                        </h1>
+                    </Reveal>
 
                     {subheadline ? (
-                        <p style={{ marginTop: 14, maxWidth: 720, fontSize: 16, lineHeight: 1.65, opacity: 0.9 }}>
-                            {subheadline}
-                        </p>
+                        <Reveal delay={0.06} y={14}>
+                            <p style={{ marginTop: 14, maxWidth: 720, fontSize: 16, lineHeight: 1.65, opacity: 0.9 }}>
+                                {subheadline}
+                            </p>
+                        </Reveal>
                     ) : null}
 
                     {ctaLabel && ctaUrl ? (
-                        <div style={{ marginTop: 18 }}>
-                            <a
-                                href={ctaUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                style={{
-                                    display: 'inline-block',
-                                    padding: '12px 16px',
-                                    borderRadius: 999,
-                                    background: 'rgba(255,255,255,0.92)',
-                                    color: '#0b0b0b',
-                                    textDecoration: 'none',
-                                    fontWeight: 650,
-                                }}
-                            >
-                                {ctaLabel}
-                            </a>
-                        </div>
+                        <Reveal delay={0.12} y={14}>
+                            <div style={{ marginTop: 18 }}>
+                                <a
+                                    href={ctaUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    style={{
+                                        display: 'inline-block',
+                                        padding: '12px 16px',
+                                        borderRadius: 999,
+                                        background: 'rgba(255,255,255,0.92)',
+                                        color: '#0b0b0b',
+                                        textDecoration: 'none',
+                                        fontWeight: 650,
+                                    }}
+                                >
+                                    {ctaLabel}
+                                </a>
+                            </div>
+                        </Reveal>
                     ) : null}
+
                 </div>
             </div>
         </section>
