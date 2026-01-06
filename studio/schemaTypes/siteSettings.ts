@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 export const siteSettings = defineType({
     name: 'siteSettings',
-    title: 'Site Settings',
+    title: 'Configuración del Sitio',
     type: 'document',
     // Esto fuerza que solo exista 1 documento (el “singleton”)
     __experimental_formPreviewTitle: false,

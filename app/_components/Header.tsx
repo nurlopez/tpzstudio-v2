@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
@@ -9,8 +10,10 @@ type NavItem = { label: string; href: string }
 
 const nav: NavItem[] = [
     { label: 'Proyectos', href: '/proyectos' },
-    { label: 'Servicios', href: '/servicios' }, // lo crearemos más adelante (o lo puedes quitar)
+    { label: 'Servicios', href: '/servicios' },
+    { label: 'Sobre mí', href: '/sobre-mi' },
     { label: 'Blog', href: '/blog' }, // futuro
+    { label: 'Contacto', href: '/contacto' },
 ]
 
 export function Header() {
@@ -20,7 +23,7 @@ export function Header() {
     const [scrolled, setScrolled] = useState(false)
 
     useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 6)
+        const onScroll = () => setScrolled(window.scrollY > 20)
         onScroll()
         window.addEventListener('scroll', onScroll, { passive: true })
         return () => window.removeEventListener('scroll', onScroll)
@@ -43,13 +46,21 @@ export function Header() {
                     left: 0,
                     right: 0,
                     zIndex: 50,
-                    height: 64,
+                    height: 72,
                     display: 'flex',
                     alignItems: 'center',
-                    borderBottom: scrolled ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
-                    background: scrolled ? 'rgba(7,7,7,0.55)' : 'rgba(7,7,7,0.18)',
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
+                    borderBottom: scrolled 
+                        ? '1px solid rgba(255,255,255,0.12)' 
+                        : '1px solid transparent',
+                    background: scrolled 
+                        ? 'rgba(10,10,10,0.75)' 
+                        : 'rgba(10,10,10,0.25)',
+                    backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(12px) saturate(150%)',
+                    WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(12px) saturate(150%)',
+                    transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
+                    boxShadow: scrolled 
+                        ? '0 4px 24px rgba(0, 0, 0, 0.3)' 
+                        : 'none',
                 }}
             >
                 <div
@@ -67,32 +78,44 @@ export function Header() {
                     <Link
                         href="/"
                         style={{
-                            color: 'inherit',
+                            display: 'flex',
+                            alignItems: 'center',
                             textDecoration: 'none',
-                            letterSpacing: '-0.01em',
-                            fontWeight: 800,
-                            fontSize: 16,
+                            transition: 'opacity 0.3s ease',
                         }}
                         onClick={() => setOpen(false)}
+                        onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                        onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                     >
-                        TPZ Studio
+                        <Image
+                            src="/logo.png"
+                            alt="tpz studio"
+                            width={120}
+                            height={40}
+                            priority
+                            style={{
+                                height: 'auto',
+                                width: 'auto',
+                                maxHeight: '40px',
+                            }}
+                        />
                     </Link>
 
                     {/* Desktop nav */}
                     <nav className="navDesktop" aria-label="Primary">
-                        {nav.map((item) => (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`navLink ${pathname === item.href ? 'navLinkActive' : ''}`}
-                            >
-
-                                {item.label}
-                            </Link>
-                        ))}
-                        <a className="navCta" href="mailto:hello@tpzstudio.es">
-                            Contacto
-                        </a>
+                        {nav.map((item) => {
+                            const isActive = pathname === item.href || 
+                                (item.href !== '/' && pathname.startsWith(item.href + '/'))
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`navLink ${isActive ? 'navLinkActive' : ''}`}
+                                >
+                                    {item.label}
+                                </Link>
+                            )
+                        })}
                     </nav>
 
                     {/* Mobile button */}
@@ -102,9 +125,42 @@ export function Header() {
                         aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
                         aria-expanded={open}
                         onClick={() => setOpen((v) => !v)}
+                        style={{
+                            position: 'relative',
+                        }}
                     >
-                        <span style={{ display: 'block', width: 18, height: 2, background: 'rgba(255,255,255,0.85)' }} />
-                        <span style={{ display: 'block', width: 18, height: 2, background: 'rgba(255,255,255,0.85)', marginTop: 5 }} />
+                        <span 
+                            style={{ 
+                                display: 'block', 
+                                width: 20, 
+                                height: 1.5, 
+                                background: 'rgba(255,255,255,0.9)',
+                                transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                transform: open ? 'rotate(45deg) translateY(6px)' : 'none',
+                            }} 
+                        />
+                        <span 
+                            style={{ 
+                                display: 'block', 
+                                width: 20, 
+                                height: 1.5, 
+                                background: 'rgba(255,255,255,0.9)', 
+                                marginTop: 6,
+                                transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                opacity: open ? 0 : 1,
+                            }} 
+                        />
+                        <span 
+                            style={{ 
+                                display: 'block', 
+                                width: 20, 
+                                height: 1.5, 
+                                background: 'rgba(255,255,255,0.9)', 
+                                marginTop: 6,
+                                transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                transform: open ? 'rotate(-45deg) translateY(-6px)' : 'none',
+                            }} 
+                        />
                     </button>
                 </div>
             </header>
@@ -126,50 +182,57 @@ export function Header() {
                     <div
                         style={{
                             position: 'absolute',
-                            top: 64,
-                            left: 12,
-                            right: 12,
-                            borderRadius: 18,
-                            border: '1px solid rgba(255,255,255,0.12)',
-                            background: 'rgba(7,7,7,0.92)',
-                            padding: 12,
+                            top: 72,
+                            left: 16,
+                            right: 16,
+                            borderRadius: 12,
+                            border: '1px solid rgba(255,255,255,0.15)',
+                            background: 'rgba(10,10,10,0.95)',
+                            backdropFilter: 'blur(24px) saturate(180%)',
+                            WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+                            padding: 16,
+                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
                         }}
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div style={{ display: 'grid', gap: 6 }}>
-                            {nav.map((item) => (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    onClick={() => setOpen(false)}
-                                    style={{
-                                        padding: '12px 12px',
-                                        borderRadius: 14,
-                                        textDecoration: 'none',
-                                        color: 'inherit',
-                                        border: '1px solid rgba(255,255,255,0.10)',
-                                        background: 'rgba(255,255,255,0.03)',
-                                    }}
-                                >
-                                    {item.label}
-                                </Link>
-                            ))}
-                            <a
-                                href="mailto:hello@tpzstudio.es"
-                                style={{
-                                    marginTop: 6,
-                                    padding: '12px 12px',
-                                    borderRadius: 999,
-                                    textDecoration: 'none',
-                                    color: '#0b0b0b',
-                                    background: 'rgba(255,255,255,0.92)',
-                                    fontWeight: 700,
-                                    textAlign: 'center',
-                                }}
-                                onClick={() => setOpen(false)}
-                            >
-                                Contacto
-                            </a>
+                            {nav.map((item) => {
+                                const isActive = pathname === item.href || 
+                                    (item.href !== '/' && pathname.startsWith(item.href + '/'))
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        onClick={() => setOpen(false)}
+                                        style={{
+                                            padding: '14px 16px',
+                                            borderRadius: 8,
+                                            textDecoration: 'none',
+                                            color: isActive ? '#B34D49' : 'inherit',
+                                            border: '1px solid rgba(255,255,255,0.12)',
+                                            borderBottom: isActive ? '2px solid #B34D49' : '1px solid rgba(255,255,255,0.12)',
+                                            background: 'rgba(255,255,255,0.04)',
+                                            transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                            fontSize: 14,
+                                            fontWeight: 500,
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                                            e.currentTarget.style.borderBottomColor = '#B34D49'
+                                            e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+                                            e.currentTarget.style.transform = 'translateX(4px)'
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
+                                            e.currentTarget.style.borderBottomColor = isActive ? '#B34D49' : 'rgba(255,255,255,0.12)'
+                                            e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                                            e.currentTarget.style.transform = 'translateX(0)'
+                                        }}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                )
+                            })}
                         </div>
                     </div>
                 </div>

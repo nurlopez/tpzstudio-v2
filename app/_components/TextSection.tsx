@@ -8,22 +8,38 @@ type Props = {
     maxWidth?: number | string
 }
 
-// Reusable text block with gentle reveal and consistent spacing.
-export function TextSection({ title, children, padding = '32px 24px 12px', maxWidth = 940 }: Props) {
+// Reusable text block with film credit-style typography and sophisticated spacing.
+export function TextSection({ title, children, padding = '48px 24px', maxWidth = 1000 }: Props) {
     const resolvedMaxWidth = typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth
 
     return (
         <section style={{ padding }}>
             <div style={{ maxWidth: resolvedMaxWidth, margin: '0 auto' }}>
-                <Reveal y={12}>
-                    <div style={{ display: 'grid', gap: 8 }}>
+                <Reveal y={16}>
+                    <div style={{ display: 'grid', gap: 20 }}>
                         {title ? (
-                            <h2 style={{ margin: 0, fontSize: 24, lineHeight: 1.25, letterSpacing: '-0.01em' }}>
+                            <h2 style={{ 
+                                margin: 0, 
+                                fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', 
+                                lineHeight: 1.3, 
+                                letterSpacing: '-0.03em',
+                                fontWeight: 400,
+                                fontFamily: 'var(--font-serif), Georgia, serif',
+                                opacity: 0.95,
+                            }}>
                                 {title}
                             </h2>
                         ) : null}
 
-                        <div style={{ fontSize: 17, lineHeight: 1.7, opacity: 0.9 }}>{children}</div>
+                        <div style={{ 
+                            fontSize: 'clamp(16px, 1.8vw, 18px)', 
+                            lineHeight: 1.75, 
+                            opacity: 0.88,
+                            fontWeight: 300,
+                            letterSpacing: '0.01em',
+                        }}>
+                            {children}
+                        </div>
                     </div>
                 </Reveal>
             </div>

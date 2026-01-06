@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="es" className={`${poppins.variable}`}>
             <body>
             <Header />
-            <div style={{ paddingTop: 64 }}>
+            <div style={{ paddingTop: 72 }}>
                 {children}
             </div>
             </body>

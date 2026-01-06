@@ -18,8 +18,13 @@ export function Reveal({ children, delay = 0, y = 12 }: RevealProps) {
         <motion.div
             initial={{ opacity: 0, y }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ 
+                duration: 0.8, 
+                ease: [0.22, 1, 0.36, 1], 
+                delay,
+                opacity: { duration: 0.6 }
+            }}
         >
             {children}
         </motion.div>
@@ -36,8 +41,11 @@ export function HoverLift({ children }: HoverLiftProps) {
 
     return (
         <motion.div
-            whileHover={{ y: -2 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            whileHover={{ y: -8, scale: 1.02 }}
+            transition={{ 
+                duration: 0.4, 
+                ease: [0.22, 1, 0.36, 1],
+            }}
             style={{ willChange: 'transform' }}
         >
             {children}
