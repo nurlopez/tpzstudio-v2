@@ -1,6 +1,4 @@
 import './globals.css'
-import { Header } from './_components/Header'
-
 import { Poppins } from 'next/font/google'
 
 const poppins = Poppins({
@@ -9,14 +7,21 @@ const poppins = Poppins({
     variable: '--font-sans'
 })
 
+/**
+ * Root Layout
+ * 
+ * Responsibility: Global app shell, fonts, metadata, providers.
+ * 
+ * Does NOT contain:
+ * - Workspace-specific logic
+ * - Header/Footer components (workspace has its own chrome)
+ * - Navigation menus
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="es" className={`${poppins.variable}`}>
             <body>
-            <Header />
-            <div style={{ paddingTop: 72 }}>
                 {children}
-            </div>
             </body>
         </html>
     )

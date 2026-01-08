@@ -161,7 +161,7 @@ const socialIconMap: Record<SocialIconName, React.ReactNode> = {
             <circle cx="4" cy="4" r="2"/>
         </svg>
     ),
-}
+} 
 
 export function getSocialIcon(iconName: string | undefined): React.ReactNode {
     if (!iconName) return null

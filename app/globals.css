@@ -1,31 +1,109 @@
+@import "tailwindcss";
+
 :root {
-    /* Cinematic color palette - inspired by film color grading */
-    --bg: #0a0a0a;
-    --bg-elevated: #121212;
-    --fg: #f8f8f8;
-    --fg-muted: rgba(248, 248, 248, 0.65);
-    --fg-subtle: rgba(248, 248, 248, 0.45);
-    
-    /* Film-inspired accent colors */
-    --accent-warm: rgba(255, 240, 200, 0.15);
-    --accent-cool: rgba(200, 220, 255, 0.08);
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-visible: rgba(255, 255, 255, 0.15);
-    
-    /* Cinematic shadows */
-    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.4);
-    --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.5);
-    --shadow-strong: 0 16px 48px rgba(0, 0, 0, 0.6);
-    
-    /* Spacing scale - more dramatic */
-    --space-xs: 4px;
-    --space-sm: 8px;
-    --space-md: 16px;
-    --space-lg: 24px;
-    --space-xl: 32px;
-    --space-2xl: 48px;
-    --space-3xl: 72px;
-    --space-4xl: 96px;
+    /* ============================================
+       WORKSPACE DESIGN TOKENS
+       Based on WORKSPACE_VISUAL_SYSTEM.md
+       ============================================ */
+
+    /* --------------------------------------------
+       Background Colors (Canvas & Surfaces)
+       -------------------------------------------- */
+    --bg-canvas: #0a0a0a; /* Primary workspace surface - deep but not black */
+    --bg-canvas-dimmed: rgba(10, 10, 10, 0.3); /* Canvas when panel/overlay open */
+    --bg-surface: #1a1a1a; /* Panel/overlay backgrounds */
+    --bg-elevated: #121212; /* Objects or elevated elements */
+
+    /* --------------------------------------------
+       Ink (Text) Colors
+       -------------------------------------------- */
+    --ink-primary: rgba(248, 248, 248, 0.95); /* Main content text - high contrast */
+    --ink-secondary: rgba(248, 248, 248, 0.75); /* Supporting text - medium contrast */
+    --ink-muted: rgba(248, 248, 248, 0.5); /* Tertiary text - lower contrast */
+    --ink-interactive: rgba(248, 248, 248, 0.9); /* Links, clickable text */
+
+    /* --------------------------------------------
+       Accent Colors (Functional, not decorative)
+       -------------------------------------------- */
+    --accent-active: rgba(255, 255, 255, 0.15); /* Focused object, active state */
+    --accent-interactive: rgba(255, 255, 255, 0.1); /* Hover/tap feedback */
+    --accent-muted: rgba(255, 255, 255, 0.05); /* Secondary interactive elements */
+
+    /* --------------------------------------------
+       State Colors
+       -------------------------------------------- */
+    --state-focused: rgba(255, 255, 255, 0.15); /* Object that has focus */
+    --state-active: rgba(255, 255, 255, 0.1); /* Currently interacting */
+    --state-muted: rgba(255, 255, 255, 0.4); /* Unfocused objects (opacity) */
+    --state-disabled: rgba(255, 255, 255, 0.2); /* Non-interactive elements */
+
+    /* --------------------------------------------
+       Borders & Dividers
+       -------------------------------------------- */
+    --border-subtle: rgba(255, 255, 255, 0.08); /* Very light borders */
+    --border-visible: rgba(255, 255, 255, 0.15); /* Clear borders */
+    --divider: rgba(255, 255, 255, 0.1); /* Separators between content */
+
+    /* --------------------------------------------
+       Shadows (Subtle depth cues)
+       -------------------------------------------- */
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.3); /* Hover state elevation */
+    --shadow-visible: 0 4px 16px rgba(0, 0, 0, 0.4); /* Focus state elevation */
+    --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.5); /* Overlay elevation */
+
+    /* --------------------------------------------
+       Spacing Scale (4px base unit)
+       -------------------------------------------- */
+    --space-xs: 4px; /* Tight spacing, within components */
+    --space-sm: 8px; /* Small gaps */
+    --space-md: 16px; /* Component padding, small gaps */
+    --space-lg: 24px; /* Section spacing, comfortable gaps */
+    --space-xl: 32px; /* Major sections, breathing room */
+    --space-2xl: 48px; /* Canvas-level spacing */
+    --space-3xl: 64px; /* Large canvas spacing */
+    --space-4xl: 96px; /* Maximum spacing */
+
+    /* --------------------------------------------
+       Typography Scale (Relative, not absolute)
+       -------------------------------------------- */
+    --font-size-xs: 12px; /* UI text, hints */
+    --font-size-sm: 14px; /* Supporting text, labels */
+    --font-size-md: 16px; /* Body text (default reading size) */
+    --font-size-lg: 18px; /* Section headings */
+    --font-size-xl: 24px; /* Major headings */
+    --font-size-2xl: 32px; /* XL headings (rare) */
+
+    --font-weight-regular: 400; /* Default body text */
+    --font-weight-medium: 500; /* Emphasis, headings */
+    --font-weight-bold: 600; /* Strong emphasis (rare) */
+
+    --line-height-tight: 1.2; /* Headings */
+    --line-height-normal: 1.5; /* Body text */
+    --line-height-relaxed: 1.75; /* Comfortable reading */
+
+    /* --------------------------------------------
+       Motion Durations (from WORKSPACE_MOTION.md)
+       -------------------------------------------- */
+    --motion-fast: 150ms; /* Immediate feedback */
+    --motion-standard: 300ms; /* Standard transitions */
+    --motion-slow: 400ms; /* Major transitions */
+    --motion-slower: 500ms; /* Initial load, major state changes */
+
+    /* --------------------------------------------
+       Motion Easing
+       -------------------------------------------- */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* Entrances */
+    --ease-in: cubic-bezier(0.4, 0, 1, 1); /* Exits */
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); /* Transforms */
+
+    /* --------------------------------------------
+       Legacy tokens (for backward compatibility)
+       -------------------------------------------- */
+    --bg: var(--bg-canvas);
+    --bg-elevated: var(--bg-elevated);
+    --fg: var(--ink-primary);
+    --fg-muted: var(--ink-secondary);
+    --fg-subtle: var(--ink-muted);
 }
 
 html {
@@ -37,9 +115,203 @@ html {
 
 html,
 body {
-    background: var(--bg);
-    color: var(--fg);
+    background: var(--bg-canvas);
+    color: var(--ink-primary);
     overflow-x: hidden;
+}
+
+/* --------------------------------------------
+   Workspace-specific base styles
+   -------------------------------------------- */
+[data-workspace-root] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Root doesn't scroll, inner containers do */
+    /* PERMANENT: Allow touch events to pass through to scrollable container */
+    touch-action: pan-y; /* Allow vertical panning/scrolling */
+}
+
+[data-workspace-canvas] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh; /* Canvas is fixed viewport height - background only */
+    background: var(--bg-canvas);
+    transition: opacity var(--motion-standard) var(--ease-out);
+    /* PERMANENT: Canvas is fixed background - container handles scrolling */
+    overflow: hidden; /* Canvas doesn't scroll, container does */
+    /* PERMANENT: Allow touch events to pass through to scrollable container */
+    touch-action: none; /* Let scrollable container handle touch */
+    /* Ensure canvas doesn't prevent scrolling */
+    overscroll-behavior: none;
+}
+
+[data-workspace-canvas][data-dimmed] {
+    opacity: 0.3;
+}
+
+/* Objects Container - All objects fit within viewport */
+[data-workspace-objects-container] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* Always viewport height - all objects fit inside */
+    /* No scrolling needed - all objects fit in viewport */
+    overflow: visible;
+    /* Ensure container is on top of canvas background */
+    z-index: 1;
+}
+
+/* --------------------------------------------
+   Workspace Objects
+   -------------------------------------------- */
+[data-workspace-object] {
+    position: absolute;
+    cursor: pointer;
+    transition: 
+        opacity var(--motion-standard) var(--ease-in-out),
+        transform var(--motion-standard) var(--ease-in-out);
+    will-change: transform, opacity;
+    /* Objects are interactive - allow both tap and pan */
+    /* Don't use manipulation as it prevents pan gestures */
+    touch-action: auto; /* Allow all touch gestures including pan */
+    pointer-events: auto;
+    /* Ensure label positioning works correctly */
+    /* The object itself is absolute, but its children (label) need relative positioning context */
+}
+
+/* Mobile: Same scrollable model, larger touch targets */
+@media (max-width: 768px) {
+    [data-workspace-objects-container] {
+        /* Same vertical scrolling model as desktop */
+        /* Touch scrolling works natively */
+    }
+
+    [data-workspace-object] {
+        /* Larger touch targets for mobile */
+        padding: var(--space-sm);
+    }
+
+    [data-workspace-object-visual] {
+        width: var(--object-size, 80px);
+        height: var(--object-size, 80px);
+    }
+}
+
+/* Object states - using Tailwind classes with data attributes for specificity */
+[data-workspace-object][data-state="default"] {
+    opacity: 1;
+}
+
+[data-workspace-object][data-state="muted"] {
+    opacity: var(--state-muted);
+}
+
+[data-workspace-object][data-state="focused"] {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+[data-workspace-object][data-state="hovered"] {
+    transform: scale(1.1);
+}
+
+/* Object visual container - base styles handled by Tailwind classes */
+[data-workspace-object-visual] {
+    /* Dynamic size based on viewport - calculated in Canvas component */
+    /* Width is controlled by --object-size, height is natural */
+    min-width: var(--object-size, 120px);
+    max-width: var(--object-size, 180px);
+}
+
+/* Object visual hover state - no border, no background change */
+/* Visual scales with object container transform */
+
+/* Object visual focused state - no border, no shadow */
+/* Visual scales with object container transform */
+
+/* Object label - base styles handled by Tailwind classes */
+/* Show label on hover or focus */
+[data-workspace-object][data-state="hovered"] [data-workspace-object-label],
+[data-workspace-object][data-state="focused"] [data-workspace-object-label] {
+    opacity: 1;
+}
+
+/* --------------------------------------------
+   Panels
+   -------------------------------------------- */
+/* PERMANENT: Panel behavior */
+/* Desktop: Side panel maintains workspace context (canvas visible, dimmed) */
+/* Mobile: Full-screen for content focus, but workspace context preserved */
+[data-workspace-panel] {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100vh;
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-subtle);
+    z-index: 1000;
+    overflow-y: auto;
+    transform: translateX(0);
+    transition: transform var(--motion-slow) var(--ease-out);
+    /* PERMANENT: Panel overlays workspace, doesn't replace it */
+    /* Canvas remains visible (dimmed) to maintain spatial anchoring */
+}
+
+/* Mobile: Full-screen panel */
+@media (max-width: 768px) {
+    [data-workspace-panel] {
+        width: 100vw;
+        border-left: none;
+        /* PERMANENT: Full-screen on mobile for content focus */
+        /* Workspace context maintained via canvas dimming */
+    }
+}
+
+/* --------------------------------------------
+   Overlays
+   -------------------------------------------- */
+[data-workspace-overlay] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-canvas);
+    z-index: 2000;
+    overflow-y: auto;
+    transition: opacity var(--motion-slow) var(--ease-out);
+}
+
+/* --------------------------------------------
+   Dock
+   -------------------------------------------- */
+[data-workspace-dock] {
+    position: fixed;
+    top: var(--space-lg);
+    left: var(--space-lg);
+    z-index: 100;
+}
+
+/* --------------------------------------------
+   Reduced Motion
+   -------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 body {
