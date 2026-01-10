@@ -6,7 +6,7 @@
 
 export type ObjectType = 'film' | 'voiceovers' | 'branding' | 'courses' | 'strategy' | 'projects' | 'contact'
 
-export type PanelType = 'service' | 'archive' | 'contact'
+export type PanelType = 'service' | 'archive' | 'contact' | 'about'
 
 export type OverlayType = 'project' | 'about'
 

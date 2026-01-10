@@ -4,6 +4,29 @@ import { PageFade } from '@/app/_components/PageFade'
 import { Reveal } from '@/app/_components/Motion'
 import { getSocialIcon } from '@/app/_components/IconMap'
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const contact = await client.fetch(contactPageQuery)
+  
+  const title = contact?.seo?.metaTitle || contact?.title || 'Contacto'
+  const description = contact?.seo?.metaDescription || contact?.introText || 'Get in touch with TPZ Studio. Contact us for inquiries about our services in film, voiceovers, branding, and more.'
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | TPZ Studio`,
+      description,
+      url: '/contacto',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${title} | TPZ Studio`,
+      description,
+    },
+  }
+}
 
 export default async function ContactPage() {
     const contact = await client.fetch(contactPageQuery)

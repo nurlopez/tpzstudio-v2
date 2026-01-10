@@ -6,6 +6,32 @@ import { PortableText } from '@portabletext/react'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/lib/image'
 import Link from 'next/link'
+import { Metadata } from 'next'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const about = await client.fetch(aboutPageQuery)
+  
+  const title = about?.seo?.metaTitle || about?.title || 'Sobre mí'
+  const description = about?.seo?.metaDescription || 'Learn more about TPZ Studio, our mission, values, and creative approach.'
+  const ogImage = about?.image?.asset?.url
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | TPZ Studio`,
+      description,
+      url: '/sobre-mi',
+      images: ogImage ? [{ url: ogImage, alt: about?.image?.alt || about?.title || 'About TPZ Studio' }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | TPZ Studio`,
+      description,
+      images: ogImage ? [ogImage] : [],
+    },
+  }
+}
 
 export default async function AboutPage() {
     const about = await client.fetch(aboutPageQuery)

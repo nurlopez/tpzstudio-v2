@@ -7,6 +7,7 @@ import { PortableText } from '@portabletext/react'
 import { getIcon } from '@/app/_components/IconMap'
 import Image from 'next/image'
 import { urlFor } from '@/sanity/lib/image'
+import { Metadata } from 'next'
 
 const serviceBySlugQuery = groq`
   *[_type == "service" && slug.current == $slug][0]{
@@ -22,6 +23,42 @@ const serviceBySlugQuery = groq`
     }
   }
 `
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const service = await client.fetch(serviceBySlugQuery, { slug })
+
+  if (!service) {
+    return {
+      title: 'Service Not Found | TPZ Studio',
+    }
+  }
+
+  const title = service.title
+  const description = service.shortDescription || `Learn more about ${title} services at TPZ Studio.`
+  const ogImage = service.coverImage?.asset?.url
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | TPZ Studio`,
+      description,
+      url: `/servicios/${slug}`,
+      images: ogImage ? [{ url: ogImage, alt: service.title }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | TPZ Studio`,
+      description,
+      images: ogImage ? [ogImage] : [],
+    },
+  }
+}
 
 export default async function ServicePage({
     params,

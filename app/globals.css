@@ -715,6 +715,12 @@ h3 {
     }
 }
 
+/* CTA Button hover styles */
+.cta-button:hover {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-visible) !important;
+}
+
 /* PortableText content styling */
 .portable-text-content {
     display: grid;

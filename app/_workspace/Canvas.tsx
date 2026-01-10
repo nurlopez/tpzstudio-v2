@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { useWorkspace } from './WorkspaceProvider'
 import { WorkspaceObject } from './WorkspaceObject'
 import { WorkspaceObjectData, BackgroundConfig, AmbientElement } from './types'
@@ -38,6 +39,7 @@ interface CanvasProps {
 
 export function Canvas({ objects, background, ambientElements }: CanvasProps) {
   const { state, actions } = useWorkspace()
+  const router = useRouter()
   
   // Initialize state with objects prop (from server-side fetch)
   // If objects are provided, use them directly; otherwise start empty
@@ -212,8 +214,24 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
               visual={object.visual}
               isFocused={state.focusedObject === object.slug}
               onClick={() => {
+                // Special handling for contact/contacto and sobre-mi objects
+                if (object.slug === 'contacto' || object.slug === 'contact') {
+                  router.push('/workspace/contact')
+                  return
+                }
+                if (object.slug === 'sobre-mi' || object.slug === 'sobre-tpzstudio' || object.slug === 'about') {
+                  router.push('/workspace/sobre-mi')
+                  return
+                }
+                // Special handling for blog objects - navigate to blog listing page
+                if (object.slug === 'blog-noticias' || object.slug === 'blog' || object.slug === 'noticias') {
+                  router.push('/blog')
+                  return
+                }
+                // Regular workspace objects
                 actions.setFocusedObject(object.slug)
                 actions.openPanel('service', object.slug)
+                router.push(`/workspace/${object.slug}`)
               }}
             />
           )

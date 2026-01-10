@@ -131,3 +131,90 @@ export const aboutPageQuery = groq`
     }
   }
 `
+
+/**
+ * Query to fetch a single project by slug with all details
+ * Used for project detail overlay in workspace
+ */
+export const projectBySlugQuery = groq`
+  *[_type == "project" && slug.current == $slug][0]{
+    _id,
+    title,
+    "slug": slug.current,
+    excerpt,
+    body,
+    video {
+      provider,
+      url
+    },
+    coverImage {
+      asset-> {
+        _id,
+        url
+      },
+      alt
+    },
+    categories,
+    credits[] {
+      role,
+      name
+    },
+    seo {
+      metaTitle,
+      metaDescription,
+      ogImage {
+        asset-> {
+          _id,
+          url
+        },
+        alt
+      }
+    }
+  }
+`
+
+/**
+ * Query to fetch all projects for workspace archive panel
+ * Used for project archive panel in workspace
+ */
+export const projectsArchiveQuery = groq`
+  *[_type == "project"] | order(_createdAt desc)[0...12]{
+    _id,
+    title,
+    "slug": slug.current,
+    excerpt,
+    coverImage {
+      asset-> {
+        _id,
+        url
+      },
+      alt
+    }
+  }
+`
+
+/**
+ * Query to fetch about page data for workspace panel
+ * Used for about panel in workspace
+ */
+export const aboutPageWorkspaceQuery = groq`
+  *[_type == "aboutPage"][0]{
+    title,
+    body,
+    image {
+      asset-> {
+        _id,
+        url
+      },
+      alt
+    },
+    cta {
+      text,
+      url
+    },
+    seo {
+      metaTitle,
+      metaDescription
+    }
+  }
+`

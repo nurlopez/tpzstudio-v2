@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useWorkspace } from './WorkspaceProvider'
 import { ObjectType, WorkspaceObjectVisual } from './types'
+import { getIcon } from '../_components/IconMap'
 
 /**
  * WorkspaceObject
@@ -41,6 +42,36 @@ interface WorkspaceObjectProps {
   visual?: WorkspaceObjectVisual
   isFocused: boolean
   onClick: () => void
+}
+
+/**
+ * Map objectType from Sanity to icon name
+ * Sanity objectType values: 'camera', 'waveform', 'blueprint', 'book', 'lightbulb', 'stack', 'envelope'
+ * Legacy ObjectType values: 'film', 'voiceovers', 'branding', 'courses', 'strategy', 'projects', 'contact'
+ */
+function getObjectTypeIcon(objectType: ObjectType | string): React.ReactNode {
+  // Map Sanity objectType to IconMap icon names
+  const iconMap: Record<string, string> = {
+    // Sanity schema values
+    'camera': 'camera',
+    'waveform': 'music',
+    'blueprint': 'code',
+    'book': 'graduation-cap',
+    'lightbulb': 'lightbulb',
+    'stack': 'cube',
+    'envelope': 'users',
+    // Legacy ObjectType values (for backward compatibility)
+    'film': 'film',
+    'voiceovers': 'music',
+    'branding': 'palette',
+    'courses': 'graduation-cap',
+    'strategy': 'lightbulb',
+    'projects': 'cube',
+    'contact': 'users',
+  }
+  
+  const iconName = iconMap[objectType] || 'cube'
+  return getIcon(iconName)
 }
 
 export function WorkspaceObject({
@@ -160,8 +191,21 @@ export function WorkspaceObject({
             />
           </div>
         ) : (
-          /* Text fallback - primary when no visual */
-          <span>{type}</span>
+          /* Icon fallback - use objectType to get icon when no visual */
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%',
+              minHeight: 'var(--object-size, 120px)',
+              color: 'var(--ink-secondary)',
+            }}
+            aria-hidden="true"
+          >
+            {getObjectTypeIcon(type)}
+          </div>
         )}
       </div>
 
