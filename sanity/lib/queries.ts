@@ -39,7 +39,14 @@ export const homePageQuery = groq`
         url
       }
     },
+    introText{
+      body
+    },
     manifesto{
+      title,
+      body
+    },
+    filosofia{
       title,
       body
     },
@@ -53,6 +60,17 @@ export const homePageQuery = groq`
       title,
       body,
       usePrimaryCta
+    },
+    services{
+      title,
+      items[]->{
+        _id,
+        title,
+        slug,
+        icon,
+        shortDescription,
+        order
+      }
     },
     featuredProjects{
       title,
@@ -68,6 +86,48 @@ export const homePageQuery = groq`
         },
         categories
       }
+    }
+  }
+`
+
+export const contactPageQuery = groq`
+  *[_type == "contactPage"][0]{
+    title,
+    introText,
+    phone{
+      number,
+      url
+    },
+    email{
+      address,
+      label
+    },
+    socialMedia{
+      instagram,
+      vimeo,
+      youtube,
+      tiktok,
+      linkedin
+    },
+    seo{
+      metaTitle,
+      metaDescription
+    }
+  }
+`
+
+export const aboutPageQuery = groq`
+  *[_type == "aboutPage"][0]{
+    title,
+    body,
+    image,
+    cta{
+      text,
+      url
+    },
+    seo{
+      metaTitle,
+      metaDescription
     }
   }
 `

@@ -1,65 +1,796 @@
+@import "tailwindcss";
+
 :root {
-    --bg: #070707;
-    --fg: #f5f5f5;
+    /* ============================================
+       WORKSPACE DESIGN TOKENS
+       Based on WORKSPACE_VISUAL_SYSTEM.md
+       ============================================ */
+
+    /* --------------------------------------------
+       Background Colors (Canvas & Surfaces)
+       -------------------------------------------- */
+    --bg-canvas: #0a0a0a; /* Primary workspace surface - deep but not black */
+    --bg-canvas-dimmed: rgba(10, 10, 10, 0.3); /* Canvas when panel/overlay open */
+    --bg-surface: #1a1a1a; /* Panel/overlay backgrounds */
+    --bg-elevated: #121212; /* Objects or elevated elements */
+
+    /* --------------------------------------------
+       Ink (Text) Colors
+       -------------------------------------------- */
+    --ink-primary: rgba(248, 248, 248, 0.95); /* Main content text - high contrast */
+    --ink-secondary: rgba(248, 248, 248, 0.75); /* Supporting text - medium contrast */
+    --ink-muted: rgba(248, 248, 248, 0.5); /* Tertiary text - lower contrast */
+    --ink-interactive: rgba(248, 248, 248, 0.9); /* Links, clickable text */
+
+    /* --------------------------------------------
+       Accent Colors (Functional, not decorative)
+       -------------------------------------------- */
+    --accent-active: rgba(255, 255, 255, 0.15); /* Focused object, active state */
+    --accent-interactive: rgba(255, 255, 255, 0.1); /* Hover/tap feedback */
+    --accent-muted: rgba(255, 255, 255, 0.05); /* Secondary interactive elements */
+
+    /* --------------------------------------------
+       State Colors
+       -------------------------------------------- */
+    --state-focused: rgba(255, 255, 255, 0.15); /* Object that has focus */
+    --state-active: rgba(255, 255, 255, 0.1); /* Currently interacting */
+    --state-muted: rgba(255, 255, 255, 0.4); /* Unfocused objects (opacity) */
+    --state-disabled: rgba(255, 255, 255, 0.2); /* Non-interactive elements */
+
+    /* --------------------------------------------
+       Borders & Dividers
+       -------------------------------------------- */
+    --border-subtle: rgba(255, 255, 255, 0.08); /* Very light borders */
+    --border-visible: rgba(255, 255, 255, 0.15); /* Clear borders */
+    --divider: rgba(255, 255, 255, 0.1); /* Separators between content */
+
+    /* --------------------------------------------
+       Shadows (Subtle depth cues)
+       -------------------------------------------- */
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.3); /* Hover state elevation */
+    --shadow-visible: 0 4px 16px rgba(0, 0, 0, 0.4); /* Focus state elevation */
+    --shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.5); /* Overlay elevation */
+
+    /* --------------------------------------------
+       Spacing Scale (4px base unit)
+       -------------------------------------------- */
+    --space-xs: 4px; /* Tight spacing, within components */
+    --space-sm: 8px; /* Small gaps */
+    --space-md: 16px; /* Component padding, small gaps */
+    --space-lg: 24px; /* Section spacing, comfortable gaps */
+    --space-xl: 32px; /* Major sections, breathing room */
+    --space-2xl: 48px; /* Canvas-level spacing */
+    --space-3xl: 64px; /* Large canvas spacing */
+    --space-4xl: 96px; /* Maximum spacing */
+
+    /* --------------------------------------------
+       Typography Scale (Relative, not absolute)
+       -------------------------------------------- */
+    --font-size-xs: 12px; /* UI text, hints */
+    --font-size-sm: 14px; /* Supporting text, labels */
+    --font-size-md: 16px; /* Body text (default reading size) */
+    --font-size-lg: 18px; /* Section headings */
+    --font-size-xl: 24px; /* Major headings */
+    --font-size-2xl: 32px; /* XL headings (rare) */
+
+    --font-weight-regular: 400; /* Default body text */
+    --font-weight-medium: 500; /* Emphasis, headings */
+    --font-weight-bold: 600; /* Strong emphasis (rare) */
+
+    --line-height-tight: 1.2; /* Headings */
+    --line-height-normal: 1.5; /* Body text */
+    --line-height-relaxed: 1.75; /* Comfortable reading */
+
+    /* --------------------------------------------
+       Motion Durations (from WORKSPACE_MOTION.md)
+       -------------------------------------------- */
+    --motion-fast: 150ms; /* Immediate feedback */
+    --motion-standard: 300ms; /* Standard transitions */
+    --motion-slow: 400ms; /* Major transitions */
+    --motion-slower: 500ms; /* Initial load, major state changes */
+
+    /* --------------------------------------------
+       Motion Easing
+       -------------------------------------------- */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* Entrances */
+    --ease-in: cubic-bezier(0.4, 0, 1, 1); /* Exits */
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); /* Transforms */
+
+    /* --------------------------------------------
+       Legacy tokens (for backward compatibility)
+       -------------------------------------------- */
+    --bg: var(--bg-canvas);
+    --bg-elevated: var(--bg-elevated);
+    --fg: var(--ink-primary);
+    --fg-muted: var(--ink-secondary);
+    --fg-subtle: var(--ink-muted);
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 html,
 body {
-    background: var(--bg);
-    color: var(--fg);
+    background: var(--bg-canvas);
+    color: var(--ink-primary);
+    overflow-x: hidden;
+}
+
+/* --------------------------------------------
+   Workspace-specific base styles
+   -------------------------------------------- */
+[data-workspace-root] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Root doesn't scroll, inner containers do */
+    /* PERMANENT: Allow touch events to pass through to scrollable container */
+    touch-action: pan-y; /* Allow vertical panning/scrolling */
+}
+
+[data-workspace-canvas] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh; /* Canvas is fixed viewport height - background only */
+    background: var(--bg-canvas);
+    transition: opacity var(--motion-standard) var(--ease-out);
+    /* PERMANENT: Canvas is fixed background - container handles scrolling */
+    overflow: hidden; /* Canvas doesn't scroll, container does */
+    /* PERMANENT: Allow touch events to pass through to scrollable container */
+    touch-action: none; /* Let scrollable container handle touch */
+    /* Ensure canvas doesn't prevent scrolling */
+    overscroll-behavior: none;
+}
+
+[data-workspace-canvas][data-dimmed] {
+    opacity: 0.3;
+}
+
+/* Objects Container - All objects fit within viewport */
+[data-workspace-objects-container] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* Always viewport height - all objects fit inside */
+    /* No scrolling needed - all objects fit in viewport */
+    overflow: visible;
+    /* Ensure container is on top of canvas background */
+    z-index: 1;
+}
+
+/* --------------------------------------------
+   Workspace Objects
+   -------------------------------------------- */
+[data-workspace-object] {
+    position: absolute;
+    cursor: pointer;
+    transition: 
+        opacity var(--motion-standard) var(--ease-in-out),
+        transform var(--motion-standard) var(--ease-in-out);
+    will-change: transform, opacity;
+    /* Objects are interactive - allow both tap and pan */
+    /* Don't use manipulation as it prevents pan gestures */
+    touch-action: auto; /* Allow all touch gestures including pan */
+    pointer-events: auto;
+    /* Ensure label positioning works correctly */
+    /* The object itself is absolute, but its children (label) need relative positioning context */
+}
+
+/* Mobile: Same scrollable model, larger touch targets */
+@media (max-width: 768px) {
+    [data-workspace-objects-container] {
+        /* Same vertical scrolling model as desktop */
+        /* Touch scrolling works natively */
+    }
+
+    [data-workspace-object] {
+        /* Larger touch targets for mobile */
+        padding: var(--space-sm);
+    }
+
+    [data-workspace-object-visual] {
+        width: var(--object-size, 80px);
+        height: var(--object-size, 80px);
+    }
+}
+
+/* Object states - using Tailwind classes with data attributes for specificity */
+[data-workspace-object][data-state="default"] {
+    opacity: 1;
+}
+
+[data-workspace-object][data-state="muted"] {
+    opacity: var(--state-muted);
+}
+
+[data-workspace-object][data-state="focused"] {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+[data-workspace-object][data-state="hovered"] {
+    transform: scale(1.1);
+}
+
+/* Object visual container - base styles handled by Tailwind classes */
+[data-workspace-object-visual] {
+    /* Dynamic size based on viewport - calculated in Canvas component */
+    /* Width is controlled by --object-size, height is natural */
+    min-width: var(--object-size, 120px);
+    max-width: var(--object-size, 180px);
+}
+
+/* Object visual hover state - no border, no background change */
+/* Visual scales with object container transform */
+
+/* Object visual focused state - no border, no shadow */
+/* Visual scales with object container transform */
+
+/* Object label - base styles handled by Tailwind classes */
+/* Show label on hover or focus */
+[data-workspace-object][data-state="hovered"] [data-workspace-object-label],
+[data-workspace-object][data-state="focused"] [data-workspace-object-label] {
+    opacity: 1;
+}
+
+/* --------------------------------------------
+   Panels
+   -------------------------------------------- */
+/* PERMANENT: Panel behavior */
+/* Desktop: Side panel maintains workspace context (canvas visible, dimmed) */
+/* Mobile: Full-screen for content focus, but workspace context preserved */
+[data-workspace-panel] {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100vh;
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border-subtle);
+    z-index: 1000;
+    overflow-y: auto;
+    transform: translateX(0);
+    transition: transform var(--motion-slow) var(--ease-out);
+    /* PERMANENT: Panel overlays workspace, doesn't replace it */
+    /* Canvas remains visible (dimmed) to maintain spatial anchoring */
+}
+
+/* Mobile: Full-screen panel */
+@media (max-width: 768px) {
+    [data-workspace-panel] {
+        width: 100vw;
+        border-left: none;
+        /* PERMANENT: Full-screen on mobile for content focus */
+        /* Workspace context maintained via canvas dimming */
+    }
+}
+
+/* --------------------------------------------
+   Overlays
+   -------------------------------------------- */
+[data-workspace-overlay] {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-canvas);
+    z-index: 2000;
+    overflow-y: auto;
+    transition: opacity var(--motion-slow) var(--ease-out);
+}
+
+/* --------------------------------------------
+   Dock
+   -------------------------------------------- */
+[data-workspace-dock] {
+    position: fixed;
+    top: var(--space-lg);
+    left: var(--space-lg);
+    z-index: 100;
+}
+
+/* --------------------------------------------
+   Reduced Motion
+   -------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 body {
-    font-family: var(--font-sans), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    font-family: var(--font-sans), system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    letter-spacing: -0.011em;
 }
 
+/* Modern typography hierarchy with film-inspired styling */
 h1,
 h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-serif), Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-rendering: optimizeLegibility;
+}
+
+h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    letter-spacing: -0.04em;
+}
+
+h2 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    letter-spacing: -0.03em;
+}
+
 h3 {
-    font-family: var(--font-serif), Georgia, serif;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
 }
 
+/* Modern project card with sophisticated interactions */
 .projectCard {
-    transition: transform .25s ease, box-shadow .25s ease;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease;
+    will-change: transform;
+    isolation: isolate;
 }
 
+.projectCard::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(255, 255, 255, 0) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+/* Modern navigation with film-inspired styling */
+.navDesktop {
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.navLink {
+    color: var(--fg-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    letter-spacing: 0.01em;
+    position: relative;
+    overflow: hidden;
+}
+
+.navLink::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.02) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.navLink:hover {
+    border-color: transparent;
+    border-bottom: 2px solid #B34D49;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--fg);
+    transform: translateY(-1px);
+}
+
+.navLink:hover::before {
+    opacity: 1;
+}
+
+.navCta {
+    margin-left: 8px;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 6px;
+    background: var(--fg);
+    color: var(--bg);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+.navCta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.navCta:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.navCta:hover::before {
+    opacity: 1;
+}
+
+.navCta:active {
+    transform: translateY(0);
+}
+
+.navBurger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+}
+
+.navBurger:hover {
+    border-color: var(--border-visible);
+    background: rgba(255, 255, 255, 0.06);
+    transform: scale(1.05);
+}
+
+.navLinkActive {
+    border: 1px solid transparent;
+    border-bottom: 2px solid #B34D49;
+    background: transparent;
+    color: #B34D49;
+}
+
+.navLinkActive::before {
+    opacity: 0;
+}
+
+.navLinkActive:hover {
+    /* Override .navLink:hover to maintain active state */
+    border-color: transparent;
+    border-bottom: 2px solid #B34D49;
+    background: transparent;
+    color: #B34D49;
+    transform: translateY(-1px);
+}
+
+
+/* Desktop breakpoint */
+@media (min-width: 768px) {
+    .navDesktop {
+        display: inline-flex;
+    }
+
+    .navBurger {
+        display: none;
+    }
+}
+
+
+/* Advanced hover states with cinematic depth */
 @media (hover: hover) and (pointer: fine) {
     .projectCard:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, .35);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: var(--shadow-strong),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+    
+    .projectCard:hover::before {
+        opacity: 1;
+    }
+    
+    /* Image zoom effect on hover */
+    .projectCard:hover img {
+        transform: scale(1.08);
     }
 }
 
-.carousel {
+/* Featured projects grid layout - asymmetric with hero card */
+.featuredProjectsGrid {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 85%;
-    gap: 14px;
-
-    overflow-x: auto;
-    padding-bottom: 6px;
-
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    grid-template-columns: 1fr;
+    gap: 24px;
 }
 
-.carouselItem {
-    scroll-snap-align: start;
-}
-
-/* Desktop/tablet: show smaller cards */
-@media (min-width: 768px) {
-    .carousel {
-        grid-auto-columns: 420px;
+/* Tablet: 2 columns */
+@media (min-width: 640px) {
+    .featuredProjectsGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px;
     }
 }
 
-/* Hide scrollbar (optional, looks cleaner) */
-.carousel::-webkit-scrollbar {
-    height: 0px;
+/* Desktop: Asymmetric layout - hero card spans 2 columns, others in 1 column */
+@media (min-width: 1024px) {
+    .featuredProjectsGrid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+    }
+    
+    .featuredProjectCard--hero {
+        grid-column: span 2;
+    }
 }
 
-.carousel {
-    scrollbar-width: none;
-    /* Firefox */
+/* Featured project card specific styles */
+.featuredProjectCard {
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.3s ease;
+    will-change: transform;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+}
+
+.featuredProjectCard::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.06) 50%,
+        rgba(255, 255, 255, 0) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.featuredProjectCard__image {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.featuredProjectCard__content {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2;
+    color: white;
+}
+
+/* Desktop: Hero card shows text below image, others keep overlay */
+@media (min-width: 1024px) {
+    .featuredProjectCard--hero .featuredProjectCard__content {
+        position: static;
+        padding: 24px;
+        color: var(--fg);
+        background: transparent;
+    }
+    
+    .featuredProjectCard--hero .featuredProjectCard__overlay {
+        opacity: 0;
+    }
+}
+
+/* Enhanced hover states for featured cards */
+@media (hover: hover) and (pointer: fine) {
+    .featuredProjectCard:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: var(--shadow-strong),
+                    0 0 0 1px rgba(255, 255, 255, 0.15);
+    }
+    
+    .featuredProjectCard:hover::before {
+        opacity: 1;
+    }
+    
+    /* Image zoom effect on hover */
+    .featuredProjectCard:hover .featuredProjectCard__image img {
+        transform: scale(1.1);
+    }
+}
+
+/* Enhanced image transitions for project cards */
+.projectCard img {
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 0.4s ease;
+}
+
+/* Smooth scroll behavior */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Selection styling */
+::selection {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--fg);
+}
+
+::-moz-selection {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--fg);
+}
+
+/* Hero image hover effect - CSS only */
+@media (hover: hover) and (pointer: fine) {
+    .hero-image-wrapper:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Hero CTA button hover - CSS only */
+    .hero-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .hero-cta:active {
+        transform: translateY(0);
+    }
+    
+    /* Project back link hover - CSS only */
+    .project-back-link:hover {
+        color: rgba(255, 255, 255, 0.95) !important;
+        transform: translateX(-4px);
+    }
+    
+    /* Project category tag hover - CSS only */
+    .project-category-tag:hover {
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        opacity: 1 !important;
+    }
+    
+    /* Contact page link hover - CSS only */
+    .contact-link:hover {
+        opacity: 0.8;
+    }
+    
+    /* Contact social link hover - CSS only */
+    .contact-social-link:hover {
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        transform: translateY(-2px);
+    }
+    
+    /* About page CTA link hover - CSS only */
+    .about-cta-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+    }
+    
+    .about-cta-link:active {
+        transform: translateY(0);
+    }
+}
+
+/* PortableText content styling */
+.portable-text-content {
+    display: grid;
+    gap: 24px;
+}
+
+.portable-text-content p {
+    margin: 0;
+    line-height: 1.75;
+}
+
+.portable-text-content p + p {
+    margin-top: 0;
+}
+
+.portable-text-content h2,
+.portable-text-content h3,
+.portable-text-content h4 {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin-top: 32px;
+    margin-bottom: 16px;
+    line-height: 1.3;
+}
+
+.portable-text-content h2 {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+}
+
+.portable-text-content h3 {
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+}
+
+.portable-text-content h4 {
+    font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+}
+
+.portable-text-content a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.portable-text-content a:hover {
+    color: #B34D49;
+    text-decoration-color: #B34D49;
+}
+
+.portable-text-content ul,
+.portable-text-content ol {
+    margin: 16px 0;
+    padding-left: 24px;
+    opacity: 0.88;
+}
+
+.portable-text-content li {
+    margin: 8px 0;
+    line-height: 1.75;
+}
+
+.portable-text-content strong {
+    font-weight: 500;
+    opacity: 0.95;
+}
+
+.portable-text-content em {
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.portable-text-content blockquote {
+    margin: 24px 0;
+    padding-left: 24px;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    opacity: 0.85;
+    font-style: italic;
 }

@@ -1,5 +1,10 @@
 import { groq } from 'next-sanity'
 import { client } from '@/sanity/lib/client'
+import { PageFade } from '@/app/_components/PageFade'
+import { Reveal } from '@/app/_components/Motion'
+import Link from 'next/link'
+
+
 
 const projectBySlugQuery = groq`
   *[_type == "project" && slug.current == $slug][0]{
@@ -43,7 +48,7 @@ export default async function ProjectPage({
     params: Promise<{ slug: string }>
 }) {
     const { slug } = await params
-    
+
     if (!slug) {
         return <main style={{ padding: 24 }}>Missing slug.</main>
     }
@@ -59,69 +64,125 @@ export default async function ProjectPage({
     const embedUrl = videoUrl && !isMp4(videoUrl) ? toEmbedUrl(videoUrl) : null
 
     return (
-        <main style={{ padding: '28px 24px 72px' }}>
-            <div style={{ maxWidth: 980, margin: '0 auto' }}>
-                <div style={{ opacity: 0.7, fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                    Proyecto
-                </div>
-
-                <h1 style={{ fontSize: 34, margin: '8px 0 0', letterSpacing: '-0.02em' }}>
-                    {project.title}
-                </h1>
-
-                {project.excerpt ? (
-                    <p style={{ marginTop: 12, maxWidth: 760, opacity: 0.9, lineHeight: 1.65 }}>
-                        {project.excerpt}
-                    </p>
-                ) : null}
-
-                {videoUrl ? (
-                    <div
-                        style={{
-                            marginTop: 18,
-                            borderRadius: 18,
-                            overflow: 'hidden',
-                            border: '1px solid rgba(255,255,255,0.12)',
-                            background: 'rgba(255,255,255,0.03)',
-                        }}
-                    >
-                        <div style={{ position: 'relative', aspectRatio: '16 / 9' }}>
-                            {isMp4(videoUrl) ? (
-                                <video controls playsInline preload="metadata" style={{ width: '100%', height: '100%' }}>
-                                    <source src={videoUrl} type="video/mp4" />
-                                </video>
-                            ) : (
-                                <iframe
-                                    src={embedUrl ?? videoUrl}
-                                    title={project.title ?? 'Video'}
-                                    allow="autoplay; fullscreen; picture-in-picture"
-                                    style={{ width: '100%', height: '100%', border: 0 }}
-                                />
-                            )}
-                        </div>
-                    </div>
-                ) : null}
-
-                {Array.isArray(project.categories) && project.categories.length ? (
-                    <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                        {project.categories.map((c: string) => (
-                            <span
-                                key={c}
-                                style={{
-                                    fontSize: 12,
-                                    padding: '6px 10px',
-                                    borderRadius: 999,
-                                    border: '1px solid rgba(255,255,255,0.12)',
-                                    background: 'rgba(255,255,255,0.03)',
-                                    opacity: 0.9,
+        <PageFade>
+            <main style={{ padding: '48px 24px 96px' }}>
+                <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+                    <Reveal y={16}>
+                        <div style={{ marginBottom: 24 }}>
+                            <Link 
+                                href="/proyectos" 
+                                className="project-back-link"
+                                style={{ 
+                                    color: 'rgba(255,255,255,0.75)', 
+                                    textDecoration: 'none',
+                                    fontSize: 14,
+                                    fontWeight: 500,
+                                    transition: 'all 0.3s ease',
                                 }}
                             >
-                                {c}
-                            </span>
-                        ))}
-                    </div>
-                ) : null}
-            </div>
-        </main>
+                                ← Volver a proyectos
+                            </Link>
+                        </div>
+                    </Reveal>
+
+                    <Reveal y={16}>
+                        <div style={{ 
+                            opacity: 0.65, 
+                            fontSize: 12, 
+                            letterSpacing: '0.1em', 
+                            textTransform: 'uppercase',
+                            fontWeight: 500,
+                            marginBottom: 8,
+                        }}>
+                            Proyecto
+                        </div>
+                    </Reveal>
+
+                    <Reveal delay={0.06} y={16}>
+                        <h1 style={{ 
+                            fontSize: 'clamp(2rem, 5vw, 3.5rem)', 
+                            margin: '0 0 16px', 
+                            letterSpacing: '-0.04em',
+                            fontWeight: 400,
+                            fontFamily: 'var(--font-serif), Georgia, serif',
+                        }}>
+                            {project.title}
+                        </h1>
+                    </Reveal>
+
+                    {project.excerpt ? (
+                        <Reveal delay={0.12} y={16}>
+                            <p style={{ 
+                                marginTop: 16, 
+                                maxWidth: 800, 
+                                opacity: 0.88, 
+                                lineHeight: 1.75,
+                                fontSize: 'clamp(16px, 1.8vw, 18px)',
+                                fontWeight: 300,
+                            }}>
+                                {project.excerpt}
+                            </p>
+                        </Reveal>
+                    ) : null}
+
+
+                    {videoUrl ? (
+                        <Reveal delay={0.18} y={16}>
+                            <div
+                                style={{
+                                    marginTop: 32,
+                                    borderRadius: 12,
+                                    overflow: 'hidden',
+                                    border: '1px solid rgba(255,255,255,0.12)',
+                                    background: 'rgba(255,255,255,0.02)',
+                                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+                                }}
+                            >
+                                <div style={{ position: 'relative', aspectRatio: '16 / 9' }}>
+                                    {isMp4(videoUrl) ? (
+                                        <video controls playsInline preload="metadata" style={{ width: '100%', height: '100%' }}>
+                                            <source src={videoUrl} type="video/mp4" />
+                                        </video>
+                                    ) : (
+                                        <iframe
+                                            src={embedUrl ?? videoUrl}
+                                            title={project.title ?? 'Video'}
+                                            allow="autoplay; fullscreen; picture-in-picture"
+                                            style={{ width: '100%', height: '100%', border: 0 }}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </Reveal>
+                    ) : null}
+
+                    {Array.isArray(project.categories) && project.categories.length ? (
+                        <Reveal delay={0.24} y={16}>
+                            <div style={{ marginTop: 24, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                                {project.categories.map((c: string) => (
+                                    <span
+                                        key={c}
+                                        className="project-category-tag"
+                                        style={{
+                                            fontSize: 12,
+                                            padding: '8px 14px',
+                                            borderRadius: 6,
+                                            border: '1px solid rgba(255,255,255,0.12)',
+                                            background: 'rgba(255,255,255,0.04)',
+                                            opacity: 0.85,
+                                            fontWeight: 500,
+                                            letterSpacing: '0.02em',
+                                            transition: 'all 0.3s ease',
+                                        }}
+                                    >
+                                        {c}
+                                    </span>
+                                ))}
+                            </div>
+                        </Reveal>
+                    ) : null}
+                </div>
+            </main>
+        </PageFade>
     )
 }

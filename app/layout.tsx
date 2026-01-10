@@ -1,13 +1,28 @@
 import './globals.css'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
-const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-serif' })
+const poppins = Poppins({
+    subsets: ['latin'],
+    weight: ['300', '400', '500', '600', '700'],
+    variable: '--font-sans'
+})
 
+/**
+ * Root Layout
+ * 
+ * Responsibility: Global app shell, fonts, metadata, providers.
+ * 
+ * Does NOT contain:
+ * - Workspace-specific logic
+ * - Header/Footer components (workspace has its own chrome)
+ * - Navigation menus
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="es" className={`${inter.variable} ${playfair.variable}`}>
-            <body>{children}</body>
+        <html lang="es" className={`${poppins.variable}`}>
+            <body>
+                {children}
+            </body>
         </html>
     )
 }

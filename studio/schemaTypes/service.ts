@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 export const service = defineType({
     name: 'service',
-    title: 'Services',
+    title: 'Servicios',
     type: 'document',
     fields: [
         defineField({
@@ -27,6 +27,30 @@ export const service = defineType({
             initialValue: 1,
             description: 'Para ordenar en listados (1, 2, 3...).',
             validation: (Rule) => Rule.min(1).max(50),
+        }),
+
+        defineField({
+            name: 'icon',
+            title: 'Icon',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Monitor', value: 'monitor' },
+                    { title: 'Graduation Cap', value: 'graduation-cap' },
+                    { title: 'Cube', value: 'cube' },
+                    { title: 'Camera', value: 'camera' },
+                    { title: 'Palette', value: 'palette' },
+                    { title: 'Video', value: 'video' },
+                    { title: 'Lightbulb', value: 'lightbulb' },
+                    { title: 'Users', value: 'users' },
+                    { title: 'Code', value: 'code' },
+                    { title: 'Image', value: 'image' },
+                    { title: 'Film', value: 'film' },
+                    { title: 'Music', value: 'music' },
+                ],
+                layout: 'dropdown',
+            },
+            description: 'Icono para mostrar en la home y listados.',
         }),
 
         defineField({

@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 export const homePage = defineType({
     name: 'homePage',
-    title: 'Home',
+    title: 'Inicio',
     type: 'document',
     fields: [
         defineField({
@@ -75,6 +75,21 @@ export const homePage = defineType({
         }),
 
         defineField({
+            name: 'introText',
+            title: 'Intro Text Section',
+            type: 'object',
+            fields: [
+                defineField({
+                    name: 'body',
+                    title: 'Text',
+                    type: 'text',
+                    rows: 4,
+                    description: 'Texto introductorio que aparece después del hero.',
+                }),
+            ],
+        }),
+
+        defineField({
             name: 'manifesto',
             title: 'Manifesto',
             type: 'object',
@@ -85,6 +100,48 @@ export const homePage = defineType({
                     title: 'Text',
                     type: 'array',
                     of: [{ type: 'block' }],
+                }),
+            ],
+        }),
+
+        defineField({
+            name: 'filosofia',
+            title: 'Filosofía Section',
+            type: 'object',
+            fields: [
+                defineField({
+                    name: 'title',
+                    title: 'Section title',
+                    type: 'string',
+                    initialValue: '>_FILOSOFÍA',
+                }),
+                defineField({
+                    name: 'body',
+                    title: 'Text',
+                    type: 'text',
+                    rows: 5,
+                    description: 'Texto de la sección de filosofía.',
+                }),
+            ],
+        }),
+
+        defineField({
+            name: 'services',
+            title: 'Services',
+            type: 'object',
+            fields: [
+                defineField({
+                    name: 'title',
+                    title: 'Section title',
+                    type: 'string',
+                    initialValue: 'Servicios',
+                }),
+                defineField({
+                    name: 'items',
+                    title: 'Services',
+                    type: 'array',
+                    of: [{ type: 'reference', to: [{ type: 'service' }] }],
+                    description: 'Selecciona los servicios para mostrar en la home.',
                 }),
             ],
         }),
@@ -110,27 +167,6 @@ export const homePage = defineType({
             ],
         }),
 
-        defineField({
-            name: 'servicesTeaser',
-            title: 'Services teaser',
-            type: 'object',
-            fields: [
-                defineField({ name: 'title', title: 'Title', type: 'string', initialValue: 'Servicios' }),
-                defineField({ name: 'body', title: 'Text', type: 'text', rows: 3 }),
-                defineField({
-                    name: 'linkLabel',
-                    title: 'Link label',
-                    type: 'string',
-                    initialValue: 'Ver servicios',
-                }),
-                defineField({
-                    name: 'linkUrl',
-                    title: 'Link URL',
-                    type: 'string',
-                    initialValue: '/servicios',
-                }),
-            ],
-        }),
 
         defineField({
             name: 'finalCta',
