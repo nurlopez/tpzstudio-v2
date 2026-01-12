@@ -185,7 +185,6 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
       onClick={handleCanvasClick}
       className="fixed inset-0 w-screen h-screen overflow-hidden"
       style={{
-        background: 'var(--bg-canvas)',
         transition: 'opacity var(--motion-standard) var(--ease-out)',
         touchAction: 'none',
         overscrollBehavior: 'none',
@@ -214,24 +213,61 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
               visual={object.visual}
               isFocused={state.focusedObject === object.slug}
               onClick={() => {
+                // Set focused state immediately (for red tint and label)
+                actions.setFocusedObject(object.slug)
+                
                 // Special handling for contact/contacto and sobre-mi objects
                 if (object.slug === 'contacto' || object.slug === 'contact') {
-                  router.push('/workspace/contact')
+                  if (state.touchEnabled) {
+                    // Mobile: delay navigation by 1500ms
+                    setTimeout(() => {
+                      router.push('/workspace/contact')
+                    }, 1500)
+                  } else {
+                    // Desktop: immediate navigation
+                    router.push('/workspace/contact')
+                  }
                   return
                 }
                 if (object.slug === 'sobre-mi' || object.slug === 'sobre-tpzstudio' || object.slug === 'about') {
-                  router.push('/workspace/sobre-mi')
+                  if (state.touchEnabled) {
+                    // Mobile: delay navigation by 1500ms
+                    setTimeout(() => {
+                      router.push('/workspace/sobre-mi')
+                    }, 1500)
+                  } else {
+                    // Desktop: immediate navigation
+                    router.push('/workspace/sobre-mi')
+                  }
                   return
                 }
                 // Special handling for blog objects - navigate to blog listing page
                 if (object.slug === 'blog-noticias' || object.slug === 'blog' || object.slug === 'noticias') {
-                  router.push('/blog')
+                  if (state.touchEnabled) {
+                    // Mobile: delay navigation by 1500ms
+                    setTimeout(() => {
+                      router.push('/blog')
+                    }, 1500)
+                  } else {
+                    // Desktop: immediate navigation
+                    router.push('/blog')
+                  }
                   return
                 }
+                
                 // Regular workspace objects
-                actions.setFocusedObject(object.slug)
-                actions.openPanel('service', object.slug)
-                router.push(`/workspace/${object.slug}`)
+                // Mobile: delay panel opening by 1500ms
+                // Desktop: open panel immediately
+                if (state.touchEnabled) {
+                  setTimeout(() => {
+                    actions.openPanel('service', object.slug)
+                    router.push(`/workspace/${object.slug}`)
+                  }, 1500)
+                } else {
+                  // Desktop: immediate panel opening
+                  actions.openPanel('service', object.slug)
+                  router.push(`/workspace/${object.slug}`)
+                }
               }}
             />
           )

@@ -46,6 +46,29 @@ export default async function BlogPage() {
   return (
     <main style={{ padding: 'var(--space-3xl) var(--space-xl)', minHeight: '100vh' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        {/* Back to Workspace Button */}
+        <div style={{ marginBottom: 'var(--space-xl)' }}>
+          <Link
+            href="/workspace"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--space-xs)',
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--ink-interactive)',
+              textDecoration: 'none',
+              padding: 'var(--space-sm) var(--space-md)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '4px',
+              backgroundColor: 'var(--bg-elevated)',
+              transition: 'background-color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out)',
+            }}
+            className="back-to-workspace-button"
+          >
+            ← Back to Workspace
+          </Link>
+        </div>
+
         {/* Header */}
         <header style={{ marginBottom: 'var(--space-3xl)' }}>
           <h1

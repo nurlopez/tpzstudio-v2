@@ -67,8 +67,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <main style={{ padding: 'var(--space-3xl) var(--space-xl)', minHeight: '100vh' }}>
       <article style={{ maxWidth: 800, margin: '0 auto' }}>
-        {/* Back Link */}
-        <div style={{ marginBottom: 'var(--space-xl)' }}>
+        {/* Back Links */}
+        <div style={{ marginBottom: 'var(--space-xl)', display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
+          <Link
+            href="/workspace"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 'var(--space-xs)',
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--ink-interactive)',
+              textDecoration: 'none',
+              padding: 'var(--space-sm) var(--space-md)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '4px',
+              backgroundColor: 'var(--bg-elevated)',
+              transition: 'background-color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out)',
+            }}
+            className="back-to-workspace-button"
+          >
+            ← Workspace
+          </Link>
           <Link
             href="/blog"
             style={{
@@ -78,7 +97,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: 'var(--space-xs)',
+              padding: 'var(--space-sm) var(--space-md)',
             }}
+            className="hover:underline"
           >
             ← Back to Blog
           </Link>
@@ -322,12 +343,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     color: 'inherit',
                     transition: 'border-color var(--motion-fast) var(--ease-out)',
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-visible)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-subtle)'
-                  }}
+                  className="blog-related-post-link"
                 >
                   <h4
                     style={{

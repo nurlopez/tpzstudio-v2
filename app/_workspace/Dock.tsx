@@ -3,6 +3,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { useWorkspace } from './WorkspaceProvider'
+import { Logo } from './Logo'
 
 /**
  * Dock
@@ -32,34 +33,34 @@ export function Dock() {
 
   return (
     <div data-workspace-dock>
-      {/* Logo/Title */}
+      {/* Logo */}
       <button
         onClick={handleLogoClick}
         style={{
-          padding: 'var(--space-sm) var(--space-md)',
-          backgroundColor: 'var(--bg-elevated)',
-          border: '1px solid var(--border-subtle)',
+          padding: 'var(--space-sm)',
+          backgroundColor: 'transparent',
+          border: 'none',
           borderRadius: '4px',
-          color: 'var(--ink-primary)',
           cursor: 'pointer',
-          fontSize: 'var(--font-size-sm)',
-          fontWeight: 'var(--font-weight-medium)',
-          fontFamily: 'inherit',
-          transition: `
-            background-color var(--motion-fast) var(--ease-out),
-            border-color var(--motion-fast) var(--ease-out)
-          `,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'opacity var(--motion-fast) var(--ease-out)',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'var(--bg-surface)'
-          e.currentTarget.style.borderColor = 'var(--border-visible)'
+          e.currentTarget.style.opacity = '0.7'
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'
-          e.currentTarget.style.borderColor = 'var(--border-subtle)'
+          e.currentTarget.style.opacity = '1'
         }}
+        aria-label="Go to workspace home"
       >
-        TPZ Studio
+        <Logo
+          style={{
+            height: '32px',
+            width: 'auto',
+          }}
+        />
       </button>
     </div>
   )

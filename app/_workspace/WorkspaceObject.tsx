@@ -87,7 +87,7 @@ export function WorkspaceObject({
   const [isHovered, setIsHovered] = useState(false)
 
   const handleMouseEnter = () => {
-    // Only handle hover if not on touch device
+    // Only handle hover if not on touch device (desktop only)
     if (!state.touchEnabled) {
       setIsHovered(true)
       // Only update global state if not already set
@@ -98,6 +98,7 @@ export function WorkspaceObject({
   }
 
   const handleMouseLeave = () => {
+    // Only handle hover if not on touch device (desktop only)
     if (!state.touchEnabled) {
       setIsHovered(false)
       // Only clear if this object was the hovered one
@@ -108,6 +109,7 @@ export function WorkspaceObject({
   }
 
   const handleClick = () => {
+    // onClick handler - delay logic is handled in Canvas component
     onClick()
   }
 
@@ -209,16 +211,21 @@ export function WorkspaceObject({
         )}
       </div>
 
-      {/* Object label (shown on hover) */}
+      {/* Object label (shown on hover or tap) */}
       <div 
         data-workspace-object-label
-        className="absolute top-full left-1/2 -translate-x-1/2 whitespace-nowrap opacity-0 pointer-events-none z-10 rounded"
+        className="absolute top-full left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none z-10"
         style={{
           marginTop: 'var(--space-sm)',
           padding: 'var(--space-xs) var(--space-sm)',
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
-          color: 'var(--ink-primary)',
-          fontSize: 'var(--font-size-xs)',
+          backgroundColor: 'transparent',
+          background: 'transparent',
+          boxShadow: 'none',
+          textShadow: 'none',
+          fontFamily: 'var(--font-lacquer), sans-serif',
+          color: 'var(--paper-ink-primary)',
+          fontSize: 'var(--font-size-sm)',
+          opacity: (isHovered || isFocused) ? 1 : 0,
           transition: 'opacity var(--motion-fast) var(--ease-out)',
         }}
       >

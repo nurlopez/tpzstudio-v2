@@ -1,11 +1,17 @@
 import './globals.css'
-import { Poppins } from 'next/font/google'
+import { Poppins, Lacquer } from 'next/font/google'
 import { Metadata } from 'next'
 
 const poppins = Poppins({
     subsets: ['latin'],
     weight: ['300', '400', '500', '600', '700'],
     variable: '--font-sans'
+})
+
+const lacquer = Lacquer({
+    subsets: ['latin'],
+    weight: ['400'],
+    variable: '--font-lacquer'
 })
 
 /**
@@ -69,7 +75,7 @@ export const metadata: Metadata = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="es" className={`${poppins.variable}`}>
+        <html lang="es" className={`${poppins.variable} ${lacquer.variable}`}>
             <body>
                 {children}
             </body>

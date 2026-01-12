@@ -133,8 +133,6 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
       data-panel-slug={slug}
       className="fixed top-0 right-0 w-[400px] h-screen z-[1000] overflow-y-auto translate-x-0 md:w-[400px] max-md:w-screen max-md:border-l-0"
       style={{
-        backgroundColor: 'var(--bg-surface)',
-        borderLeft: '1px solid var(--border-subtle)',
         transition: 'transform var(--motion-slow) var(--ease-out)',
       }}
       // PERMANENT: Panel feels like workspace expansion, not page navigation
@@ -143,26 +141,34 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute rounded cursor-pointer text-sm font-inherit"
+        className="absolute cursor-pointer font-inherit"
+        aria-label="Close panel"
         style={{
           top: 'var(--space-lg)',
           right: 'var(--space-lg)',
-          padding: 'var(--space-sm) var(--space-md)',
-          backgroundColor: 'var(--bg-elevated)',
-          border: '1px solid var(--border-subtle)',
-          color: 'var(--ink-primary)',
-          transition: 'background-color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out)',
+          width: '32px',
+          height: '32px',
+          padding: 0,
+          backgroundColor: 'transparent',
+          border: 'none',
+          color: 'var(--paper-ink-primary)',
+          fontSize: '24px',
+          lineHeight: '1',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'opacity var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out)',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'var(--bg-surface)'
-          e.currentTarget.style.borderColor = 'var(--border-visible)'
+          e.currentTarget.style.opacity = '0.6'
+          e.currentTarget.style.transform = 'scale(1.1)'
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'
-          e.currentTarget.style.borderColor = 'var(--border-subtle)'
+          e.currentTarget.style.opacity = '1'
+          e.currentTarget.style.transform = 'scale(1)'
         }}
       >
-        Close
+        ×
       </button>
 
       {/* Panel content */}
@@ -183,7 +189,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                   <p 
                     style={{
                       fontSize: 'var(--font-size-sm)',
-                      color: 'var(--ink-muted)',
+                      color: 'var(--paper-ink-muted)',
                       marginBottom: 'var(--space-md)',
                     }}
                   >
@@ -232,7 +238,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                       style={{
                         fontSize: 'var(--font-size-xl)',
                         fontWeight: 'var(--font-weight-medium)',
-                        color: 'var(--ink-primary)',
+                        color: 'var(--paper-ink-primary)',
                         marginBottom: 'var(--space-sm)',
                         lineHeight: 'var(--line-height-tight)',
                       }}
@@ -246,7 +252,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                     <p 
                       style={{
                         fontSize: 'var(--font-size-md)',
-                        color: 'var(--ink-primary)',
+                        color: 'var(--paper-ink-primary)',
                         lineHeight: 'var(--line-height-relaxed)',
                         marginBottom: 0,
                       }}
@@ -261,7 +267,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                   <div 
                     style={{
                       fontSize: 'var(--font-size-md)',
-                      color: 'var(--ink-primary)',
+                      color: 'var(--paper-ink-primary)',
                       lineHeight: 'var(--line-height-relaxed)',
                       marginBottom: content.capabilities && content.capabilities.length > 0 ? 'var(--space-2xl)' : 0,
                     }}
@@ -305,15 +311,17 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                             href={`/workspace/projects/${capability.slug}`}
                             style={{
                               fontSize: 'var(--font-size-sm)',
-                              color: 'var(--ink-interactive)',
+                              color: 'var(--paper-ink-interactive)',
                               textDecoration: 'none',
                               display: 'inline-block',
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.textDecoration = 'underline'
+                              e.currentTarget.style.color = '#c14444'
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.textDecoration = 'none'
+                              e.currentTarget.style.color = 'var(--paper-ink-interactive)'
                             }}
                           >
                             {capability.title}
@@ -329,7 +337,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                       <p 
                         style={{
                           fontSize: 'var(--font-size-sm)',
-                          color: 'var(--ink-muted)',
+                          color: 'var(--paper-ink-muted)',
                         }}
                       >
                         No content available
@@ -347,7 +355,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                   <p 
                     style={{
                       fontSize: 'var(--font-size-sm)',
-                      color: 'var(--ink-muted)',
+                      color: 'var(--paper-ink-muted)',
                     }}
                   >
                     Content loading... (No children prop received)
