@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useWorkspace } from './WorkspaceProvider'
 import { ObjectType, WorkspaceObjectVisual } from './types'
+import { getIcon } from '../_components/IconMap'
 
 /**
  * WorkspaceObject
@@ -43,6 +44,36 @@ interface WorkspaceObjectProps {
   onClick: () => void
 }
 
+/**
+ * Map objectType from Sanity to icon name
+ * Sanity objectType values: 'camera', 'waveform', 'blueprint', 'book', 'lightbulb', 'stack', 'envelope'
+ * Legacy ObjectType values: 'film', 'voiceovers', 'branding', 'courses', 'strategy', 'projects', 'contact'
+ */
+function getObjectTypeIcon(objectType: ObjectType | string): React.ReactNode {
+  // Map Sanity objectType to IconMap icon names
+  const iconMap: Record<string, string> = {
+    // Sanity schema values
+    'camera': 'camera',
+    'waveform': 'music',
+    'blueprint': 'code',
+    'book': 'graduation-cap',
+    'lightbulb': 'lightbulb',
+    'stack': 'cube',
+    'envelope': 'users',
+    // Legacy ObjectType values (for backward compatibility)
+    'film': 'film',
+    'voiceovers': 'music',
+    'branding': 'palette',
+    'courses': 'graduation-cap',
+    'strategy': 'lightbulb',
+    'projects': 'cube',
+    'contact': 'users',
+  }
+  
+  const iconName = iconMap[objectType] || 'cube'
+  return getIcon(iconName)
+}
+
 export function WorkspaceObject({
   slug,
   type,
@@ -56,7 +87,7 @@ export function WorkspaceObject({
   const [isHovered, setIsHovered] = useState(false)
 
   const handleMouseEnter = () => {
-    // Only handle hover if not on touch device
+    // Only handle hover if not on touch device (desktop only)
     if (!state.touchEnabled) {
       setIsHovered(true)
       // Only update global state if not already set
@@ -67,6 +98,7 @@ export function WorkspaceObject({
   }
 
   const handleMouseLeave = () => {
+    // Only handle hover if not on touch device (desktop only)
     if (!state.touchEnabled) {
       setIsHovered(false)
       // Only clear if this object was the hovered one
@@ -77,6 +109,7 @@ export function WorkspaceObject({
   }
 
   const handleClick = () => {
+    // onClick handler - delay logic is handled in Canvas component
     onClick()
   }
 
@@ -160,21 +193,39 @@ export function WorkspaceObject({
             />
           </div>
         ) : (
-          /* Text fallback - primary when no visual */
-          <span>{type}</span>
+          /* Icon fallback - use objectType to get icon when no visual */
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%',
+              minHeight: 'var(--object-size, 120px)',
+              color: 'var(--ink-secondary)',
+            }}
+            aria-hidden="true"
+          >
+            {getObjectTypeIcon(type)}
+          </div>
         )}
       </div>
 
-      {/* Object label (shown on hover) */}
+      {/* Object label (shown on hover or tap) */}
       <div 
         data-workspace-object-label
-        className="absolute top-full left-1/2 -translate-x-1/2 whitespace-nowrap opacity-0 pointer-events-none z-10 rounded"
+        className="absolute top-full left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none z-10"
         style={{
           marginTop: 'var(--space-sm)',
           padding: 'var(--space-xs) var(--space-sm)',
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
-          color: 'var(--ink-primary)',
-          fontSize: 'var(--font-size-xs)',
+          backgroundColor: 'transparent',
+          background: 'transparent',
+          boxShadow: 'none',
+          textShadow: 'none',
+          fontFamily: 'var(--font-lacquer), sans-serif',
+          color: 'var(--paper-ink-primary)',
+          fontSize: 'var(--font-size-sm)',
+          opacity: (isHovered || isFocused) ? 1 : 0,
           transition: 'opacity var(--motion-fast) var(--ease-out)',
         }}
       >

@@ -13,6 +13,24 @@
     --bg-canvas-dimmed: rgba(10, 10, 10, 0.3); /* Canvas when panel/overlay open */
     --bg-surface: #1a1a1a; /* Panel/overlay backgrounds */
     --bg-elevated: #121212; /* Objects or elevated elements */
+    
+    /* --------------------------------------------
+       Paper Background (Creative Agency Theme)
+       -------------------------------------------- */
+    --paper-bg: #faf9f7; /* Off-white paper color */
+    --paper-grid-color: rgba(0, 0, 0, 0.08); /* Subtle grid lines */
+    --paper-grid-size: 20px; /* Grid spacing - blueprint/graph paper feel */
+    --vignette-color: rgba(0, 0, 0, 0.15); /* Vignette darkening */
+    
+    /* Paper-appropriate text colors (for workspace on paper background) */
+    --paper-ink-primary: rgba(0, 0, 0, 0.85); /* Main content text on paper */
+    --paper-ink-secondary: rgba(0, 0, 0, 0.65); /* Supporting text on paper */
+    --paper-ink-muted: rgba(0, 0, 0, 0.45); /* Tertiary text on paper */
+    --paper-ink-interactive: rgba(0, 0, 0, 0.75); /* Links, clickable text on paper */
+    
+    /* Desk/Workshop Blueprint Pattern */
+    --desk-pattern-color: rgba(255, 255, 255, 0.03); /* Very subtle blueprint lines */
+    --desk-grid-size: 40px; /* Grid size for blueprint pattern */
 
     /* --------------------------------------------
        Ink (Text) Colors
@@ -229,6 +247,44 @@ body {
     max-width: var(--object-size, 180px);
 }
 
+/* Convert black SVG lines to red on hover (desktop) */
+[data-workspace-object][data-state="hovered"] [data-workspace-object-visual] img {
+    /* Convert black to red (#c14444) using CSS filters */
+    /* This filter chain converts black (rgb(0,0,0)) to approximately #c14444 */
+    filter: 
+        brightness(0) 
+        saturate(100%) 
+        invert(24%) 
+        sepia(98%) 
+        saturate(1352%) 
+        hue-rotate(340deg) 
+        brightness(0.85) 
+        contrast(1.15);
+    transition: filter var(--motion-standard) var(--ease-out);
+}
+
+/* Convert black SVG lines to red when focused on mobile (touch devices) */
+@media (max-width: 768px) {
+    [data-workspace-object][data-state="focused"] [data-workspace-object-visual] img {
+        /* Same filter chain to convert black to red (#c14444) */
+        filter: 
+            brightness(0) 
+            saturate(100%) 
+            invert(24%) 
+            sepia(98%) 
+            saturate(1352%) 
+            hue-rotate(340deg) 
+            brightness(0.85) 
+            contrast(1.15);
+        transition: filter var(--motion-standard) var(--ease-out);
+    }
+}
+
+/* Smooth transition for filter changes */
+[data-workspace-object] [data-workspace-object-visual] img {
+    transition: filter var(--motion-standard) var(--ease-out);
+}
+
 /* Object visual hover state - no border, no background change */
 /* Visual scales with object container transform */
 
@@ -254,14 +310,46 @@ body {
     right: 0;
     width: 400px;
     height: 100vh;
-    background: var(--bg-surface);
-    border-left: 1px solid var(--border-subtle);
+    /* Clean white panel - minimal and clean */
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
     z-index: 1000;
     overflow-y: auto;
     transform: translateX(0);
     transition: transform var(--motion-slow) var(--ease-out);
+    /* Use black text for white background */
+    color: rgba(0, 0, 0, 0.85) !important;
     /* PERMANENT: Panel overlays workspace, doesn't replace it */
     /* Canvas remains visible (dimmed) to maintain spatial anchoring */
+}
+
+/* Ensure all text in panel is black */
+[data-workspace-panel] * {
+    color: inherit;
+}
+
+[data-workspace-panel] h1,
+[data-workspace-panel] h2,
+[data-workspace-panel] h3,
+[data-workspace-panel] h4,
+[data-workspace-panel] h5,
+[data-workspace-panel] h6,
+[data-workspace-panel] p,
+[data-workspace-panel] span,
+[data-workspace-panel] div {
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+[data-workspace-panel] a {
+    color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Ensure no pseudo-elements create lines */
+[data-workspace-panel]::before,
+[data-workspace-panel]::after {
+    display: none !important;
+    content: none !important;
 }
 
 /* Mobile: Full-screen panel */
@@ -713,6 +801,107 @@ h3 {
     .about-cta-link:active {
         transform: translateY(0);
     }
+}
+
+/* CTA Button hover styles */
+.cta-button:hover {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-visible) !important;
+}
+
+/* Blog related post link hover */
+.blog-related-post-link:hover {
+  border-color: var(--border-visible) !important;
+}
+
+/* Back to workspace button hover */
+.back-to-workspace-button:hover {
+  background-color: var(--bg-surface) !important;
+  border-color: var(--border-visible) !important;
+}
+
+/* ============================================
+   WORKSPACE PAPER BACKGROUND WITH GRID & VIGNETTE
+   Professional creative agency aesthetic
+   ============================================ */
+
+/* Paper background applied to workspace canvas */
+[data-workspace-canvas] {
+  position: relative;
+  /* Base paper color */
+  background-color: var(--paper-bg);
+  /* Grid pattern using CSS gradients - performant and scalable */
+  background-image: 
+    /* Horizontal grid lines */
+    linear-gradient(var(--paper-grid-color) 1px, transparent 1px),
+    /* Vertical grid lines */
+    linear-gradient(90deg, var(--paper-grid-color) 1px, transparent 1px),
+    /* Vignette effect - subtle darkening toward edges */
+    radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 60%,
+      var(--vignette-color) 100%
+    );
+  /* Grid size - responsive scaling */
+  background-size: 
+    var(--paper-grid-size) var(--paper-grid-size),
+    var(--paper-grid-size) var(--paper-grid-size),
+    100% 100%;
+  background-position: 0 0, 0 0, center;
+  /* Ensure background covers entire canvas */
+  background-attachment: fixed;
+  /* Use paper-appropriate text colors */
+  color: var(--paper-ink-primary);
+}
+
+/* Workspace objects on paper background - use paper-appropriate colors */
+[data-workspace-canvas] [data-workspace-object-visual] {
+  color: var(--paper-ink-secondary);
+}
+
+/* Workspace object labels - adjust for paper background */
+[data-workspace-canvas] [data-workspace-object-label] {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  color: var(--paper-ink-primary);
+}
+
+/* Dimmed state - reduce opacity when panel/overlay open */
+[data-workspace-canvas][data-dimmed] {
+  opacity: 0.4;
+}
+
+/* Responsive grid scaling */
+@media (max-width: 768px) {
+  [data-workspace-canvas] {
+    --paper-grid-size: 16px; /* Slightly smaller grid on mobile */
+    /* Lighter vignette on mobile for better visibility */
+    background-image: 
+      linear-gradient(var(--paper-grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-grid-color) 1px, transparent 1px),
+      radial-gradient(
+        ellipse at center,
+        transparent 0%,
+        transparent 65%,
+        rgba(0, 0, 0, 0.1) 100%
+      );
+  }
+}
+
+@media (max-width: 480px) {
+  [data-workspace-canvas] {
+    --paper-grid-size: 14px; /* Even smaller on very small screens */
+  }
+}
+
+/* Large screens - slightly larger grid for better visual rhythm */
+@media (min-width: 1440px) {
+  [data-workspace-canvas] {
+    --paper-grid-size: 24px;
+  }
 }
 
 /* PortableText content styling */

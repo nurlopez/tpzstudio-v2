@@ -5,6 +5,7 @@ import { service } from './service'
 import { contactPage } from './contactPage'
 import { aboutPage } from './aboutPage'
 import { workspaceObject } from './workspaceObject'
+import { blogPost } from './blogPost'
 
 export const schemaTypes = [
     siteSettings,
@@ -14,5 +15,6 @@ export const schemaTypes = [
     contactPage,
     aboutPage,
     workspaceObject,
+    blogPost,
 ]
 

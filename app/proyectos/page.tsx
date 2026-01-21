@@ -5,6 +5,7 @@ import { client } from '@/sanity/lib/client'
 import { urlFor } from '@/sanity/lib/image'
 import { PageFade } from '@/app/_components/PageFade'
 import { Reveal, HoverLift } from '@/app/_components/Motion'
+import { Metadata } from 'next'
 
 const projectsIndexQuery = groq`
   *[_type == "project"] | order(featured desc, _createdAt desc){
@@ -16,6 +17,23 @@ const projectsIndexQuery = groq`
     featured
   }
 `
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Proyectos',
+    description: 'Browse our portfolio of completed projects. Explore our work in film, branding, design, and creative production.',
+    openGraph: {
+      title: 'Proyectos | TPZ Studio',
+      description: 'Browse our portfolio of completed projects. Explore our work in film, branding, design, and creative production.',
+      url: '/proyectos',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Proyectos | TPZ Studio',
+      description: 'Browse our portfolio of completed projects. Explore our work in film, branding, design, and creative production.',
+    },
+  }
+}
 
 export default async function ProjectsPage() {
     const projects = await client.fetch(projectsIndexQuery)

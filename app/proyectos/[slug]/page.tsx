@@ -3,8 +3,7 @@ import { client } from '@/sanity/lib/client'
 import { PageFade } from '@/app/_components/PageFade'
 import { Reveal } from '@/app/_components/Motion'
 import Link from 'next/link'
-
-
+import { Metadata } from 'next'
 
 const projectBySlugQuery = groq`
   *[_type == "project" && slug.current == $slug][0]{
@@ -13,9 +12,62 @@ const projectBySlugQuery = groq`
     "slug": slug.current,
     "videoUrl": video.url,
     categories,
-    body
+    body,
+    coverImage {
+      asset-> {
+        url
+      },
+      alt
+    },
+    seo {
+      metaTitle,
+      metaDescription,
+      ogImage {
+        asset-> {
+          url
+        },
+        alt
+      }
+    }
   }
 `
+
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const project = await client.fetch(projectBySlugQuery, { slug })
+
+  if (!project) {
+    return {
+      title: 'Project Not Found | TPZ Studio',
+    }
+  }
+
+  const title = project.seo?.metaTitle || project.title
+  const description = project.seo?.metaDescription || project.excerpt || `View ${project.title} project details and case study.`
+  const ogImage = project.seo?.ogImage?.asset?.url || project.coverImage?.asset?.url
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | TPZ Studio`,
+      description,
+      url: `/proyectos/${slug}`,
+      type: 'article',
+      images: ogImage ? [{ url: ogImage, alt: project.coverImage?.alt || project.title }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | TPZ Studio`,
+      description,
+      images: ogImage ? [ogImage] : [],
+    },
+  }
+}
 
 function isYouTube(url: string) {
     return /youtube\.com|youtu\.be/.test(url)

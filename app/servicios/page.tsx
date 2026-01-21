@@ -4,6 +4,7 @@ import { client } from '@/sanity/lib/client'
 import { PageFade } from '@/app/_components/PageFade'
 import { Reveal, HoverLift } from '@/app/_components/Motion'
 import { getIcon } from '@/app/_components/IconMap'
+import { Metadata } from 'next'
 
 const servicesIndexQuery = groq`
   *[_type == "service"] | order(order asc, _createdAt desc){
@@ -15,6 +16,23 @@ const servicesIndexQuery = groq`
     order
   }
 `
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Servicios',
+    description: 'Explore our services: film production, voiceovers, branding, design, courses, and strategic consulting.',
+    openGraph: {
+      title: 'Servicios | TPZ Studio',
+      description: 'Explore our services: film production, voiceovers, branding, design, courses, and strategic consulting.',
+      url: '/servicios',
+    },
+    twitter: {
+      card: 'summary',
+      title: 'Servicios | TPZ Studio',
+      description: 'Explore our services: film production, voiceovers, branding, design, courses, and strategic consulting.',
+    },
+  }
+}
 
 export default async function ServicesPage() {
     const services = await client.fetch(servicesIndexQuery)
