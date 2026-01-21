@@ -2,7 +2,7 @@
 
 ## Core Principle
 
-**The visual language should feel like: "This is where ideas are made."**
+The visual language should feel like: "This is where ideas are made."
 
 Not a gallery. Not a landing page. A workspace.
 
@@ -62,21 +62,51 @@ The workspace should feel:
 
 ### Base Background Color Philosophy
 
-**Primary mode: Dark workspace**
+#### Primary mode: Paper workspace
 
 The canvas background should feel like:
 
 - **A surface**: Not void, but a plane where objects sit
 - **Neutral**: Doesn't compete with objects or content
-- **Deep but not black**: Enough contrast for objects, not harsh
-- **Subtle texture possible**: Paper, fabric, or matte surface feel
+- **Warm and inviting**: Off-white paper aesthetic with subtle grid
+- **Professional creative agency feel**: Like a workspace or drawing surface
+
+#### Current Implementation: Paper Aesthetic
+
+The canvas uses a professional paper aesthetic with:
+
+- **Base color**: `--paper-bg: #faf9f7` (warm off-white)
+- **Grid pattern**: 20px spacing (graph paper/blueprint feel)
+  - Horizontal and vertical lines using CSS gradients
+  - Grid color: `rgba(0, 0, 0, 0.08)` (subtle, not distracting)
+- **Vignette effect**: Radial gradient darkening toward edges
+  - Creates depth and focus toward center
+  - Vignette color: `rgba(0, 0, 0, 0.15)`
+- **Responsive grid sizing**:
+  - Desktop: 20px (large screens: 24px)
+  - Mobile: 16px
+  - Small mobile: 14px
 
 **Semantic tokens**:
 
-- `--bg-canvas`: Primary workspace surface
+- `--bg-canvas`: Primary workspace surface (fallback dark: `#0a0a0a`)
 - `--bg-canvas-dimmed`: Canvas when panel/overlay is open (reduced opacity)
 - `--bg-surface`: Panel/overlay backgrounds
 - `--bg-elevated`: Objects or elevated elements
+
+**Paper-specific tokens** (implemented in `globals.css`):
+
+- `--paper-bg: #faf9f7`: Off-white paper base color
+- `--paper-grid-color: rgba(0, 0, 0, 0.08)`: Subtle grid lines
+- `--paper-grid-size: 20px`: Grid spacing (responsive)
+- `--vignette-color: rgba(0, 0, 0, 0.15)`: Edge darkening
+
+**Paper ink tokens** (for text on paper background):
+
+- `--paper-ink-primary: rgba(0, 0, 0, 0.85)`: Main content text
+- `--paper-ink-secondary: rgba(0, 0, 0, 0.65)`: Supporting text
+- `--paper-ink-muted: rgba(0, 0, 0, 0.45)`: Tertiary text
+- `--paper-ink-interactive: rgba(0, 0, 0, 0.75)`: Links, clickable text
 
 ### Accent Usage Rules
 
@@ -158,7 +188,21 @@ The canvas background should feel like:
 
 ## 3. Typography System
 
-### Typographic Roles (Not Font Names Yet)
+### Current Font Implementation
+
+**Primary Font**: Poppins (Google Font)
+
+- Weights: 300, 400, 500, 600, 700
+- Used for: Body text, UI elements, general content
+- Variable: `--font-sans`
+
+**Display Font**: Lacquer (Google Font)
+
+- Used for: Object labels on hover
+- Character: Handwritten, creative feel
+- Letter spacing: 0.02em for labels
+
+### Typographic Roles
 
 **Workspace Labels**:
 
@@ -300,9 +344,9 @@ The canvas background should feel like:
 
 ### White Space Philosophy
 
-**"Breathing room for thinking"**
+"Breathing room for thinking"
 
-**White space serves**:
+White space serves:
 
 - **Separation**: Objects are distinct
 - **Focus**: Empty space draws attention to what matters
@@ -323,19 +367,24 @@ The canvas background should feel like:
 - Use white space to guide attention
 - Trust that empty space is valuable
 
-### Canvas Scrolling (Temporary Development Constraint)
+### Canvas Spatial Model (Current Implementation)
 
-**Current implementation**: Canvas container is scrollable to ensure all objects are reachable.
+**Current implementation**: All objects fit within a single viewport (100vh) - no scrolling required.
 
-**Why**: Objects are positioned using percentage-based coordinates (10-90% bounds). To ensure objects at high Y positions (e.g., 90%) are fully visible, the container must be tall enough to accommodate them.
+**Approach**: Constrained spatial model that prioritizes immediate accessibility:
+
+- Objects are scaled and positioned to fit entirely within the viewport
+- Object sizes adapt (60-100px) based on viewport dimensions
+- Guarantees all objects are immediately reachable without scrolling or panning
 
 **Behavior**:
-- Canvas container has `minHeight: 120vh` to ensure objects at maximum Y position are reachable
-- Container scrolls vertically when content exceeds viewport
-- Objects remain positioned at their assigned coordinates
-- Scrolling is a temporary solution until proper layout system or pan/zoom is implemented
 
-**Future**: Replace with proper spatial layout system or pan/zoom functionality that makes all objects accessible without scrolling.
+- Canvas container is fixed to viewport height (100vh)
+- Objects are positioned using percentage-based coordinates
+- Layout utilities (`calculateOptimalLayout.ts`, `generateObjectPositions.ts`) ensure objects fit
+- `clampObjectPosition.ts` constrains positions within safe bounds
+
+**Trade-offs**: This model prioritizes accessibility over scalability. It may be revisited if object count grows significantly or if pan/zoom functionality is desired.
 
 ---
 
@@ -631,6 +680,7 @@ The canvas background should feel like:
 - `--state-*`: State colors (focus, active, muted)
 
 **Example tokens**:
+
 ```css
 --bg-canvas: [to be defined]
 --bg-canvas-dimmed: [to be defined]
@@ -714,7 +764,6 @@ entirely within a single viewport (100vh).
 This model prioritizes accessibility over scalability.
 It may be revisited if object count grows.
  **/
-
 
 ---
 

@@ -50,10 +50,11 @@ Routes exist for deep-linking and browser navigation, but the workspace canvas i
 
 ### Directory Structure
 
-```
+```text
 /app
 ├── layout.tsx                    # Root: fonts, metadata, global providers
 ├── globals.css                   # Global styles
+├── page.tsx                      # Root redirect to /workspace
 ├── workspace/                    # Workspace routes (all share workspace layout)
 │   ├── layout.tsx               # Workspace layout: persistent container
 │   ├── page.tsx                 # Canvas home: /workspace
@@ -63,22 +64,51 @@ Routes exist for deep-linking and browser navigation, but the workspace canvas i
 │   │   ├── page.tsx             # Project archive: /workspace/projects
 │   │   └── [slug]/
 │   │       └── page.tsx         # Project detail: /workspace/projects/example-slug
-│   └── contact/
-│       └── page.tsx             # Contact panel: /workspace/contact
+│   ├── contact/
+│   │   └── page.tsx             # Contact panel: /workspace/contact
+│   └── sobre-mi/
+│       └── page.tsx             # About panel (Spanish variant): /workspace/sobre-mi
 ├── _workspace/                   # Workspace-specific components (not routes)
 │   ├── WorkspaceRoot.tsx        # Main workspace container
+│   ├── WorkspaceProvider.tsx    # Separate state provider (useWorkspace hook)
 │   ├── Canvas.tsx               # Canvas surface
 │   ├── WorkspaceObject.tsx      # Individual object component
 │   ├── Panel.tsx                # Expandable panel component
 │   ├── Overlay.tsx              # Full-screen overlay (projects, etc.)
-│   ├── Dock.tsx                 # Optional: persistent UI elements (logo, contact hint)
-│   └── hooks/
-│       ├── useWorkspaceState.ts  # Workspace state hook
-│       ├── useObjectFocus.ts    # Object focus/interaction hook
-│       ├── usePanel.ts          # Panel open/close state hook
-│       └── useWorkspaceRoute.ts # Route-to-state synchronization
+│   ├── Dock.tsx                 # Persistent UI elements (logo, contact hint)
+│   ├── Logo.tsx                 # Extracted logo component
+│   ├── types.ts                 # TypeScript types for workspace
+│   ├── hooks/
+│   │   └── useWorkspaceRoute.ts # Route-to-state synchronization
+│   └── lib/                     # Utility functions
+│       ├── calculateOptimalLayout.ts  # Layout calculation utilities
+│       ├── generateObjectPositions.ts # Object position generation
+│       ├── getWorkspaceObjects.ts     # Fetch workspace objects from Sanity
+│       ├── getWorkspaceObject.ts      # Fetch single workspace object
+│       └── clampObjectPosition.ts     # Clamp positions within bounds
 ├── _components/                  # Shared components (if any remain)
-└── api/                          # API routes (if needed)
+├── api/
+│   └── workspace-object/
+│       └── [slug]/
+│           └── route.ts         # API endpoint for workspace object data
+│
+│ # Non-workspace routes (traditional page-based navigation)
+├── blog/
+│   ├── page.tsx                 # Blog listing: /blog
+│   └── [slug]/
+│       └── page.tsx             # Blog post: /blog/[slug]
+├── servicios/
+│   ├── page.tsx                 # Services listing: /servicios
+│   └── [slug]/
+│       └── page.tsx             # Service detail: /servicios/[slug]
+├── proyectos/
+│   ├── page.tsx                 # Projects listing: /proyectos
+│   └── [slug]/
+│       └── page.tsx             # Project detail: /proyectos/[slug]
+├── contacto/
+│   └── page.tsx                 # Contact page: /contacto
+└── sobre-mi/
+    └── page.tsx                 # About page: /sobre-mi
 ```
 
 ### What Never Unmounts
@@ -109,6 +139,7 @@ Routes exist for deep-linking and browser navigation, but the workspace canvas i
 - `/workspace/projects` → Project archive expanded (overlay or panel)
 - `/workspace/projects/[slug]` → Project detail (overlay)
 - `/workspace/contact` → Contact panel open
+- `/workspace/sobre-mi` → About panel open (Spanish language variant)
 
 **Route-to-state mapping**:
 
@@ -205,9 +236,11 @@ interface WorkspaceState {
 }
 ```
 
-**Access**: Via `useWorkspaceState()` hook
+**Access**: Via `useWorkspace()` hook from `WorkspaceProvider.tsx`
 
-**Updates**: Via `useWorkspaceActions()` hook (setters, toggles)
+**Updates**: Via the same `useWorkspace()` hook which provides both state and setters
+
+**Note**: The current implementation consolidates the originally planned separate hooks (`useWorkspaceState`, `useObjectFocus`, `usePanel`) into a single `useWorkspace()` hook in `WorkspaceProvider.tsx`. This simplifies the API while maintaining the same state model.
 
 ### Local Object State
 
@@ -499,16 +532,32 @@ interface PanelState {
 
 ### Sanity Preview Mode
 
+**Status**: Not yet implemented
+
 **Challenge**: Sanity preview mode typically requires page-level preview handling.
 
-**Solution**:
+**Planned Solution**:
 
 - Preview mode works at route level (`/workspace/[objectSlug]` can be preview-enabled)
 - Workspace state syncs with preview route
 - Preview content renders in panel/overlay without breaking workspace
 - Canvas remains visible (preview is just content, not structure)
 
-**Implementation**: Use Next.js preview API routes, pass preview tokens to Sanity client, fetch draft content when in preview mode.
+**Planned Implementation**: Use Next.js preview API routes, pass preview tokens to Sanity client, fetch draft content when in preview mode.
+
+### Current Sanity Integration
+
+**Object Type Mappings**:
+
+- Sanity `service` documents → Workspace objects
+- Sanity `project` documents → Project detail overlays
+- Sanity `homePage` → Canvas configuration
+
+**Data Fetching Utilities**:
+
+- `getWorkspaceObjects()` - Fetches all workspace objects for canvas
+- `getWorkspaceObject(slug)` - Fetches single object data for panels
+- API route `/api/workspace-object/[slug]` - Server endpoint for dynamic object data
 
 ### Content Structure in Components
 

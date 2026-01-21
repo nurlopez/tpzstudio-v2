@@ -106,6 +106,7 @@ The workspace is bounded. Panels provide depth. Interactions must maintain spati
 
 - Object scales up (subtle, 5-10% increase)
 - Object label appears (fade in)
+- Object icon color changes (black to red via CSS filter)
 - Optional: Slight vertical lift (2-4px) for depth
 
 **What does NOT move**:
@@ -119,6 +120,23 @@ The workspace is bounded. Panels provide depth. Interactions must maintain spati
 
 **Purpose**: Answers "What is interactive?" and "What is this object?"
 
+**SVG Color Transformation** (current implementation):
+
+Black SVG icons transform to red (#c14444) on hover using a CSS filter chain:
+```css
+filter:
+  brightness(0)
+  saturate(100%)
+  invert(24%)
+  sepia(98%)
+  saturate(1352%)
+  hue-rotate(340deg)
+  brightness(0.85)
+  contrast(1.15);
+```
+
+This approach allows color transformation without modifying the SVG source files.
+
 **Rules**:
 
 - Only one object can be hovered at a time
@@ -126,7 +144,7 @@ The workspace is bounded. Panels provide depth. Interactions must maintain spati
 - Hover does not trigger navigation (click does)
 - Hover is disabled on touch devices (no hover on mobile)
 
-**Accessibility**: Keyboard focus provides same visual feedback as hover (scale, label).
+**Accessibility**: Keyboard focus provides same visual feedback as hover (scale, label, color change).
 
 ### Focus / Tap (Mobile)
 
@@ -136,6 +154,7 @@ The workspace is bounded. Panels provide depth. Interactions must maintain spati
 
 - Object scales down briefly (press feedback: 95% scale)
 - Object returns to normal (release: 100% scale)
+- Object icon color changes to red (same CSS filter as desktop hover)
 - Then: Panel opens (if tap) or object becomes focused (if keyboard/route)
 
 **What does NOT move**:
@@ -143,6 +162,17 @@ The workspace is bounded. Panels provide depth. Interactions must maintain spati
 - Other objects (until focus state changes)
 - Canvas background
 - Object positions
+
+**Mobile Color Transformation** (current implementation):
+
+On mobile devices, the focused state (rather than hover) triggers the same SVG color transformation from black to red (#c14444). This provides equivalent visual feedback for touch interactions. The CSS filter is applied via media query:
+```css
+@media (max-width: 768px) {
+  [data-workspace-object][data-state="focused"] [data-workspace-object-visual] img {
+    /* Same filter chain as desktop hover */
+  }
+}
+```
 
 **Timing**: Very fast for press/release (100ms press, 150ms release). Then standard timing for panel open.
 

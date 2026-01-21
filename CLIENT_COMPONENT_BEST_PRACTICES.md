@@ -1,6 +1,7 @@
 # Client Component Best Practices
 
 ## The Question
+
 Is converting components to Client Components just for event handlers good practice?
 
 ## The Answer: **It Depends, But We Can Do Better**
@@ -16,7 +17,7 @@ Is converting components to Client Components just for event handlers good pract
 2. **Optimization: Removed JavaScript Event Handlers**
    - **Before**: Used `onMouseEnter`/`onMouseLeave` for hover effects
    - **After**: Converted to CSS-only hover effects using `.hero-cta:hover`
-   - **Benefit**: 
+   - **Benefit**:
      - Smaller JavaScript bundle
      - Better performance (CSS animations are GPU-accelerated)
      - No JavaScript execution needed for hover
@@ -24,7 +25,7 @@ Is converting components to Client Components just for event handlers good pract
 ### 📊 **Component Status**
 
 | Component | Client? | Why? | Can Optimize? |
-|-----------|---------|------|---------------|
+| --------- | ------- | ---- | -------------- |
 | **Hero** | ✅ Yes | Uses Motion components | ✅ Already optimized (CSS hover) |
 | **Header** | ✅ Yes | Uses `useState`, `useEffect` | ⚠️ Could optimize, but acceptable |
 | **Reveal** | ✅ Yes | Uses framer-motion | ❌ Requires client (animation library) |
@@ -35,6 +36,7 @@ Is converting components to Client Components just for event handlers good pract
 ### 🎯 **Best Practices**
 
 #### ✅ **DO: Use CSS for Simple Interactions**
+
 ```css
 /* ✅ Good - CSS only */
 .hero-cta:hover {
@@ -44,12 +46,14 @@ Is converting components to Client Components just for event handlers good pract
 ```
 
 #### ❌ **DON'T: Use JavaScript for Simple Hover**
+
 ```tsx
 // ❌ Bad - Unnecessary JavaScript
 <a onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}>
 ```
 
 #### ✅ **DO: Keep Server Components When Possible**
+
 - Server Components = smaller bundles, better SEO, faster initial load
 - Only use Client Components when you **need**:
   - Interactivity (useState, useEffect, event handlers)
@@ -57,7 +61,9 @@ Is converting components to Client Components just for event handlers good pract
   - Third-party libraries that require client (framer-motion, etc.)
 
 #### ✅ **DO: Extract Interactive Parts**
+
 If only a small part needs interactivity, extract it:
+
 ```tsx
 // ✅ Good - Small Client Component
 'use client'
@@ -75,22 +81,26 @@ export function Hero() {
 ### 🔍 **Current Architecture**
 
 **Hero Component:**
+
 - ✅ **Needs to be Client** (uses Motion components)
 - ✅ **Optimized** (CSS hover instead of JS)
 - ✅ **Minimal JavaScript** (only what's necessary)
 
 **Header Component:**
+
 - ✅ **Needs to be Client** (uses useState/useEffect for mobile menu)
 - ⚠️ **Has some JS hover handlers** (could be CSS, but acceptable since already client)
 
 ### 📈 **Performance Impact**
 
 **Before (with JS handlers):**
+
 - Extra JavaScript in bundle
 - Event listeners attached at runtime
 - Style calculations on every hover
 
 **After (CSS-only):**
+
 - Zero JavaScript for hover
 - GPU-accelerated CSS transitions
 - Better performance, especially on mobile
@@ -105,6 +115,7 @@ export function Hero() {
 ### 🚀 **Future Improvements**
 
 If we wanted to further optimize:
+
 - Extract CTA button to separate Client Component (if it needed complex state)
 - Use CSS custom properties for dynamic values
 - Consider CSS-only animations for simple reveals (but framer-motion is fine for complex ones)
@@ -114,10 +125,10 @@ If we wanted to further optimize:
 ## Conclusion
 
 **Yes, this is good practice!** We:
+
 1. ✅ Identified that Hero needed to be Client (due to dependencies)
 2. ✅ Optimized by removing JavaScript event handlers
 3. ✅ Used CSS for simple interactions
 4. ✅ Kept Server Components where possible
 
 The architecture is now optimal: minimal Client Components, and those that are Client use CSS for simple interactions.
-

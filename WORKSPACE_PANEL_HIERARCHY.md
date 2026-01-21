@@ -216,6 +216,10 @@ Featured Work:
 
 **Note**: About content should feel like a brief introduction, not a corporate page. If more detail is needed, it belongs in a separate document or external link.
 
+**Route Variants**:
+- `/workspace/about` → English about panel
+- `/workspace/sobre-mi` → Spanish about panel (current implementation)
+
 ### Contact Object
 
 **Purpose**: Enable inquiry and connection, not a full contact page.
