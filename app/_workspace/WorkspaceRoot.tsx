@@ -7,6 +7,7 @@ import { Canvas } from './Canvas'
 import { Panel } from './Panel'
 import { Overlay } from './Overlay'
 import { Dock } from './Dock'
+import { FloatingActionButtons } from './FloatingActionButtons'
 import { useWorkspaceRoute } from './hooks/useWorkspaceRoute'
 import { WorkspaceObjectData } from './types'
 
@@ -79,6 +80,7 @@ export function WorkspaceRoot({
       style={{ touchAction: 'pan-y' }}
     >
       <Dock />
+      <FloatingActionButtons />
       <Canvas objects={objects} />
       
       {state.panelOpen && state.panelType && (

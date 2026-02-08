@@ -123,5 +123,21 @@ export const siteSettings = defineType({
                 defineField({ name: 'location', title: 'Location', type: 'string' }),
             ],
         }),
+
+        defineField({
+            name: 'backgroundAudio',
+            title: 'Background Audio',
+            type: 'object',
+            description: 'Audio ambiental para el workspace (controlado por FAB)',
+            fields: [
+                defineField({
+                    name: 'url',
+                    title: 'Audio URL',
+                    type: 'url',
+                    description: 'URL del archivo de audio (MP3 recomendado)',
+                    validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+                }),
+            ],
+        }),
     ],
 })

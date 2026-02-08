@@ -215,32 +215,7 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
               onClick={() => {
                 // Set focused state immediately (for red tint and label)
                 actions.setFocusedObject(object.slug)
-                
-                // Special handling for contact/contacto and sobre-mi objects
-                if (object.slug === 'contacto' || object.slug === 'contact') {
-                  if (state.touchEnabled) {
-                    // Mobile: delay navigation by 1500ms
-                    setTimeout(() => {
-                      router.push('/workspace/contact')
-                    }, 1500)
-                  } else {
-                    // Desktop: immediate navigation
-                    router.push('/workspace/contact')
-                  }
-                  return
-                }
-                if (object.slug === 'sobre-mi' || object.slug === 'sobre-tpzstudio' || object.slug === 'about') {
-                  if (state.touchEnabled) {
-                    // Mobile: delay navigation by 1500ms
-                    setTimeout(() => {
-                      router.push('/workspace/sobre-mi')
-                    }, 1500)
-                  } else {
-                    // Desktop: immediate navigation
-                    router.push('/workspace/sobre-mi')
-                  }
-                  return
-                }
+
                 // Special handling for blog objects - navigate to blog listing page
                 if (object.slug === 'blog-noticias' || object.slug === 'blog' || object.slug === 'noticias') {
                   if (state.touchEnabled) {

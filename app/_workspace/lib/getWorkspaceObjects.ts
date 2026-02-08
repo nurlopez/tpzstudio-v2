@@ -5,6 +5,12 @@ import { clampObjectPosition } from './clampObjectPosition'
 import { generateObjectPositions } from './generateObjectPositions'
 
 /**
+ * Slugs to exclude from canvas objects
+ * These are now handled by FloatingActionButtons component
+ */
+const FAB_SLUGS = ['contact', 'contacto', 'sobre-mi', 'sobre-tpzstudio', 'about']
+
+/**
  * getWorkspaceObjects
  * 
  * Fetches workspace objects from Sanity, with fallback to mock data.
@@ -56,6 +62,11 @@ export async function getWorkspaceObjects(): Promise<WorkspaceObjectData[]> {
           // Filter out objects without required fields
           if (!obj.slug || !obj.title || !obj.objectType) {
             console.warn('[getWorkspaceObjects] Skipping object with missing required fields:', obj)
+            return false
+          }
+          // Filter out FAB-handled objects (contact, about)
+          if (FAB_SLUGS.includes(obj.slug)) {
+            console.log('[getWorkspaceObjects] Filtering out FAB-handled object:', obj.slug)
             return false
           }
           return true
@@ -166,13 +177,7 @@ function getMockWorkspaceObjects(): WorkspaceObjectData[] {
       title: 'Projects',
       position: { x: 50, y: 80 },
     },
-    {
-      id: 'contact',
-      slug: 'contact',
-      type: 'contact' as const,
-      title: 'Get in Touch',
-      position: { x: 90, y: 90 },
-    },
+    // Contact removed - now handled by FloatingActionButtons
   ]
 
   // Clamp existing positions and generate positions for any missing
