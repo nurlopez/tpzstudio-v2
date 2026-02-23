@@ -8,9 +8,9 @@ import { notFound } from 'next/navigation'
 
 /**
  * Blog Post Detail Page
- * 
+ *
  * Route: /blog/[slug]
- * 
+ *
  * Displays a single blog post with full content.
  * SEO-optimized with proper metadata.
  */
@@ -25,12 +25,13 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   if (!post) {
     return {
-      title: 'Post Not Found | TPZ Studio Blog',
+      title: 'Entrada no encontrada | tpz·studio',
     }
   }
 
   const metaTitle = post.seo?.metaTitle || post.title
   const metaDescription = post.seo?.metaDescription || post.excerpt
+
   const ogImage = post.seo?.ogImage?.asset?.url || post.coverImage?.asset?.url
 
   return {
@@ -65,34 +66,34 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <main style={{ padding: 'var(--space-3xl) var(--space-xl)', minHeight: '100vh' }}>
+    <main style={{ padding: 'var(--space-3xl) var(--space-xl)', minHeight: '100vh', backgroundColor: 'var(--paper-bg)' }}>
       <article style={{ maxWidth: 800, margin: '0 auto' }}>
         {/* Back Links */}
         <div style={{ marginBottom: 'var(--space-xl)', display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap' }}>
           <Link
-            href="/workspace"
+            href="/"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: 'var(--space-xs)',
               fontSize: 'var(--font-size-sm)',
-              color: 'var(--ink-interactive)',
+              color: 'var(--paper-ink-interactive)',
               textDecoration: 'none',
               padding: 'var(--space-sm) var(--space-md)',
-              border: '1px solid var(--border-subtle)',
+              border: '1px solid rgba(0,0,0,0.08)',
               borderRadius: '4px',
-              backgroundColor: 'var(--bg-elevated)',
+              backgroundColor: 'white',
               transition: 'background-color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out)',
             }}
-            className="back-to-workspace-button"
+            className="back-to-home-button"
           >
-            ← Workspace
+            ← Inicio
           </Link>
           <Link
             href="/blog"
             style={{
               fontSize: 'var(--font-size-sm)',
-              color: 'var(--ink-interactive)',
+              color: 'var(--paper-ink-interactive)',
               textDecoration: 'none',
               display: 'inline-flex',
               alignItems: 'center',
@@ -101,7 +102,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             }}
             className="hover:underline"
           >
-            ← Back to Blog
+            ← Volver al Blog
           </Link>
         </div>
 
@@ -124,9 +125,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     fontSize: 'var(--font-size-xs)',
                     padding: 'var(--space-xs) var(--space-sm)',
                     borderRadius: '4px',
-                    border: '1px solid var(--border-subtle)',
-                    backgroundColor: 'var(--bg-elevated)',
-                    color: 'var(--ink-secondary)',
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    backgroundColor: 'rgba(0,0,0,0.03)',
+                    color: 'var(--paper-ink-secondary)',
                     fontWeight: 'var(--font-weight-medium)',
                   }}
                 >
@@ -139,9 +140,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {/* Title */}
           <h1
             style={{
-              fontSize: 'var(--font-size-2xl)',
-              fontWeight: 'var(--font-weight-medium)',
-              color: 'var(--ink-primary)',
+              fontFamily: 'var(--font-lacquer), cursive',
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+              fontWeight: 400,
+              color: 'var(--paper-ink-primary)',
               marginBottom: 'var(--space-md)',
               lineHeight: 'var(--line-height-tight)',
             }}
@@ -157,7 +159,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               alignItems: 'center',
               gap: 'var(--space-md)',
               fontSize: 'var(--font-size-sm)',
-              color: 'var(--ink-secondary)',
+              color: 'var(--paper-ink-secondary)',
               marginBottom: 'var(--space-xl)',
             }}
           >
@@ -187,10 +189,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 })}
               </time>
             )}
-            {post.readingTime && <span>• {post.readingTime} min read</span>}
+            {post.readingTime && <span>• {post.readingTime} min de lectura</span>}
             {post.updatedAt && post.updatedAt !== post.publishedAt && (
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--ink-muted)' }}>
-                (Updated {new Date(post.updatedAt).toLocaleDateString('es-ES', {
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--paper-ink-muted)' }}>
+                (Actualizado {new Date(post.updatedAt).toLocaleDateString('es-ES', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
@@ -204,15 +206,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div
               style={{
                 marginBottom: 'var(--space-2xl)',
-                borderRadius: '8px',
+                borderRadius: '12px',
                 overflow: 'hidden',
-                border: '1px solid var(--border-subtle)',
-                backgroundColor: 'var(--bg-elevated)',
+                border: '1px solid rgba(0,0,0,0.08)',
+                backgroundColor: 'transparent',
               }}
             >
               <Image
                 src={post.coverImage.asset.url}
-                alt={post.coverImage.alt || post.title || 'Blog post cover'}
+                alt={post.coverImage.alt || post.title || 'Portada del artículo'}
                 width={1200}
                 height={675}
                 style={{
@@ -231,7 +233,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <p
               style={{
                 fontSize: 'var(--font-size-lg)',
-                color: 'var(--ink-primary)',
+                color: 'var(--paper-ink-primary)',
                 lineHeight: 'var(--line-height-relaxed)',
                 fontWeight: 'var(--font-weight-regular)',
                 marginBottom: 0,
@@ -245,9 +247,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {/* Body Content */}
         {post.body && Array.isArray(post.body) && post.body.length > 0 && (
           <div
+            className="portable-text-fab"
             style={{
               fontSize: 'var(--font-size-md)',
-              color: 'var(--ink-primary)',
               lineHeight: 'var(--line-height-relaxed)',
               marginBottom: 'var(--space-3xl)',
             }}
@@ -262,20 +264,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             style={{
               marginTop: 'var(--space-2xl)',
               paddingTop: 'var(--space-xl)',
-              borderTop: '1px solid var(--border-subtle)',
+              borderTop: '1px solid rgba(0,0,0,0.08)',
             }}
           >
             <h3
               style={{
                 fontSize: 'var(--font-size-sm)',
                 fontWeight: 'var(--font-weight-medium)',
-                color: 'var(--ink-secondary)',
+                color: 'var(--paper-ink-secondary)',
                 marginBottom: 'var(--space-md)',
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
               }}
             >
-              Tags
+              Etiquetas
             </h3>
             <div
               style={{
@@ -291,9 +293,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     fontSize: 'var(--font-size-xs)',
                     padding: 'var(--space-xs) var(--space-sm)',
                     borderRadius: '4px',
-                    border: '1px solid var(--border-subtle)',
-                    backgroundColor: 'var(--bg-elevated)',
-                    color: 'var(--ink-secondary)',
+                    border: '1px solid rgba(0,0,0,0.1)',
+                    backgroundColor: 'rgba(0,0,0,0.03)',
+                    color: 'var(--paper-ink-secondary)',
                   }}
                 >
                   #{tag}
@@ -309,18 +311,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             style={{
               marginTop: 'var(--space-3xl)',
               paddingTop: 'var(--space-xl)',
-              borderTop: '1px solid var(--border-subtle)',
+              borderTop: '1px solid rgba(0,0,0,0.08)',
             }}
           >
             <h3
               style={{
                 fontSize: 'var(--font-size-lg)',
                 fontWeight: 'var(--font-weight-medium)',
-                color: 'var(--ink-primary)',
+                color: 'var(--paper-ink-primary)',
                 marginBottom: 'var(--space-lg)',
               }}
             >
-              Related Posts
+              Artículos relacionados
             </h3>
             <div
               style={{
@@ -336,9 +338,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   style={{
                     display: 'block',
                     padding: 'var(--space-md)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '8px',
-                    backgroundColor: 'var(--bg-elevated)',
+                    border: '1px solid rgba(0,0,0,0.08)',
+                    borderRadius: '12px',
+                    backgroundColor: 'white',
                     textDecoration: 'none',
                     color: 'inherit',
                     transition: 'border-color var(--motion-fast) var(--ease-out)',
@@ -349,7 +351,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     style={{
                       fontSize: 'var(--font-size-md)',
                       fontWeight: 'var(--font-weight-medium)',
-                      color: 'var(--ink-primary)',
+                      color: 'var(--paper-ink-primary)',
                       marginBottom: 'var(--space-xs)',
                     }}
                   >
@@ -359,7 +361,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     <p
                       style={{
                         fontSize: 'var(--font-size-sm)',
-                        color: 'var(--ink-secondary)',
+                        color: 'var(--paper-ink-secondary)',
                         marginBottom: 0,
                       }}
                     >

@@ -88,6 +88,20 @@ export const workspaceObjectQuery = groq`
       },
       excerpt
     },
+    showThumbnails,
+    relatedPosts[]-> {
+      _type,
+      _id,
+      title,
+      "slug": slug.current,
+      coverImage {
+        asset-> {
+          _id,
+          url
+        }
+      },
+      excerpt
+    },
     cta {
       label,
       url

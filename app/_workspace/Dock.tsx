@@ -2,38 +2,30 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { useWorkspace } from './WorkspaceProvider'
 import { Logo } from './Logo'
 
 /**
  * Dock
- * 
- * Persistent UI chrome (logo, contact hint, etc.).
- * 
- * Responsibilities:
- * - Renders workspace logo/title (always visible)
- * - Renders contact hint (small, unobtrusive)
- * - Handles logo click → navigates to /workspace
- * - Positions itself (top-left or top-right)
- * 
- * Does NOT:
- * - Manage workspace state
- * - Render navigation menu
- * - Handle object interactions
- * 
- * Props: Minimal or none (uses global state for visibility)
+ *
+ * Persistent UI chrome — logo with entrance animation.
  */
 export function Dock() {
   const router = useRouter()
   const { state } = useWorkspace()
 
   const handleLogoClick = () => {
-    router.push('/workspace')
+    router.push('/')
   }
 
   return (
-    <div data-workspace-dock>
-      {/* Logo */}
+    <motion.div
+      data-workspace-dock
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
       <button
         onClick={handleLogoClick}
         style={{
@@ -53,7 +45,7 @@ export function Dock() {
         onMouseLeave={(e) => {
           e.currentTarget.style.opacity = '1'
         }}
-        aria-label="Go to workspace home"
+        aria-label="Ir al inicio del workspace"
       >
         <Logo
           style={{
@@ -62,6 +54,6 @@ export function Dock() {
           }}
         />
       </button>
-    </div>
+    </motion.div>
   )
 }

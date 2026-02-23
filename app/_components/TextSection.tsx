@@ -9,7 +9,7 @@ type Props = {
 }
 
 // Reusable text block with film credit-style typography and sophisticated spacing.
-export function TextSection({ title, children, padding = '48px 24px', maxWidth = 1000 }: Props) {
+export function TextSection({ title, children, padding = 'var(--space-2xl) var(--space-lg)', maxWidth = 1000 }: Props) {
     const resolvedMaxWidth = typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth
 
     return (
@@ -22,9 +22,9 @@ export function TextSection({ title, children, padding = '48px 24px', maxWidth =
                                 margin: 0, 
                                 fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', 
                                 lineHeight: 1.3, 
-                                letterSpacing: '-0.03em',
+                                letterSpacing: '-0.02em',
                                 fontWeight: 400,
-                                fontFamily: 'var(--font-serif), Georgia, serif',
+                                fontFamily: 'var(--font-lacquer), cursive',
                                 opacity: 0.95,
                             }}>
                                 {title}
@@ -46,4 +46,3 @@ export function TextSection({ title, children, padding = '48px 24px', maxWidth =
         </section>
     )
 }
-

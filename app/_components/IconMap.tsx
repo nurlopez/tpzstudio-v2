@@ -115,17 +115,17 @@ export function getIcon(iconName: string | undefined): React.ReactNode {
 
 export const iconOptions = [
     { title: 'Monitor', value: 'monitor' },
-    { title: 'Graduation Cap', value: 'graduation-cap' },
-    { title: 'Cube', value: 'cube' },
-    { title: 'Camera', value: 'camera' },
-    { title: 'Palette', value: 'palette' },
-    { title: 'Video', value: 'video' },
-    { title: 'Lightbulb', value: 'lightbulb' },
-    { title: 'Users', value: 'users' },
-    { title: 'Code', value: 'code' },
-    { title: 'Image', value: 'image' },
-    { title: 'Film', value: 'film' },
-    { title: 'Music', value: 'music' },
+    { title: 'Birrete', value: 'graduation-cap' },
+    { title: 'Cubo', value: 'cube' },
+    { title: 'Cámara', value: 'camera' },
+    { title: 'Paleta', value: 'palette' },
+    { title: 'Vídeo', value: 'video' },
+    { title: 'Bombilla', value: 'lightbulb' },
+    { title: 'Usuarios', value: 'users' },
+    { title: 'Código', value: 'code' },
+    { title: 'Imagen', value: 'image' },
+    { title: 'Cine', value: 'film' },
+    { title: 'Música', value: 'music' },
 ]
 
 type SocialIconName = 'instagram' | 'vimeo' | 'youtube' | 'tiktok' | 'linkedin'

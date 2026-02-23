@@ -2,16 +2,16 @@ import { defineField, defineType } from 'sanity'
 
 export const blogPost = defineType({
     name: 'blogPost',
-    title: 'Blog Post',
+    title: 'Post del blog',
     type: 'document',
-    description: 'Blog posts and news articles for SEO and content marketing.',
+    description: 'Entradas del blog y noticias para SEO y contenido.',
     fields: [
         defineField({
             name: 'title',
-            title: 'Title',
+            title: 'Título',
             type: 'string',
             validation: (Rule) => Rule.required().max(100),
-            description: 'Main title of the blog post (max 100 characters for SEO).',
+            description: 'Título principal (máx 100 caracteres para SEO).',
         }),
 
         defineField({
@@ -20,21 +20,21 @@ export const blogPost = defineType({
             type: 'slug',
             options: { source: 'title', maxLength: 96 },
             validation: (Rule) => Rule.required(),
-            description: 'URL-friendly identifier. Used in /blog/[slug] route.',
+            description: 'Identificador para la URL. Se usa en /blog/[slug].',
         }),
 
         defineField({
             name: 'excerpt',
-            title: 'Excerpt / Summary',
+            title: 'Resumen',
             type: 'text',
             rows: 3,
             validation: (Rule) => Rule.required().max(300),
-            description: 'Short summary for listings and meta description (max 300 characters).',
+            description: 'Resumen para listados y meta descripción (máx 300 caracteres).',
         }),
 
         defineField({
             name: 'body',
-            title: 'Content',
+            title: 'Contenido',
             type: 'array',
             of: [
                 {
@@ -45,154 +45,156 @@ export const blogPost = defineType({
                     fields: [
                         {
                             name: 'alt',
-                            title: 'Alt Text',
+                            title: 'Texto alternativo',
                             type: 'string',
-                            description: 'Important for SEO and accessibility.',
+                            description: 'Importante para SEO y accesibilidad.',
                         },
                     ],
                 },
             ],
             validation: (Rule) => Rule.required(),
-            description: 'Main content of the blog post (rich text with formatting).',
+            description: 'Contenido principal del post (texto con formato).',
         }),
 
         defineField({
             name: 'coverImage',
-            title: 'Cover Image',
+            title: 'Imagen de portada',
             type: 'image',
             options: { hotspot: true },
             validation: (Rule) => Rule.required(),
-            description: 'Main image for the blog post. Used in listings and social sharing.',
+            description: 'Imagen principal del post. Se usa en listados y para compartir.',
             fields: [
                 {
                     name: 'alt',
-                    title: 'Alt Text',
+                    title: 'Texto alternativo',
                     type: 'string',
                     validation: (Rule) => Rule.required(),
-                    description: 'Describe the image for SEO and accessibility.',
+                    description: 'Describe la imagen para SEO y accesibilidad.',
                 },
             ],
         }),
 
         defineField({
             name: 'author',
-            title: 'Author',
+            title: 'Autor',
             type: 'object',
             fields: [
                 defineField({
                     name: 'name',
-                    title: 'Author Name',
+                    title: 'Nombre del autor',
                     type: 'string',
                     validation: (Rule) => Rule.required(),
                 }),
                 defineField({
                     name: 'image',
-                    title: 'Author Image',
+                    title: 'Imagen del autor',
                     type: 'image',
                     options: { hotspot: true },
                 }),
             ],
-            description: 'Author information for the blog post.',
+            description: 'Información del autor del post.',
         }),
 
         defineField({
             name: 'publishedAt',
-            title: 'Published Date',
+            title: 'Fecha de publicación',
             type: 'datetime',
             validation: (Rule) => Rule.required(),
             initialValue: () => new Date().toISOString(),
-            description: 'Publication date. Used for sorting and display.',
+            description: 'Fecha de publicación. Se usa para ordenar y mostrar.',
         }),
 
         defineField({
             name: 'updatedAt',
-            title: 'Last Updated',
+            title: 'Última actualización',
             type: 'datetime',
-            description: 'Last modification date. Optional, for tracking updates.',
+            description: 'Fecha de última modificación. Opcional.',
         }),
 
         defineField({
             name: 'categories',
-            title: 'Categories',
+            title: 'Categorías',
             type: 'array',
             of: [{ type: 'string' }],
             options: {
                 layout: 'tags',
+                placeholder: 'Escribe etiqueta y pulsa Enter',
             },
-            description: 'Categories for organizing posts (e.g., "News", "Reflections", "Updates").',
+            description: 'Categorías para organizar posts (ej: "Noticias", "Reflexiones").',
         }),
 
         defineField({
             name: 'tags',
-            title: 'Tags',
+            title: 'Etiquetas',
             type: 'array',
             of: [{ type: 'string' }],
             options: {
                 layout: 'tags',
+                placeholder: 'Escribe etiqueta y pulsa Enter',
             },
-            description: 'Tags for additional categorization and SEO.',
+            description: 'Etiquetas para clasificación y SEO.',
         }),
 
         defineField({
             name: 'featured',
-            title: 'Featured Post',
+            title: 'Post destacado',
             type: 'boolean',
             initialValue: false,
-            description: 'Featured posts appear prominently in listings.',
+            description: 'Los posts destacados aparecen de forma prioritaria.',
         }),
 
         defineField({
             name: 'readingTime',
-            title: 'Reading Time (minutes)',
+            title: 'Tiempo de lectura (min)',
             type: 'number',
             validation: (Rule) => Rule.min(1).max(60),
-            description: 'Estimated reading time in minutes. Optional, can be auto-calculated.',
+            description: 'Tiempo estimado de lectura en minutos. Opcional.',
         }),
 
         defineField({
             name: 'seo',
-            title: 'SEO Settings',
+            title: 'SEO',
             type: 'object',
-            description: 'SEO metadata for search engines and social sharing.',
+            description: 'Metadatos SEO para buscadores y redes.',
             fields: [
                 defineField({
                     name: 'metaTitle',
-                    title: 'Meta Title',
+                    title: 'Meta título',
                     type: 'string',
                     validation: (Rule) => Rule.max(60),
-                    description: 'SEO title (max 60 characters). Defaults to post title if empty.',
+                    description: 'Título SEO (máx 60 caracteres). Si está vacío, se usa el título.',
                 }),
                 defineField({
                     name: 'metaDescription',
-                    title: 'Meta Description',
+                    title: 'Meta descripción',
                     type: 'text',
                     rows: 3,
                     validation: (Rule) => Rule.max(160),
-                    description: 'SEO description (max 160 characters). Defaults to excerpt if empty.',
+                    description: 'Descripción SEO (máx 160 caracteres). Si está vacía, se usa el resumen.',
                 }),
                 defineField({
                     name: 'ogImage',
-                    title: 'Open Graph Image',
+                    title: 'Imagen Open Graph',
                     type: 'image',
                     options: { hotspot: true },
-                    description: 'Custom image for social sharing. Defaults to cover image if empty.',
+                    description: 'Imagen para compartir. Si está vacía, se usa la portada.',
                 }),
                 defineField({
                     name: 'keywords',
-                    title: 'Keywords',
+                    title: 'Palabras clave',
                     type: 'array',
                     of: [{ type: 'string' }],
                     options: {
                         layout: 'tags',
                     },
-                    description: 'SEO keywords (optional, modern SEO focuses more on content quality).',
+                    description: 'Palabras clave SEO (opcional).',
                 }),
             ],
         }),
 
         defineField({
             name: 'relatedPosts',
-            title: 'Related Posts',
+            title: 'Posts relacionados',
             type: 'array',
             of: [
                 {
@@ -200,7 +202,7 @@ export const blogPost = defineType({
                     to: [{ type: 'blogPost' }],
                 },
             ],
-            description: 'Manually select related posts for cross-linking and SEO.',
+            description: 'Selecciona posts relacionados para enlazado interno y SEO.',
         }),
     ],
     preview: {
@@ -211,27 +213,27 @@ export const blogPost = defineType({
             featured: 'featured',
         },
         prepare({ title, media, publishedAt, featured }) {
-            const date = publishedAt ? new Date(publishedAt).toLocaleDateString() : 'Draft'
+            const date = publishedAt ? new Date(publishedAt).toLocaleDateString('es-ES') : 'Borrador'
             return {
-                title: title || 'Untitled',
-                subtitle: `${date}${featured ? ' • Featured' : ''}`,
+                title: title || 'Sin título',
+                subtitle: `${date}${featured ? ' • Destacado' : ''}`,
                 media,
             }
         },
     },
     orderings: [
         {
-            title: 'Published Date, Newest',
+            title: 'Fecha de publicación (nuevos primero)',
             name: 'publishedAtDesc',
             by: [{ field: 'publishedAt', direction: 'desc' }],
         },
         {
-            title: 'Published Date, Oldest',
+            title: 'Fecha de publicación (antiguos primero)',
             name: 'publishedAtAsc',
             by: [{ field: 'publishedAt', direction: 'asc' }],
         },
         {
-            title: 'Title, A-Z',
+            title: 'Título (A-Z)',
             name: 'titleAsc',
             by: [{ field: 'title', direction: 'asc' }],
         },

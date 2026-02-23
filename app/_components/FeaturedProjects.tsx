@@ -15,22 +15,22 @@ type Project = {
 export function FeaturedProjects({ title, items }: { title?: string; items: Project[] }) {
 
     return (
-        <section style={{ padding: '48px 24px 96px' }}>
+        <section style={{ padding: 'var(--space-2xl) var(--space-lg) var(--space-4xl)' }}>
             <div style={{ maxWidth: 1200, margin: '0 auto' }}>
                 <Reveal y={16}>
                     <h2 style={{ 
                         fontSize: 'clamp(1.75rem, 4vw, 2.25rem)', 
                         margin: 0, 
-                        letterSpacing: '-0.03em',
+                        letterSpacing: '-0.02em',
                         fontWeight: 400,
-                        fontFamily: 'var(--font-serif), Georgia, serif',
-                        marginBottom: 8,
+                        fontFamily: 'var(--font-lacquer), cursive',
+                        marginBottom: 'var(--space-xs)',
                     }}>
                         {title}
                     </h2>
                 </Reveal>
 
-                <div style={{ marginTop: 32 }}>
+                <div style={{ marginTop: 'var(--space-xl)' }}>
                     <div className="featuredProjectsGrid">
                         {items.map((p, index) => {
                             if (!p.slug?.current) return null
@@ -53,7 +53,7 @@ export function FeaturedProjects({ title, items }: { title?: string; items: Proj
                                                 textDecoration: 'none',
                                                 color: 'inherit',
                                                 border: '1px solid rgba(255,255,255,0.12)',
-                                                borderRadius: 16,
+                                                borderRadius: 12,
                                                 overflow: 'hidden',
                                                 background: 'rgba(255,255,255,0.02)',
                                                 position: 'relative',
@@ -78,7 +78,7 @@ export function FeaturedProjects({ title, items }: { title?: string; items: Proj
                                                     }
                                                     style={{ 
                                                         objectFit: 'cover',
-                                                        transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+                                                        transition: 'transform var(--motion-standard) var(--ease-out)',
                                                         filter: 'saturate(0.9) contrast(1.05)',
                                                     }}
                                                 />
@@ -90,14 +90,14 @@ export function FeaturedProjects({ title, items }: { title?: string; items: Proj
                                             <div
                                                 className="featuredProjectCard__overlay"
                                                 aria-hidden
-                                                style={{
-                                                    position: 'absolute',
-                                                    inset: 0,
-                                                    background:
-                                                        'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 70%, transparent 100%)',
-                                                    transition: 'opacity 0.4s ease',
-                                                }}
-                                            />
+                                            style={{
+                                                position: 'absolute',
+                                                inset: 0,
+                                                background:
+                                                    'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 70%, transparent 100%)',
+                                                transition: 'opacity var(--motion-standard) var(--ease-out)',
+                                            }}
+                                        />
                                         </div>
                                         
                                         {/* Text content - below image on desktop hero, overlay on mobile and other cards */}
@@ -108,7 +108,7 @@ export function FeaturedProjects({ title, items }: { title?: string; items: Proj
                                                 fontSize: isHero 
                                                     ? 'clamp(22px, 2.5vw, 28px)' 
                                                     : 'clamp(20px, 2.5vw, 22px)',
-                                                fontFamily: 'var(--font-serif), Georgia, serif',
+                                                fontFamily: 'var(--font-lacquer), cursive',
                                                 lineHeight: 1.2,
                                                 marginBottom: 8,
                                             }}>

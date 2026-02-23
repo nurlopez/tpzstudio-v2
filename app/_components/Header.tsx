@@ -10,10 +10,9 @@ type NavItem = { label: string; href: string }
 
 const nav: NavItem[] = [
     { label: 'Proyectos', href: '/proyectos' },
-    { label: 'Servicios', href: '/servicios' },
-    { label: 'Sobre mí', href: '/sobre-mi' },
+    { label: 'sobre mí', href: '/sobre-mi' },
     { label: 'Blog', href: '/blog' }, // futuro
-    { label: 'Contacto', href: '/contacto' },
+    { label: 'contacto', href: '/contacto' },
 ]
 
 export function Header() {
@@ -57,7 +56,7 @@ export function Header() {
                         : 'rgba(10,10,10,0.25)',
                     backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(12px) saturate(150%)',
                     WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(12px) saturate(150%)',
-                    transition: 'all 0.4s cubic-bezier(0.22, 1, 0.36, 1)',
+                    transition: 'all var(--motion-standard) var(--ease-out)',
                     boxShadow: scrolled 
                         ? '0 4px 24px rgba(0, 0, 0, 0.3)' 
                         : 'none',
@@ -81,7 +80,7 @@ export function Header() {
                             display: 'flex',
                             alignItems: 'center',
                             textDecoration: 'none',
-                            transition: 'opacity 0.3s ease',
+                            transition: 'opacity var(--motion-standard) var(--ease-out)',
                         }}
                         onClick={() => setOpen(false)}
                         onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
@@ -102,7 +101,7 @@ export function Header() {
                     </Link>
 
                     {/* Desktop nav */}
-                    <nav className="navDesktop" aria-label="Primary">
+                    <nav className="navDesktop" aria-label="Principal">
                         {nav.map((item) => {
                             const isActive = pathname === item.href || 
                                 (item.href !== '/' && pathname.startsWith(item.href + '/'))
@@ -135,7 +134,7 @@ export function Header() {
                                 width: 20, 
                                 height: 1.5, 
                                 background: 'rgba(255,255,255,0.9)',
-                                transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                transition: 'all var(--motion-standard) var(--ease-out)',
                                 transform: open ? 'rotate(45deg) translateY(6px)' : 'none',
                             }} 
                         />
@@ -146,7 +145,7 @@ export function Header() {
                                 height: 1.5, 
                                 background: 'rgba(255,255,255,0.9)', 
                                 marginTop: 6,
-                                transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                transition: 'all var(--motion-standard) var(--ease-out)',
                                 opacity: open ? 0 : 1,
                             }} 
                         />
@@ -157,7 +156,7 @@ export function Header() {
                                 height: 1.5, 
                                 background: 'rgba(255,255,255,0.9)', 
                                 marginTop: 6,
-                                transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                transition: 'all var(--motion-standard) var(--ease-out)',
                                 transform: open ? 'rotate(-45deg) translateY(-6px)' : 'none',
                             }} 
                         />
@@ -212,7 +211,7 @@ export function Header() {
                                             border: '1px solid rgba(255,255,255,0.12)',
                                             borderBottom: isActive ? '2px solid #B34D49' : '1px solid rgba(255,255,255,0.12)',
                                             background: 'rgba(255,255,255,0.04)',
-                                            transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                            transition: 'all var(--motion-standard) var(--ease-out)',
                                             fontSize: 14,
                                             fontWeight: 500,
                                         }}

@@ -7,7 +7,7 @@ import { Metadata } from 'next'
 /**
  * Project Archive Page
  * 
- * Route: /workspace/projects
+ * Route: /projects
  * 
  * This page is rendered when the project archive panel is open.
  * The Panel component is rendered by WorkspaceRoot based on workspace state.
@@ -16,17 +16,17 @@ import { Metadata } from 'next'
  */
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Projects',
-    description: 'Browse our portfolio of completed projects. Explore our work in film, branding, design, and creative production.',
+    title: 'Proyectos',
+    description: 'Explora nuestro portafolio de proyectos. Descubre nuestro trabajo en cine, branding, diseño y producción creativa.',
     openGraph: {
-      title: 'Projects | TPZ Studio',
-      description: 'Browse our portfolio of completed projects. Explore our work in film, branding, design, and creative production.',
-      url: '/workspace/projects',
+      title: 'Proyectos | tpz·studio',
+      description: 'Explora nuestro portafolio de proyectos. Descubre nuestro trabajo en cine, branding, diseño y producción creativa.',
+      url: '/projects',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Projects | TPZ Studio',
-      description: 'Browse our portfolio of completed projects. Explore our work in film, branding, design, and creative production.',
+      title: 'Proyectos | tpz·studio',
+      description: 'Explora nuestro portafolio de proyectos. Descubre nuestro trabajo en cine, branding, diseño y producción creativa.',
     },
   }
 }
@@ -38,8 +38,8 @@ export default async function ProjectsPage() {
     if (!projects || projects.length === 0) {
       return (
         <div data-projects-archive style={{ padding: 'var(--space-xl)' }}>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--ink-muted)' }}>
-            No projects available.
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--paper-ink-muted)' }}>
+            No hay proyectos disponibles.
           </p>
         </div>
       )
@@ -55,24 +55,26 @@ export default async function ProjectsPage() {
         >
           <h2
             style={{
-              fontSize: 'var(--font-size-xl)',
-              fontWeight: 'var(--font-weight-medium)',
-              color: 'var(--ink-primary)',
+              fontFamily: 'var(--font-lacquer), cursive',
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+              fontWeight: 400,
+              color: 'var(--paper-ink-primary)',
               marginBottom: 'var(--space-sm)',
               lineHeight: 'var(--line-height-tight)',
+              letterSpacing: '0.01em',
             }}
           >
-            Projects
+            Proyectos
           </h2>
           <p
             style={{
-              fontSize: 'var(--font-size-md)',
-              color: 'var(--ink-primary)',
+              fontSize: 'var(--font-size-sm)',
+              color: 'var(--paper-ink-secondary)',
               lineHeight: 'var(--line-height-relaxed)',
               marginBottom: 0,
             }}
           >
-            Explore completed work
+            Explora nuestro trabajo
           </p>
         </header>
 
@@ -87,7 +89,7 @@ export default async function ProjectsPage() {
           {projects.map((project: any) => (
             <Link
               key={project._id}
-              href={`/workspace/projects/${project.slug}`}
+              href={`/projects/${project.slug}`}
               style={{
                 display: 'block',
                 textDecoration: 'none',
@@ -109,16 +111,15 @@ export default async function ProjectsPage() {
                     style={{
                       width: '100%',
                       aspectRatio: '16/9',
-                      borderRadius: '8px',
+                      borderRadius: '4px',
                       overflow: 'hidden',
-                      border: '1px solid var(--border-subtle)',
-                      backgroundColor: 'var(--bg-elevated)',
+                      border: '1px solid rgba(0, 0, 0, 0.08)',
                       marginBottom: 'var(--space-sm)',
                     }}
                   >
                     <Image
                       src={project.coverImage.asset.url}
-                      alt={project.coverImage.alt || project.title || 'Project cover'}
+                      alt={project.coverImage.alt || project.title || 'Portada del proyecto'}
                       width={400}
                       height={225}
                       style={{
@@ -136,8 +137,8 @@ export default async function ProjectsPage() {
                   <h3
                     style={{
                       fontSize: 'var(--font-size-md)',
-                      fontWeight: 'var(--font-weight-medium)',
-                      color: 'var(--ink-primary)',
+                      fontWeight: 400,
+                      color: 'var(--paper-ink-primary)',
                       marginBottom: 0,
                       lineHeight: 'var(--line-height-tight)',
                     }}
@@ -151,7 +152,7 @@ export default async function ProjectsPage() {
                   <p
                     style={{
                       fontSize: 'var(--font-size-sm)',
-                      color: 'var(--ink-secondary)',
+                      color: 'var(--paper-ink-secondary)',
                       lineHeight: 'var(--line-height-relaxed)',
                       marginBottom: 0,
                     }}
@@ -169,8 +170,8 @@ export default async function ProjectsPage() {
     console.error('[ProjectsPage] Error fetching projects:', error)
     return (
       <div style={{ padding: 'var(--space-xl)' }}>
-        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--ink-muted)' }}>
-          Error loading projects. Please try again later.
+        <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--paper-ink-muted)' }}>
+          Error al cargar los proyectos. Inténtalo de nuevo más tarde.
         </p>
       </div>
     )

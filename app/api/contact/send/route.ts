@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const apiKey = process.env.RESEND_API_KEY
     if (!apiKey) {
-      console.error('[API] RESEND_API_KEY not configured')
+      console.error('[API] RESEND_API_KEY no configurado')
       return NextResponse.json(
         { error: 'Servicio de email no configurado' },
         { status: 500 }
@@ -32,11 +32,11 @@ export async function POST(request: Request) {
       to: TO_EMAIL,
       replyTo: email,
       subject: `Nuevo mensaje de ${name}`,
-      text: `Nombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`,
+      text: `Nombre: ${name}\nCorreo: ${email}\n\nMensaje:\n${message}`,
     })
 
     if (error) {
-      console.error('[API] Resend error:', error)
+      console.error('[API] Error de Resend:', error)
       return NextResponse.json(
         { error: 'Error al enviar el mensaje' },
         { status: 500 }
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('[API] Error sending contact email:', error)
+    console.error('[API] Error al enviar email de contacto:', error)
     return NextResponse.json(
       { error: 'Error al enviar el mensaje' },
       { status: 500 }

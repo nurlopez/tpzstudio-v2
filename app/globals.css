@@ -138,6 +138,15 @@ body {
     overflow-x: hidden;
 }
 
+/* Utility: hide scrollbar but keep scroll behavior */
+.scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
 /* --------------------------------------------
    Workspace-specific base styles
    -------------------------------------------- */
@@ -189,7 +198,6 @@ body {
    Workspace Objects
    -------------------------------------------- */
 [data-workspace-object] {
-    position: absolute;
     cursor: pointer;
     transition: 
         opacity var(--motion-standard) var(--ease-in-out),
@@ -247,35 +255,16 @@ body {
     max-width: var(--object-size, 180px);
 }
 
-/* Convert black SVG lines to red on hover (desktop) */
+/* Monochrome on hover (desktop) */
 [data-workspace-object][data-state="hovered"] [data-workspace-object-visual] img {
-    /* Convert black to red (#c14444) using CSS filters */
-    /* This filter chain converts black (rgb(0,0,0)) to approximately #c14444 */
-    filter: 
-        brightness(0) 
-        saturate(100%) 
-        invert(24%) 
-        sepia(98%) 
-        saturate(1352%) 
-        hue-rotate(340deg) 
-        brightness(0.85) 
-        contrast(1.15);
+    filter: grayscale(100%);
     transition: filter var(--motion-standard) var(--ease-out);
 }
 
-/* Convert black SVG lines to red when focused on mobile (touch devices) */
+/* Monochrome when focused on mobile (touch devices) */
 @media (max-width: 768px) {
     [data-workspace-object][data-state="focused"] [data-workspace-object-visual] img {
-        /* Same filter chain to convert black to red (#c14444) */
-        filter: 
-            brightness(0) 
-            saturate(100%) 
-            invert(24%) 
-            sepia(98%) 
-            saturate(1352%) 
-            hue-rotate(340deg) 
-            brightness(0.85) 
-            contrast(1.15);
+        filter: grayscale(100%);
         transition: filter var(--motion-standard) var(--ease-out);
     }
 }
@@ -373,7 +362,8 @@ body {
     bottom: 0;
     width: 100vw;
     height: 100vh;
-    background: var(--bg-canvas);
+    background: #ffffff;
+    color: var(--paper-ink-primary);
     z-index: 2000;
     overflow-y: auto;
     transition: opacity var(--motion-slow) var(--ease-out);
@@ -811,13 +801,13 @@ h3 {
 
 /* Blog related post link hover */
 .blog-related-post-link:hover {
-  border-color: var(--border-visible) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Back to workspace button hover */
-.back-to-workspace-button:hover {
-  background-color: var(--bg-surface) !important;
-  border-color: var(--border-visible) !important;
+/* Back to home button hover */
+.back-to-home-button:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
 /* ============================================

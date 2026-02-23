@@ -75,7 +75,8 @@ export function FABDrawer({ isOpen, onClose, title, children, id }: FABDrawerPro
       <div className="flex items-center justify-between p-4 border-b border-black/10">
         <h2
           id={`${id}-title`}
-          className="text-lg font-medium text-black/85"
+          className="text-lg text-black/85"
+          style={{ fontFamily: 'var(--font-lacquer), cursive' }}
         >
           {title}
         </h2>

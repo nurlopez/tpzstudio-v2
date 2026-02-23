@@ -153,7 +153,7 @@ function ContactForm() {
 
       <div>
         <label htmlFor="contact-email" className="block text-xs font-medium text-black/50 uppercase tracking-wider mb-2">
-          Email
+          Correo
         </label>
         <input
           type="email"
@@ -219,14 +219,14 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
         const response = await fetch(endpoint)
 
         if (!response.ok) {
-          throw new Error('Failed to fetch content')
+          throw new Error('No se pudo cargar el contenido')
         }
 
         const result = await response.json()
         setData(result)
       } catch (err) {
-        console.error(`[FABDrawerContent] Error fetching ${type} data:`, err)
-        setError('Error loading content')
+        console.error(`[FABDrawerContent] Error al obtener datos de ${type}:`, err)
+        setError('Error al cargar el contenido')
       } finally {
         setLoading(false)
       }
@@ -246,7 +246,7 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
   if (error || !data) {
     return (
       <p className="text-sm text-black/50">
-        {error || 'Content not available'}
+        {error || 'Contenido no disponible'}
       </p>
     )
   }
@@ -255,7 +255,7 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
     const contact = data as ContactData
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6" style={{ paddingBottom: 'var(--space-xl)' }}>
         {/* Intro Text */}
         {contact.introText && (
           <p className="text-base text-black/75 leading-relaxed">
@@ -269,7 +269,16 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
         {/* Phone (after form) */}
         {contact.phone?.number && (
           <div className="pt-4 border-t border-black/10">
-            <h3 className="text-xs font-medium text-black/50 uppercase tracking-wider mb-2">
+            <h3
+              style={{
+                fontSize: 'var(--font-size-xs)',
+                fontWeight: 500,
+                color: 'var(--paper-ink-muted)',
+                marginBottom: 'var(--space-xs)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+              }}
+            >
               Teléfono
             </h3>
             {contact.phone.url ? (
@@ -288,7 +297,16 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
         {/* Social Media */}
         {contact.socialMedia && (
           <div className="pt-4 border-t border-black/10">
-            <h3 className="text-xs font-medium text-black/50 uppercase tracking-wider mb-3">
+            <h3
+              style={{
+                fontSize: 'var(--font-size-xs)',
+                fontWeight: 500,
+                color: 'var(--paper-ink-muted)',
+                marginBottom: 'var(--space-sm)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+              }}
+            >
               Redes Sociales
             </h3>
             <div className="flex flex-wrap gap-3">
@@ -357,13 +375,13 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
   // About content
   const about = data as AboutData
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ paddingBottom: 'var(--space-xl)' }}>
       {/* Image */}
       {about.image?.asset?.url && (
         <div className="rounded-lg overflow-hidden border border-black/10">
           <Image
             src={about.image.asset.url}
-            alt={about.image.alt || about.title || 'About'}
+            alt={about.image.alt || about.title || 'Sobre mí'}
             width={320}
             height={240}
             className="w-full h-auto"

@@ -17,19 +17,13 @@ export async function GET(
     
     if (!slug) {
       return NextResponse.json(
-        { error: 'Slug is required' },
+        { error: 'El slug es obligatorio' },
         { status: 400 }
       )
     }
 
-    console.log('[API] Fetching workspace object with slug:', slug)
     const data = await client.fetch(workspaceObjectQuery, { slug })
-    
-    console.log('[API] Raw Sanity response:', JSON.stringify(data, null, 2))
-    console.log('[API] Data.visual:', data?.visual)
-    console.log('[API] Data.visual type:', typeof data?.visual)
-    console.log('[API] Data.visual keys:', data?.visual ? Object.keys(data.visual) : 'null/undefined')
-    
+
     if (!data) {
       return NextResponse.json(null, { status: 404 })
     }
@@ -40,6 +34,7 @@ export async function GET(
       title: string
       shortIntent?: string
       description?: any[]
+      showThumbnails?: boolean
       visual?: {
         url: string
         alt?: string
@@ -49,6 +44,15 @@ export async function GET(
         _type: string
         title: string
         slug: string
+        coverImage?: { url: string }
+        excerpt?: string
+      }>
+      relatedPosts?: Array<{
+        _id: string
+        title: string
+        slug: string
+        coverImage?: { url: string }
+        excerpt?: string
       }>
     } = {
       title: data.title || '',
@@ -61,24 +65,15 @@ export async function GET(
     if (data.description) {
       content.description = data.description
     }
-    
-    // Handle visual - check multiple possible structures
-    if (data.visual) {
-      console.log('[API] Processing visual:', JSON.stringify(data.visual, null, 2))
-      
-      // Check if visual has asset with url
-      if (data.visual.asset?.url) {
-        content.visual = {
-          url: data.visual.asset.url,
-          alt: data.visual.alt || undefined,
-        }
-        console.log('[API] Visual extracted successfully:', content.visual)
-      } else {
-        console.log('[API] Visual exists but no asset.url found')
-        console.log('[API] Visual.asset:', data.visual.asset)
+    if (data.showThumbnails) {
+      content.showThumbnails = true
+    }
+
+    if (data.visual?.asset?.url) {
+      content.visual = {
+        url: data.visual.asset.url,
+        alt: data.visual.alt || undefined,
       }
-    } else {
-      console.log('[API] No visual field in data')
     }
     
     // Handle capabilities - links to projects
@@ -90,16 +85,29 @@ export async function GET(
           _type: cap._type,
           title: cap.title,
           slug: cap.slug,
+          ...(cap.coverImage?.asset?.url && { coverImage: { url: cap.coverImage.asset.url } }),
+          ...(cap.excerpt && { excerpt: cap.excerpt }),
         }))
     }
 
-    console.log('[API] Returning content:', JSON.stringify(content, null, 2))
-    console.log('[API] Content.visual:', content.visual)
+    // Handle related blog posts
+    if (data.relatedPosts && Array.isArray(data.relatedPosts) && data.relatedPosts.length > 0) {
+      content.relatedPosts = data.relatedPosts
+        .filter((post: any) => post && post.title && post.slug)
+        .map((post: any) => ({
+          _id: post._id,
+          title: post.title,
+          slug: post.slug,
+          ...(post.coverImage?.asset?.url && { coverImage: { url: post.coverImage.asset.url } }),
+          ...(post.excerpt && { excerpt: post.excerpt }),
+        }))
+    }
+
     return NextResponse.json(content)
   } catch (error) {
-    console.error('[API] Error fetching workspace object:', error)
+    console.error('[API] Error al obtener objeto del workspace:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch workspace object' },
+      { error: 'No se pudo obtener el objeto del workspace' },
       { status: 500 }
     )
   }

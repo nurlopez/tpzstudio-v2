@@ -1,5 +1,5 @@
 import { client } from '@/sanity/lib/client'
-import { aboutPageQuery } from '@/sanity/lib/queries'
+import { aboutPageQuery, siteSettingsQuery } from '@/sanity/lib/queries'
 import { PageFade } from '@/app/_components/PageFade'
 import { Reveal } from '@/app/_components/Motion'
 import { PortableText } from '@portabletext/react'
@@ -9,24 +9,27 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const about = await client.fetch(aboutPageQuery)
+  const [about, settings] = await Promise.all([
+    client.fetch(aboutPageQuery),
+    client.fetch(siteSettingsQuery),
+  ])
   
   const title = about?.seo?.metaTitle || about?.title || 'Sobre mí'
-  const description = about?.seo?.metaDescription || 'Learn more about TPZ Studio, our mission, values, and creative approach.'
+  const description = about?.seo?.metaDescription || settings?.seo?.metaDescription || ''
   const ogImage = about?.image?.asset?.url
 
   return {
     title,
     description,
     openGraph: {
-      title: `${title} | TPZ Studio`,
+      title: `${title} | tpz·studio`,
       description,
       url: '/sobre-mi',
-      images: ogImage ? [{ url: ogImage, alt: about?.image?.alt || about?.title || 'About TPZ Studio' }] : [],
+      images: ogImage ? [{ url: ogImage, alt: about?.image?.alt || about?.title || 'Sobre TPZ Studio' }] : [],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${title} | TPZ Studio`,
+      title: `${title} | tpz·studio`,
       description,
       images: ogImage ? [ogImage] : [],
     },
@@ -39,15 +42,15 @@ export default async function AboutPage() {
     if (!about) {
         return (
             <PageFade>
-                <main style={{ padding: '48px 24px 96px' }}>
+                <main style={{ padding: 'var(--space-2xl) var(--space-lg) var(--space-4xl)' }}>
                     <div style={{ maxWidth: 1200, margin: '0 auto' }}>
                         <Reveal y={16}>
                             <h1 style={{
                                 fontSize: 'clamp(2rem, 5vw, 3rem)',
                                 margin: 0,
-                                letterSpacing: '-0.04em',
+                                letterSpacing: '-0.02em',
                                 fontWeight: 400,
-                                fontFamily: 'var(--font-serif), Georgia, serif',
+                                fontFamily: 'var(--font-lacquer), cursive',
                             }}>
                                 Sobre mí
                             </h1>
@@ -69,7 +72,7 @@ export default async function AboutPage() {
 
     return (
         <PageFade>
-            <main style={{ padding: '0 0 96px' }}>
+            <main style={{ padding: '0 0 var(--space-4xl)' }}>
                 {/* Hero Image Section */}
                 {imageUrl && (
                     <Reveal y={0}>
@@ -77,7 +80,7 @@ export default async function AboutPage() {
                             position: 'relative',
                             width: '100%',
                             aspectRatio: '16 / 9',
-                            marginBottom: 64,
+                            marginBottom: 'var(--space-2xl)',
                         }}>
                             <Image
                                 src={imageUrl}
@@ -101,15 +104,15 @@ export default async function AboutPage() {
                     </Reveal>
                 )}
 
-                <div style={{ maxWidth: 1000, margin: '0 auto', padding: '0 24px' }}>
+                <div style={{ maxWidth: 1000, margin: '0 auto', padding: `0 var(--space-lg)` }}>
                     {/* Title */}
                     <Reveal y={16}>
                         <h1 style={{
                             fontSize: 'clamp(2.5rem, 6vw, 4rem)',
-                            margin: '0 0 32px',
-                            letterSpacing: '-0.04em',
+                            margin: `0 0 var(--space-xl)`,
+                            letterSpacing: '-0.02em',
                             fontWeight: 400,
-                            fontFamily: 'var(--font-serif), Georgia, serif',
+                            fontFamily: 'var(--font-lacquer), cursive',
                             lineHeight: 1.2,
                         }}>
                             {about.title}
@@ -138,10 +141,10 @@ export default async function AboutPage() {
                     {about.cta?.text && about.cta?.url && (
                         <Reveal delay={0.2} y={16}>
                             <div style={{
-                                marginTop: 80,
-                                padding: '48px 32px',
+                                marginTop: 'var(--space-3xl)',
+                                padding: 'var(--space-2xl) var(--space-xl)',
                                 border: '1px solid rgba(255,255,255,0.12)',
-                                borderRadius: 16,
+                                borderRadius: 12,
                                 background: 'rgba(255,255,255,0.02)',
                                 textAlign: 'center',
                             }}>
@@ -150,7 +153,7 @@ export default async function AboutPage() {
                                     className="about-cta-link"
                                     style={{
                                         display: 'inline-block',
-                                        padding: '16px 32px',
+                                        padding: 'var(--space-md) var(--space-xl)',
                                         borderRadius: 8,
                                         background: 'rgba(255,255,255,0.95)',
                                         color: '#0a0a0a',
@@ -158,7 +161,7 @@ export default async function AboutPage() {
                                         fontWeight: 600,
                                         fontSize: 16,
                                         letterSpacing: '0.02em',
-                                        transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                        transition: 'all var(--motion-standard) var(--ease-out)',
                                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                                     }}
                                 >

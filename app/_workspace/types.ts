@@ -88,7 +88,8 @@ export interface WorkspaceObjectData {
     y: number
   }
   visual?: WorkspaceObjectVisual
-  // TODO: Add service data structure when Sanity is integrated
+  // Detailed content (description, capabilities, etc.) is fetched on-demand
+  // via /api/workspace-object/[slug]. This interface stays minimal for canvas rendering.
 }
 
 /**

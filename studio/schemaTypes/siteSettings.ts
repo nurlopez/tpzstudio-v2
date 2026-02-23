@@ -9,7 +9,7 @@ export const siteSettings = defineType({
     fields: [
         defineField({
             name: 'title',
-            title: 'Site title',
+            title: 'Título del sitio',
             type: 'string',
             validation: (Rule) => Rule.required(),
             description: 'Nombre general del sitio (por defecto para SEO).',
@@ -17,14 +17,14 @@ export const siteSettings = defineType({
 
         defineField({
             name: 'tagline',
-            title: 'Tagline',
+            title: 'Lema',
             type: 'string',
             description: 'Frase corta estilo claim (opcional).',
         }),
 
         defineField({
             name: 'siteUrl',
-            title: 'Site URL',
+            title: 'URL del sitio',
             type: 'url',
             validation: (Rule) => Rule.required().uri({ scheme: ['http', 'https'] }),
             description: 'URL oficial (ej: https://tpzstudio.es).',
@@ -32,25 +32,25 @@ export const siteSettings = defineType({
 
         defineField({
             name: 'seo',
-            title: 'SEO (default)',
+            title: 'SEO (predeterminado)',
             type: 'object',
             fields: [
                 defineField({
                     name: 'metaTitle',
-                    title: 'Meta title',
+                    title: 'Meta título',
                     type: 'string',
                     validation: (Rule) => Rule.max(60),
                 }),
                 defineField({
                     name: 'metaDescription',
-                    title: 'Meta description',
+                    title: 'Meta descripción',
                     type: 'text',
                     rows: 3,
                     validation: (Rule) => Rule.max(160),
                 }),
                 defineField({
                     name: 'ogImage',
-                    title: 'Open Graph image',
+                    title: 'Imagen Open Graph',
                     type: 'image',
                     options: { hotspot: true },
                     description: 'Imagen para compartir en WhatsApp/Redes (1200x630 ideal).',
@@ -60,7 +60,7 @@ export const siteSettings = defineType({
 
         defineField({
             name: 'branding',
-            title: 'Branding',
+            title: 'Marca',
             type: 'object',
             fields: [
                 defineField({
@@ -80,19 +80,19 @@ export const siteSettings = defineType({
 
         defineField({
             name: 'cta',
-            title: 'Primary CTA',
+            title: 'CTA principal',
             type: 'object',
             fields: [
                 defineField({
                     name: 'label',
-                    title: 'Button label',
+                    title: 'Texto del botón',
                     type: 'string',
                     initialValue: 'Agendar llamada',
                     validation: (Rule) => Rule.required(),
                 }),
                 defineField({
                     name: 'url',
-                    title: 'Button URL',
+                    title: 'URL del botón',
                     type: 'url',
                     validation: (Rule) => Rule.required().uri({ scheme: ['http', 'https'] }),
                     description: 'Ej: Calendly / formulario / WhatsApp',
@@ -102,7 +102,7 @@ export const siteSettings = defineType({
 
         defineField({
             name: 'social',
-            title: 'Social links',
+            title: 'Redes sociales',
             type: 'object',
             fields: [
                 defineField({ name: 'instagram', title: 'Instagram', type: 'url' }),
@@ -115,24 +115,109 @@ export const siteSettings = defineType({
 
         defineField({
             name: 'contact',
-            title: 'Contact',
+            title: 'Contacto',
             type: 'object',
             fields: [
-                defineField({ name: 'email', title: 'Email', type: 'string' }),
-                defineField({ name: 'phone', title: 'Phone/WhatsApp', type: 'string' }),
-                defineField({ name: 'location', title: 'Location', type: 'string' }),
+                defineField({ name: 'email', title: 'Correo', type: 'string' }),
+                defineField({ name: 'phone', title: 'Teléfono/WhatsApp', type: 'string' }),
+                defineField({ name: 'location', title: 'Ubicación', type: 'string' }),
+            ],
+        }),
+
+        defineField({
+            name: 'pages',
+            title: 'SEO por página',
+            type: 'object',
+            description: 'Metadatos específicos para páginas clave.',
+            fields: [
+                defineField({
+                    name: 'home',
+                    title: 'Inicio',
+                    type: 'object',
+                    fields: [
+                        defineField({
+                            name: 'metaTitle',
+                            title: 'Meta título',
+                            type: 'string',
+                            validation: (Rule) => Rule.max(60),
+                        }),
+                        defineField({
+                            name: 'metaDescription',
+                            title: 'Meta descripción',
+                            type: 'text',
+                            rows: 3,
+                            validation: (Rule) => Rule.max(160),
+                        }),
+                    ],
+                }),
+                defineField({
+                    name: 'projects',
+                    title: 'Proyectos',
+                    type: 'object',
+                    fields: [
+                        defineField({
+                            name: 'metaTitle',
+                            title: 'Meta título',
+                            type: 'string',
+                            validation: (Rule) => Rule.max(60),
+                        }),
+                        defineField({
+                            name: 'metaDescription',
+                            title: 'Meta descripción',
+                            type: 'text',
+                            rows: 3,
+                            validation: (Rule) => Rule.max(160),
+                        }),
+                    ],
+                }),
+                defineField({
+                    name: 'blog',
+                    title: 'Blog',
+                    type: 'object',
+                    fields: [
+                        defineField({
+                            name: 'metaTitle',
+                            title: 'Meta título',
+                            type: 'string',
+                            validation: (Rule) => Rule.max(60),
+                        }),
+                        defineField({
+                            name: 'metaDescription',
+                            title: 'Meta descripción',
+                            type: 'text',
+                            rows: 3,
+                            validation: (Rule) => Rule.max(160),
+                        }),
+                    ],
+                }),
+            ],
+        }),
+
+        defineField({
+            name: 'workspace',
+            title: 'Espacio de trabajo',
+            type: 'object',
+            description: 'Configuración visual del workspace',
+            fields: [
+                defineField({
+                    name: 'greeting',
+                    title: 'Saludo del workspace',
+                    type: 'string',
+                    description: 'Texto de bienvenida que aparece en el canvas (ej: "Explora nuestro espacio creativo")',
+                    initialValue: 'Explora nuestro espacio creativo',
+                }),
             ],
         }),
 
         defineField({
             name: 'backgroundAudio',
-            title: 'Background Audio',
+            title: 'Audio de fondo',
             type: 'object',
             description: 'Audio ambiental para el workspace (controlado por FAB)',
             fields: [
                 defineField({
                     name: 'url',
-                    title: 'Audio URL',
+                    title: 'URL del audio',
                     type: 'url',
                     description: 'URL del archivo de audio (MP3 recomendado)',
                     validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),

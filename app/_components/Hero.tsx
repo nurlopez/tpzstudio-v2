@@ -103,7 +103,7 @@ export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Pr
                         style={{
                             position: 'absolute',
                             inset: 0,
-                            transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+                            transition: 'transform var(--motion-standard) var(--ease-out)',
                         }}
                         className="hero-image-wrapper"
                     >
@@ -134,7 +134,7 @@ export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Pr
                                 objectFit: 'cover',
                                 transform: 'scale(1.1)',
                                 filter: 'saturate(0.85) contrast(1.1) brightness(0.95)',
-                                transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+                                transition: 'transform var(--motion-standard) var(--ease-out)',
                             }}
                         >
                             <source src={background.videoUrl} type="video/mp4" />
@@ -142,7 +142,7 @@ export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Pr
                     ) : embedUrl ? (
                         <iframe
                             src={embedUrl}
-                            title="Hero video"
+                            title="Vídeo principal"
                             allow="autoplay; fullscreen; picture-in-picture"
                             style={{
                                 width: '100%',
@@ -191,7 +191,7 @@ export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Pr
             {/* Content */}
             <div style={{ 
                 position: 'relative', 
-                padding: '48px 24px',
+                padding: 'var(--space-2xl) var(--space-lg)',
                 width: '100%',
                 zIndex: 4,
             }}>
@@ -201,9 +201,9 @@ export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Pr
                             fontSize: 'clamp(2.5rem, 8vw, 5.5rem)',
                             lineHeight: 1.05, 
                             margin: 0, 
-                            letterSpacing: '-0.04em',
+                            letterSpacing: '-0.02em',
                             fontWeight: 400,
-                            fontFamily: 'var(--font-serif), Georgia, serif',
+                            fontFamily: 'var(--font-lacquer), cursive',
                             textShadow: '0 2px 20px rgba(0,0,0,0.5)',
                         }}>
                             {headline}
@@ -245,7 +245,7 @@ export function Hero({ headline, subheadline, ctaLabel, ctaUrl, background }: Pr
                                         fontWeight: 600,
                                         fontSize: 14,
                                         letterSpacing: '0.02em',
-                                        transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                        transition: 'all var(--motion-standard) var(--ease-out)',
                                         boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4)',
                                     }}
                                 >

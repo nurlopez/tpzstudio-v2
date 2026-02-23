@@ -4,7 +4,8 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWorkspace } from './WorkspaceProvider'
 import { WorkspaceObject } from './WorkspaceObject'
-import { WorkspaceObjectData, BackgroundConfig, AmbientElement } from './types'
+import { motion } from 'framer-motion'
+import { WorkspaceObjectData, BackgroundConfig } from './types'
 import { getWorkspaceObjects } from './lib/getWorkspaceObjects'
 import { calculateWorkspaceLayout } from './lib/calculateOptimalLayout'
 
@@ -29,15 +30,15 @@ import { calculateWorkspaceLayout } from './lib/calculateOptimalLayout'
  * Props:
  * - objects: WorkspaceObject[] - Array of object data
  * - background?: BackgroundConfig - Background image/video config
- * - ambientElements?: AmbientElement[] - Optional canvas elements (intro text, philosophy card)
+ * - greeting?: string | null - CMS-editable greeting text for canvas
  */
 interface CanvasProps {
   objects?: WorkspaceObjectData[]
   background?: BackgroundConfig
-  ambientElements?: AmbientElement[]
+  greeting?: string | null
 }
 
-export function Canvas({ objects, background, ambientElements }: CanvasProps) {
+export function Canvas({ objects, background, greeting }: CanvasProps) {
   const { state, actions } = useWorkspace()
   const router = useRouter()
   
@@ -58,10 +59,9 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
     if (typeof window === 'undefined') {
       return { width: 0, height: 0 }
     }
-    // On mobile, use visualViewport if available for accurate dimensions
-    // This accounts for browser chrome (address bar, etc.)
-    const width = window.visualViewport?.width || window.innerWidth || 0
-    const height = window.visualViewport?.height || window.innerHeight || 0
+    // Use innerWidth/innerHeight — matches CSS layout reference frame for fixed/absolute positioning
+    const width = window.innerWidth || 0
+    const height = window.innerHeight || 0
     return { width, height }
   }
   
@@ -140,13 +140,13 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
   useEffect(() => {
     if (objects && objects.length > 0) {
       // Objects provided from server-side
-      console.log('[Canvas] Using objects from server-side:', objects.length)
+      console.log('[Canvas] Usando objetos desde el servidor:', objects.length)
       setWorkspaceObjects(objects)
       setObjectsLoaded(true)
       actions.setObjectsLoaded(true)
     } else {
       // No objects provided, fetch client-side as fallback
-      console.log('[Canvas] No objects provided, attempting client-side fetch...')
+      console.log('[Canvas] No hay objetos, intentando carga en cliente...')
       getWorkspaceObjects()
         .then((fetched) => {
           setWorkspaceObjects(fetched)
@@ -154,7 +154,7 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
           actions.setObjectsLoaded(true)
         })
         .catch((error) => {
-          console.error('[Canvas] Client-side fetch failed:', error)
+          console.error('[Canvas] Falló la carga en cliente:', error)
           setWorkspaceObjects([])
           setObjectsLoaded(true)
           actions.setObjectsLoaded(true)
@@ -175,7 +175,7 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
 
   // Debug: Log canvas height
   if (optimalLayout) {
-    console.log('[Canvas] Rendering canvas with height:', optimalLayout.canvasHeight, 'px')
+    console.log('[Canvas] Renderizando canvas con altura:', optimalLayout.canvasHeight, 'px')
   }
 
   return (
@@ -183,7 +183,7 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
       data-workspace-canvas
       data-dimmed={state.panelOpen || state.overlayOpen ? '' : undefined}
       onClick={handleCanvasClick}
-      className="fixed inset-0 w-screen h-screen overflow-hidden"
+      className="fixed inset-0 w-full h-full overflow-hidden"
       style={{
         transition: 'opacity var(--motion-standard) var(--ease-out)',
         touchAction: 'none',
@@ -193,13 +193,13 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
       {/* PERMANENT: Workspace objects container - this is the scrollable element */}
       <div
         data-workspace-objects-container
-        className="absolute inset-0 w-full h-screen overflow-visible z-[1]"
+        className="absolute inset-0 w-full h-full overflow-visible z-[1]"
         style={{
           '--object-size': optimalLayout ? `${optimalLayout.objectSize}px` : '120px',
         } as React.CSSProperties}
       >
         {/* Only render objects on client after layout is calculated to prevent hydration mismatch */}
-        {isClient && optimalLayout && objectsWithOptimalPositions.map((object) => {
+        {isClient && optimalLayout && objectsWithOptimalPositions.map((object, index) => {
           // Only render if object has a position
           if (!object.position) return null
           
@@ -212,6 +212,7 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
               title={object.title}
               visual={object.visual}
               isFocused={state.focusedObject === object.slug}
+              index={index}
               onClick={() => {
                 // Set focused state immediately (for red tint and label)
                 actions.setFocusedObject(object.slug)
@@ -236,12 +237,12 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
                 if (state.touchEnabled) {
                   setTimeout(() => {
                     actions.openPanel('service', object.slug)
-                    router.push(`/workspace/${object.slug}`)
+                    router.push(`/${object.slug}`)
                   }, 1500)
                 } else {
                   // Desktop: immediate panel opening
                   actions.openPanel('service', object.slug)
-                  router.push(`/workspace/${object.slug}`)
+                  router.push(`/${object.slug}`)
                 }
               }}
             />
@@ -249,10 +250,35 @@ export function Canvas({ objects, background, ambientElements }: CanvasProps) {
         })}
       </div>
 
-      {/* Ambient elements */}
-      {state.ambientElementsVisible && ambientElements && (
-        <div data-workspace-ambient-elements>
-          {/* TODO: Render ambient elements */}
+      {/* Greeting — word-by-word reveal */}
+      {greeting && (
+        <div
+          data-workspace-greeting
+          className="absolute top-[8%] left-1/2 -translate-x-1/2 z-0
+                     text-center pointer-events-none select-none
+                     max-w-[500px] px-4"
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
+            color: 'var(--paper-ink-primary)',
+            letterSpacing: '0.02em',
+          }}
+        >
+          {greeting.split(' ').map((word, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 0.6, y: 0 }}
+              transition={{
+                duration: 0.4,
+                delay: 0.5 + i * 0.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              style={{ display: 'inline-block', marginRight: '0.25em' }}
+            >
+              {word}
+            </motion.span>
+          ))}
         </div>
       )}
     </div>

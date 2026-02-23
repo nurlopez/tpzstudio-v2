@@ -15,10 +15,10 @@ import { useWorkspace } from '../WorkspaceProvider'
  * - Handles deep-linking to objects/panels/overlays
  *
  * Route patterns:
- * - /workspace → canvas home (no panel/overlay)
- * - /workspace/[objectSlug] → object expanded (panel open)
- * - /workspace/projects → project archive (panel open)
- * - /workspace/projects/[slug] → project detail (overlay open)
+ * - / → canvas home (no panel/overlay)
+ * - /[objectSlug] → object expanded (panel open)
+ * - /proyectos → project archive (panel open)
+ * - /proyectos/[slug] → project detail (overlay open)
  *
  * Note: Contact and about are handled by FloatingActionButtons, not routes
  */
@@ -35,35 +35,43 @@ export function useWorkspaceRoute() {
     lastPathnameRef.current = pathname
 
     // Parse route and update workspace state
-    if (pathname === '/workspace') {
+    if (pathname === '/') {
       // Canvas home - close all panels/overlays
       if (state.panelOpen) actions.closePanel()
       if (state.overlayOpen) actions.closeOverlay()
       if (state.focusedObject !== null) actions.setFocusedObject(null)
-    } else if (pathname.startsWith('/workspace/projects/')) {
+    } else if (pathname.startsWith('/proyectos/')) {
       // Project detail - open overlay
-      const slug = pathname.split('/workspace/projects/')[1]
+      const slug = pathname.split('/proyectos/')[1]
       if (state.overlaySlug !== slug || !state.overlayOpen || state.overlayType !== 'project') {
         actions.openOverlay('project', slug)
       }
-    } else if (pathname === '/workspace/projects') {
+    } else if (pathname === '/proyectos') {
       // Project archive - open panel
       if (!state.panelOpen || state.panelType !== 'archive') {
         actions.openPanel('archive')
       }
-    } else if (pathname.startsWith('/workspace/')) {
-      // Object expanded - open panel for object
-      const slug = pathname.split('/workspace/')[1]
+    } else {
+      // Single-segment slug: /[objectSlug]
+      const segments = pathname.split('/').filter(Boolean)
+      if (segments.length === 1) {
+        const slug = segments[0]
 
-      // Contact and about are now handled by FAB - ignore these routes
-      if (['contact', 'contacto', 'sobre-mi', 'sobre-tpzstudio', 'about'].includes(slug)) {
-        return // Don't open panel - handled by FloatingActionButtons
-      }
+        // Contact and about are now handled by FAB - ignore these routes
+        if (['contact', 'contacto', 'sobre-mi', 'sobre-tpzstudio', 'about'].includes(slug)) {
+          return // Don't open panel - handled by FloatingActionButtons
+        }
 
-      // Regular workspace object
-      if (state.panelSlug !== slug || !state.panelOpen || state.panelType !== 'service') {
-        actions.setFocusedObject(slug)
-        actions.openPanel('service', slug)
+        // Non-workspace routes (blog, proyectos, contacto) - ignore
+        if (['blog', 'contacto'].includes(slug)) {
+          return
+        }
+
+        // Regular workspace object
+        if (state.panelSlug !== slug || !state.panelOpen || state.panelType !== 'service') {
+          actions.setFocusedObject(slug)
+          actions.openPanel('service', slug)
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -39,8 +39,6 @@ interface OverlayProps {
 export function Overlay({ isOpen, type, slug, children, onClose }: OverlayProps) {
   if (!isOpen) return null
 
-  if (!isOpen) return null
-
   return (
     <div
       data-workspace-overlay
@@ -48,72 +46,60 @@ export function Overlay({ isOpen, type, slug, children, onClose }: OverlayProps)
       data-overlay-slug={slug}
       className="fixed inset-0 w-screen h-screen z-[2000] overflow-y-auto"
       style={{
-        backgroundColor: 'var(--bg-canvas)',
+        backgroundColor: '#ffffff',
+        color: 'var(--paper-ink-primary)',
         transition: 'opacity var(--motion-slow) var(--ease-out)',
       }}
     >
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute rounded cursor-pointer text-sm font-inherit z-[2001]"
+        className="absolute cursor-pointer font-inherit z-[2001]"
+        aria-label="Cerrar ventana"
         style={{
           top: 'var(--space-lg)',
           right: 'var(--space-lg)',
-          padding: 'var(--space-sm) var(--space-md)',
-          backgroundColor: 'var(--bg-elevated)',
-          border: '1px solid var(--border-subtle)',
-          color: 'var(--ink-primary)',
-          transition: 'background-color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out)',
+          width: '32px',
+          height: '32px',
+          padding: 0,
+          backgroundColor: 'transparent',
+          border: 'none',
+          color: 'var(--paper-ink-primary)',
+          fontSize: '24px',
+          lineHeight: '1',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'opacity var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out)',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'var(--bg-surface)'
-          e.currentTarget.style.borderColor = 'var(--border-visible)'
+          e.currentTarget.style.opacity = '0.6'
+          e.currentTarget.style.transform = 'scale(1.1)'
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'
-          e.currentTarget.style.borderColor = 'var(--border-subtle)'
+          e.currentTarget.style.opacity = '1'
+          e.currentTarget.style.transform = 'scale(1)'
         }}
       >
-        Close
+        ×
       </button>
 
       {/* Overlay content */}
-      <div 
-        className="max-w-[1200px] mx-auto"
+      <div
+        className="max-w-[900px] mx-auto"
         style={{
           padding: 'var(--space-3xl) var(--space-xl)',
         }}
       >
         {children || (
           <div>
-            <h2 
-              className="font-medium mb-md"
+            <p
               style={{
-                fontSize: 'var(--font-size-xl)',
-                color: 'var(--ink-primary)',
+                fontSize: 'var(--font-size-sm)',
+                color: 'var(--paper-ink-muted)',
               }}
             >
-              Overlay: {type}
-            </h2>
-            {slug && (
-              <p 
-                className="mb-lg"
-                style={{
-                  fontSize: 'var(--font-size-sm)',
-                  color: 'var(--ink-secondary)',
-                }}
-              >
-                Slug: {slug}
-              </p>
-            )}
-            <p 
-              style={{
-                fontSize: 'var(--font-size-md)',
-                color: 'var(--ink-primary)',
-                lineHeight: 'var(--line-height-relaxed)',
-              }}
-            >
-              Content will be rendered here
+              El contenido se mostrará aquí
             </p>
           </div>
         )}

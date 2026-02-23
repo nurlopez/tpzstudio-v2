@@ -37,7 +37,7 @@ export const aboutPage = defineType({
 
         defineField({
             name: 'cta',
-            title: 'CTA Footer',
+            title: 'CTA del footer',
             type: 'object',
             fields: [
                 defineField({
@@ -64,13 +64,13 @@ export const aboutPage = defineType({
             fields: [
                 defineField({
                     name: 'metaTitle',
-                    title: 'Meta title',
+                    title: 'Meta título',
                     type: 'string',
                     validation: (Rule) => Rule.max(60),
                 }),
                 defineField({
                     name: 'metaDescription',
-                    title: 'Meta description',
+                    title: 'Meta descripción',
                     type: 'text',
                     rows: 3,
                     validation: (Rule) => Rule.max(160),

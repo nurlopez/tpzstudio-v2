@@ -12,16 +12,16 @@ export async function GET() {
 
     if (!contact) {
       return NextResponse.json(
-        { error: 'Contact content not found' },
+        { error: 'Contenido de contacto no encontrado' },
         { status: 404 }
       )
     }
 
     return NextResponse.json(contact)
   } catch (error) {
-    console.error('[API] Error fetching contact content:', error)
+    console.error('[API] Error al obtener contenido de contacto:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch contact content' },
+      { error: 'No se pudo obtener el contenido de contacto' },
       { status: 500 }
     )
   }

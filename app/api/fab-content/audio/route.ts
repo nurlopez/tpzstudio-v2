@@ -18,7 +18,7 @@ export async function GET() {
 
     return NextResponse.json({ audioUrl: result.audioUrl })
   } catch (error) {
-    console.error('[API] Error fetching audio URL:', error)
+    console.error('[API] Error al obtener URL de audio:', error)
     return NextResponse.json({ audioUrl: null })
   }
 }

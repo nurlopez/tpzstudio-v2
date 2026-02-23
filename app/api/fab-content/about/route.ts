@@ -12,16 +12,16 @@ export async function GET() {
 
     if (!about) {
       return NextResponse.json(
-        { error: 'About content not found' },
+        { error: 'Contenido de sobre mí no encontrado' },
         { status: 404 }
       )
     }
 
     return NextResponse.json(about)
   } catch (error) {
-    console.error('[API] Error fetching about content:', error)
+    console.error('[API] Error al obtener contenido de sobre mí:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch about content' },
+      { error: 'No se pudo obtener el contenido de sobre mí' },
       { status: 500 }
     )
   }
