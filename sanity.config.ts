@@ -1,8 +1,10 @@
-import {defineConfig, defineLocaleResourceBundle} from 'sanity'
-import {structureTool} from 'sanity/structure'
-import {visionTool} from '@sanity/vision'
-import {schemaTypes} from '../sanity/schemaTypes'
-import {structure} from '../sanity/structure'
+'use client'
+
+import { defineConfig, defineLocaleResourceBundle } from 'sanity'
+import { structureTool } from 'sanity/structure'
+import { visionTool } from '@sanity/vision'
+import { schemaTypes } from './sanity/schemaTypes'
+import { structure } from './sanity/structure'
 
 const spanishTagPlaceholders = defineLocaleResourceBundle({
   locale: 'en-US',
@@ -19,6 +21,8 @@ export default defineConfig({
 
   projectId: 'o8fr0vfj',
   dataset: 'production',
+
+  basePath: '/studio',
 
   i18n: {
     bundles: [spanishTagPlaceholders],
