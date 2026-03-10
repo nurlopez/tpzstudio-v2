@@ -188,24 +188,3 @@ export const workspaceSettingsQuery = groq`
   }
 `
 
-export const aboutPageWorkspaceQuery = groq`
-  *[_type == "aboutPage"][0]{
-    title,
-    body,
-    image {
-      asset-> {
-        _id,
-        url
-      },
-      alt
-    },
-    cta {
-      text,
-      url
-    },
-    seo {
-      metaTitle,
-      metaDescription
-    }
-  }
-`

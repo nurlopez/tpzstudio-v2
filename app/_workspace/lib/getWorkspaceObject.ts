@@ -78,11 +78,7 @@ export async function getWorkspaceObject(slug: string): Promise<WorkspaceObjectC
     }
     
     return normalizedContent
-  } catch (error) {
-    console.error('[getWorkspaceObject] Error al obtener el objeto:', error)
-    if (error instanceof Error) {
-      console.error('[getWorkspaceObject] Mensaje de error:', error.message)
-    }
+  } catch {
     return null
   }
 }

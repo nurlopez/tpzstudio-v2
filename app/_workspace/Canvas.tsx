@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useWorkspace } from './WorkspaceProvider'
 import { WorkspaceObject } from './WorkspaceObject'
 import { motion } from 'framer-motion'
-import { WorkspaceObjectData, BackgroundConfig } from './types'
+import { WorkspaceObjectData } from './types'
 import { getWorkspaceObjects } from './lib/getWorkspaceObjects'
 import { calculateWorkspaceLayout } from './lib/calculateOptimalLayout'
 
@@ -29,16 +29,14 @@ import { calculateWorkspaceLayout } from './lib/calculateOptimalLayout'
  * 
  * Props:
  * - objects: WorkspaceObject[] - Array of object data
- * - background?: BackgroundConfig - Background image/video config
  * - greeting?: string | null - CMS-editable greeting text for canvas
  */
 interface CanvasProps {
   objects?: WorkspaceObjectData[]
-  background?: BackgroundConfig
   greeting?: string | null
 }
 
-export function Canvas({ objects, background, greeting }: CanvasProps) {
+export function Canvas({ objects, greeting }: CanvasProps) {
   const { state, actions } = useWorkspace()
   const router = useRouter()
   
@@ -76,7 +74,6 @@ export function Canvas({ objects, background, greeting }: CanvasProps) {
       setViewportSize((prev) => {
         // Only update if size actually changed (prevents unnecessary re-renders)
         if (prev.width !== newSize.width || prev.height !== newSize.height) {
-          console.log('[Canvas] Viewport size updated:', newSize)
           return newSize
         }
         return prev
@@ -109,13 +106,6 @@ export function Canvas({ objects, background, greeting }: CanvasProps) {
       return null
     }
     const layout = calculateWorkspaceLayout(workspaceObjects, viewportSize.width, viewportSize.height)
-    console.log('[Canvas] Workspace layout calculated:', { 
-      viewport: viewportSize, 
-      objectCount: workspaceObjects.length,
-      canvasHeight: layout.canvasHeight,
-      viewportHeight: viewportSize.height,
-      willScroll: layout.canvasHeight > viewportSize.height
-    })
     return layout
   }, [workspaceObjects, viewportSize])
   
@@ -140,21 +130,18 @@ export function Canvas({ objects, background, greeting }: CanvasProps) {
   useEffect(() => {
     if (objects && objects.length > 0) {
       // Objects provided from server-side
-      console.log('[Canvas] Usando objetos desde el servidor:', objects.length)
       setWorkspaceObjects(objects)
       setObjectsLoaded(true)
       actions.setObjectsLoaded(true)
     } else {
       // No objects provided, fetch client-side as fallback
-      console.log('[Canvas] No hay objetos, intentando carga en cliente...')
       getWorkspaceObjects()
         .then((fetched) => {
           setWorkspaceObjects(fetched)
           setObjectsLoaded(true)
           actions.setObjectsLoaded(true)
         })
-        .catch((error) => {
-          console.error('[Canvas] Falló la carga en cliente:', error)
+        .catch(() => {
           setWorkspaceObjects([])
           setObjectsLoaded(true)
           actions.setObjectsLoaded(true)
@@ -171,11 +158,6 @@ export function Canvas({ objects, background, greeting }: CanvasProps) {
       actions.closePanel()
     }
     // Don't prevent default - allow scroll events to work
-  }
-
-  // Debug: Log canvas height
-  if (optimalLayout) {
-    console.log('[Canvas] Renderizando canvas con altura:', optimalLayout.canvasHeight, 'px')
   }
 
   return (

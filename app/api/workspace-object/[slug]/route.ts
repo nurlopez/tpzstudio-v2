@@ -104,8 +104,7 @@ export async function GET(
     }
 
     return NextResponse.json(content)
-  } catch (error) {
-    console.error('[API] Error al obtener objeto del workspace:', error)
+  } catch {
     return NextResponse.json(
       { error: 'No se pudo obtener el objeto del workspace' },
       { status: 500 }

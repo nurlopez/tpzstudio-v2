@@ -136,8 +136,7 @@ export default async function ProjectsPage() {
         </div>
       </div>
     )
-  } catch (error) {
-    console.error('[ProjectsPage] Error al obtener proyectos:', error)
+  } catch {
     return (
       <div style={{ padding: 'var(--space-xl)' }}>
         <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--paper-ink-muted)' }}>

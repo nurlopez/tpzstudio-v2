@@ -1,13 +1,20 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { client } from '@/sanity/lib/client'
 
-const TO_EMAIL = 'tpzstudio@gmail.com'
+const FALLBACK_EMAIL = 'info.tpzstudio@gmail.com'
+
+async function getRecipientEmail(): Promise<string> {
+  const result = await client.fetch<{ address?: string } | null>(
+    `*[_type == "contactPage"][0].email.address`
+  )
+  return (typeof result === 'string' && result) ? result : FALLBACK_EMAIL
+}
 
 export async function POST(request: Request) {
   try {
     const apiKey = process.env.RESEND_API_KEY
     if (!apiKey) {
-      console.error('[API] RESEND_API_KEY no configurado')
       return NextResponse.json(
         { error: 'Servicio de email no configurado' },
         { status: 500 }
@@ -26,17 +33,18 @@ export async function POST(request: Request) {
       )
     }
 
+    const recipientEmail = await getRecipientEmail()
+
     // Send email via Resend
     const { error } = await resend.emails.send({
       from: 'TPZ Studio <onboarding@resend.dev>',
-      to: TO_EMAIL,
+      to: recipientEmail,
       replyTo: email,
       subject: `Nuevo mensaje de ${name}`,
       text: `Nombre: ${name}\nCorreo: ${email}\n\nMensaje:\n${message}`,
     })
 
     if (error) {
-      console.error('[API] Error de Resend:', error)
       return NextResponse.json(
         { error: 'Error al enviar el mensaje' },
         { status: 500 }
@@ -44,8 +52,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('[API] Error al enviar email de contacto:', error)
+  } catch {
     return NextResponse.json(
       { error: 'Error al enviar el mensaje' },
       { status: 500 }

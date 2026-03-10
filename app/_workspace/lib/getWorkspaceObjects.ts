@@ -12,9 +12,9 @@ const FAB_SLUGS = ['contact', 'contacto', 'sobre-mi', 'sobre-tpzstudio', 'about'
 
 /**
  * getWorkspaceObjects
- * 
+ *
  * Fetches workspace objects from Sanity, with fallback to mock data.
- * 
+ *
  * Returns workspace objects with:
  * - id
  * - slug
@@ -23,37 +23,17 @@ const FAB_SLUGS = ['contact', 'contacto', 'sobre-mi', 'sobre-tpzstudio', 'about'
  * - position (optional)
  */
 export async function getWorkspaceObjects(): Promise<WorkspaceObjectData[]> {
-  // Log configuration for debugging
-  console.log('[getWorkspaceObjects] Intentando obtener desde Sanity...')
-  
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
   const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
-  const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-12-21'
-  
-  console.log('[getWorkspaceObjects] Project ID:', projectId ? `${projectId.substring(0, 8)}...` : '❌ Falta')
-  console.log('[getWorkspaceObjects] Dataset:', dataset || '❌ Falta')
-  console.log('[getWorkspaceObjects] API Version:', apiVersion)
-  
+
   if (!projectId || !dataset) {
-    console.error('[getWorkspaceObjects] ❌ Faltan variables de entorno obligatorias')
-    console.error('[getWorkspaceObjects] NEXT_PUBLIC_SANITY_PROJECT_ID:', projectId ? 'Configurado' : 'Falta')
-    console.error('[getWorkspaceObjects] NEXT_PUBLIC_SANITY_DATASET:', dataset ? 'Configurado' : 'Falta')
-    console.log('[getWorkspaceObjects] Usando datos de respaldo...')
     const mockResult = getMockWorkspaceObjects()
-    console.log('[getWorkspaceObjects] Usando datos de respaldo:', mockResult.length, 'objetos')
     return mockResult
   }
 
   try {
-    // Try to fetch from Sanity
-    console.log('[getWorkspaceObjects] Ejecutando consulta GROQ...')
-    console.log('[getWorkspaceObjects] Consulta:', workspaceObjectsQuery)
-    
     const sanityObjects = await client.fetch(workspaceObjectsQuery)
-    
-    console.log('[getWorkspaceObjects] Respuesta bruta de Sanity:', sanityObjects)
-    console.log('[getWorkspaceObjects] Cantidad de objetos:', sanityObjects?.length || 0)
-    
+
     if (sanityObjects && Array.isArray(sanityObjects) && sanityObjects.length > 0) {
       // Transform Sanity data to WorkspaceObjectData format
       // TEMPORARY: Clamp positions to ensure visibility (see clampObjectPosition)
@@ -61,18 +41,16 @@ export async function getWorkspaceObjects(): Promise<WorkspaceObjectData[]> {
         .filter((obj: any) => {
           // Filter out objects without required fields
           if (!obj.slug || !obj.title || !obj.objectType) {
-            console.warn('[getWorkspaceObjects] Omitiendo objeto sin campos obligatorios:', obj)
             return false
           }
           // Filter out FAB-handled objects (contact, about)
           if (FAB_SLUGS.includes(obj.slug)) {
-            console.log('[getWorkspaceObjects] Excluyendo objeto gestionado por FAB:', obj.slug)
             return false
           }
           return true
         })
         .map((obj: any) => {
-          const transformed = {
+          return {
             id: obj._id,
             slug: obj.slug,
             type: obj.objectType as WorkspaceObjectData['type'],
@@ -87,45 +65,19 @@ export async function getWorkspaceObjects(): Promise<WorkspaceObjectData[]> {
                 }
               : undefined,
           }
-          console.log('[getWorkspaceObjects] Objeto transformado:', transformed)
-          return transformed
         })
-      
+
       // Generate positions for objects without coordinates
       const result = generateObjectPositions(transformed)
-      
-      console.log('[getWorkspaceObjects] ✅ Obtenidos desde Sanity:', result.length, 'objetos')
-      console.log('[getWorkspaceObjects] Objetos con posiciones generadas:', result.filter(obj => !sanityObjects.find((s: any) => s._id === obj.id && s.position)).length)
-      console.log('[getWorkspaceObjects] Resultado final:', result)
+
       return result
-    } else {
-      console.warn('[getWorkspaceObjects] ⚠️ Sanity devolvió vacío o null, usando datos de respaldo')
     }
-  } catch (error) {
-    console.error('[getWorkspaceObjects] ❌ Error al obtener desde Sanity:', error)
-    if (error instanceof Error) {
-      console.error('[getWorkspaceObjects] Nombre del error:', error.name)
-      console.error('[getWorkspaceObjects] Mensaje del error:', error.message)
-      console.error('[getWorkspaceObjects] Traza del error:', error.stack)
-      
-      // Check for specific error types
-      if (error.message.includes('Request error')) {
-        console.error('[getWorkspaceObjects] Parece un problema de red/CORS')
-        console.error('[getWorkspaceObjects] El cliente de Sanity puede necesitar configuración para uso en cliente')
-        console.error('[getWorkspaceObjects] Considera:')
-        console.error('[getWorkspaceObjects] 1. Mover la carga a un componente servidor/API')
-        console.error('[getWorkspaceObjects] 2. O habilitar CORS en la configuración del proyecto Sanity')
-      }
-    }
-    
-    // Log the full error object for debugging
-    console.error('[getWorkspaceObjects] Objeto de error completo:', JSON.stringify(error, Object.getOwnPropertyNames(error)))
+  } catch {
+    // Silently fall through to mock data
   }
 
   // Fallback to mock data
-  console.log('[getWorkspaceObjects] Usando datos de respaldo...')
   const mockResult = getMockWorkspaceObjects()
-  console.log('[getWorkspaceObjects] Usando datos de respaldo:', mockResult.length, 'objetos')
   return mockResult
 }
 
@@ -185,7 +137,7 @@ function getMockWorkspaceObjects(): WorkspaceObjectData[] {
     ...obj,
     position: clampObjectPosition(obj.position),
   }))
-  
+
   // Generate positions for any objects still without coordinates
   return generateObjectPositions(withClampedPositions)
 }

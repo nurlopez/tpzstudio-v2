@@ -48,6 +48,7 @@ interface AboutData {
 
 interface FABDrawerContentProps {
   type: 'contact' | 'about'
+  onSwitchToContact?: () => void
 }
 
 // Simple social icon component
@@ -68,7 +69,7 @@ function SocialIcon({ name }: { name: string }) {
 }
 
 // Contact form component
-function ContactForm() {
+function ContactForm({ onStatusChange }: { onStatusChange?: (status: 'idle' | 'sending' | 'success' | 'error') => void }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -101,6 +102,7 @@ function ContactForm() {
       }
 
       setStatus('success')
+      onStatusChange?.('success')
       setFormData({ name: '', email: '', message: '' })
     } catch (err) {
       setStatus('error')
@@ -123,7 +125,7 @@ function ContactForm() {
         <p className="text-base text-black/85 mb-2">¡Mensaje enviado!</p>
         <p className="text-sm text-black/60">Te responderemos pronto.</p>
         <button
-          onClick={() => setStatus('idle')}
+          onClick={() => { setStatus('idle'); onStatusChange?.('idle') }}
           className="mt-4 text-sm text-black/60 underline"
         >
           Enviar otro mensaje
@@ -206,10 +208,11 @@ function ContactForm() {
   )
 }
 
-export function FABDrawerContent({ type }: FABDrawerContentProps) {
+export function FABDrawerContent({ type, onSwitchToContact }: FABDrawerContentProps) {
   const [data, setData] = useState<ContactData | AboutData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -224,8 +227,7 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
 
         const result = await response.json()
         setData(result)
-      } catch (err) {
-        console.error(`[FABDrawerContent] Error al obtener datos de ${type}:`, err)
+      } catch {
         setError('Error al cargar el contenido')
       } finally {
         setLoading(false)
@@ -256,15 +258,15 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
 
     return (
       <div className="space-y-6" style={{ paddingBottom: 'var(--space-xl)' }}>
-        {/* Intro Text */}
-        {contact.introText && (
+        {/* Intro Text - hidden when showing success confirmation */}
+        {contact.introText && formStatus !== 'success' && (
           <p className="text-base text-black/75 leading-relaxed">
             {contact.introText}
           </p>
         )}
 
         {/* Contact Form */}
-        <ContactForm />
+        <ContactForm onStatusChange={setFormStatus} />
 
         {/* Phone (after form) */}
         {contact.phone?.number && (
@@ -397,17 +399,17 @@ export function FABDrawerContent({ type }: FABDrawerContentProps) {
         </div>
       )}
 
-      {/* CTA */}
-      {about.cta?.text && about.cta?.url && (
+      {/* CTA - switches to contact drawer */}
+      {about.cta?.text && onSwitchToContact && (
         <div className="pt-4 border-t border-black/10">
-          <a
-            href={about.cta.url}
+          <button
+            onClick={onSwitchToContact}
             className="inline-block text-sm font-medium text-black/75 hover:text-black
               px-4 py-2 border border-black/15 rounded-md
-              hover:border-black/25 transition-colors duration-150"
+              hover:border-black/25 transition-colors duration-150 cursor-pointer"
           >
             {about.cta.text}
-          </a>
+          </button>
         </div>
       )}
     </div>

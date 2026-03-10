@@ -58,8 +58,8 @@ export function FloatingActionButtons() {
                     setAudioUrl(data.audioUrl)
                 }
             })
-            .catch(err => {
-                console.error('[FAB] Error al obtener URL de audio:', err)
+            .catch(() => {
+                // silently ignore
             })
     }, [])
 
@@ -100,8 +100,8 @@ export function FloatingActionButtons() {
         if (isPlaying) {
             audio.pause()
         } else {
-            audio.play().catch(err => {
-                console.error('[FAB] Error al reproducir audio:', err)
+            audio.play().catch(() => {
+                // silently ignore
             })
         }
     }, [isPlaying])
@@ -171,7 +171,7 @@ export function FloatingActionButtons() {
                 title="sobre mí"
                 id="fab-drawer-about"
             >
-                <FABDrawerContent type="about" />
+                <FABDrawerContent type="about" onSwitchToContact={() => setActiveDrawer('contact')} />
             </FABDrawer>
         </>
     )

@@ -83,8 +83,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
         setContent(data)
         setLoading(false)
       })
-      .catch((error) => {
-        console.error('[Panel] Error al obtener contenido:', error)
+      .catch(() => {
         setContent(null)
         setLoading(false)
       })

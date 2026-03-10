@@ -10,9 +10,6 @@ export type PanelType = 'service' | 'archive' | 'contact' | 'about'
 
 export type OverlayType = 'project' | 'about'
 
-export type ViewMode = 'canvas' | 'focused'
-
-export type DeviceType = 'desktop' | 'mobile'
 
 /**
  * Workspace State
@@ -42,8 +39,6 @@ export interface WorkspaceState {
   isMobile: boolean
   touchEnabled: boolean
   
-  // Ambient elements
-  ambientElementsVisible: boolean
 }
 
 /**
@@ -60,7 +55,6 @@ export interface WorkspaceActions {
   closeOverlay: () => void
   setCanvasReady: (ready: boolean) => void
   setObjectsLoaded: (loaded: boolean) => void
-  setAmbientElementsVisible: (visible: boolean) => void
 }
 
 /**
@@ -92,29 +86,3 @@ export interface WorkspaceObjectData {
   // via /api/workspace-object/[slug]. This interface stays minimal for canvas rendering.
 }
 
-/**
- * Background Configuration
- * 
- * Canvas background settings.
- */
-export interface BackgroundConfig {
-  type: 'image' | 'video' | 'solid'
-  image?: string
-  videoUrl?: string
-  color?: string
-}
-
-/**
- * Ambient Element
- * 
- * Optional canvas elements (intro text, philosophy card, etc.)
- */
-export interface AmbientElement {
-  id: string
-  type: 'text' | 'card'
-  content: string
-  position?: {
-    x: number
-    y: number
-  }
-}

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { client } from '@/sanity/lib/client'
-import { aboutPageWorkspaceQuery } from '@/sanity/lib/queries'
+import { aboutPageQuery } from '@/sanity/lib/queries'
 
 /**
  * API route for fetching about content for FAB drawer
@@ -8,7 +8,7 @@ import { aboutPageWorkspaceQuery } from '@/sanity/lib/queries'
  */
 export async function GET() {
   try {
-    const about = await client.fetch(aboutPageWorkspaceQuery)
+    const about = await client.fetch(aboutPageQuery)
 
     if (!about) {
       return NextResponse.json(
@@ -18,8 +18,7 @@ export async function GET() {
     }
 
     return NextResponse.json(about)
-  } catch (error) {
-    console.error('[API] Error al obtener contenido de sobre mí:', error)
+  } catch {
     return NextResponse.json(
       { error: 'No se pudo obtener el contenido de sobre mí' },
       { status: 500 }

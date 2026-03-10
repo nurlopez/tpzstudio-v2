@@ -57,13 +57,8 @@ export function useWorkspaceRoute() {
       if (segments.length === 1) {
         const slug = segments[0]
 
-        // Contact and about are now handled by FAB - ignore these routes
-        if (['contact', 'contacto', 'sobre-mi', 'sobre-tpzstudio', 'about'].includes(slug)) {
-          return // Don't open panel - handled by FloatingActionButtons
-        }
-
-        // Non-workspace routes (blog, proyectos, contacto) - ignore
-        if (['blog', 'contacto'].includes(slug)) {
+        // Contact and about are handled by FAB; blog is a traditional route — ignore all
+        if (['contact', 'contacto', 'sobre-mi', 'sobre-tpzstudio', 'about', 'blog'].includes(slug)) {
           return
         }
 

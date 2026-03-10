@@ -18,8 +18,7 @@ export async function GET() {
     }
 
     return NextResponse.json(contact)
-  } catch (error) {
-    console.error('[API] Error al obtener contenido de contacto:', error)
+  } catch {
     return NextResponse.json(
       { error: 'No se pudo obtener el contenido de contacto' },
       { status: 500 }

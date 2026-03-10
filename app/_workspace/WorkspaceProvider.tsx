@@ -40,7 +40,6 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     overlaySlug: null,
     isMobile: false,
     touchEnabled: false,
-    ambientElementsVisible: true,
   })
 
   // Mobile detection
@@ -116,10 +115,6 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     setState(prev => ({ ...prev, objectsLoaded: loaded }))
   }, [])
 
-  const setAmbientElementsVisible = useCallback((visible: boolean) => {
-    setState(prev => ({ ...prev, ambientElementsVisible: visible }))
-  }, [])
-
   const actions: WorkspaceActions = {
     setFocusedObject,
     setHoveredObject,
@@ -129,7 +124,6 @@ export function WorkspaceProvider({ children }: { children: React.ReactNode }) {
     closeOverlay,
     setCanvasReady,
     setObjectsLoaded,
-    setAmbientElementsVisible,
   }
 
   return (
