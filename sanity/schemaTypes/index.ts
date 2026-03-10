@@ -1,5 +1,15 @@
-import { type SchemaTypeDefinition } from 'sanity'
+import { siteSettings } from './siteSettings'
+import { project } from './project'
+import { contactPage } from './contactPage'
+import { aboutPage } from './aboutPage'
+import { workspaceObject } from './workspaceObject'
+import { blogPost } from './blogPost'
 
-export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [],
-}
+export const schemaTypes = [
+    siteSettings,
+    project,
+    contactPage,
+    aboutPage,
+    workspaceObject,
+    blogPost,
+]
