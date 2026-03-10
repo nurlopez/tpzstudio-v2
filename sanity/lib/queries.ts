@@ -11,80 +11,42 @@ export const siteSettingsQuery = groq`
     },
     social,
     contact,
+    pages{
+      home{
+        metaTitle,
+        metaDescription
+      },
+      projects{
+        metaTitle,
+        metaDescription
+      },
+      blog{
+        metaTitle,
+        metaDescription
+      }
+    },
     seo{
       metaTitle,
       metaDescription,
-      ogImage
+      ogImage{
+        asset->{
+          _id,
+          url
+        }
+      }
     },
     branding{
-      logo,
-      favicon
-    }
-  }
-`
-
-export const homePageQuery = groq`
-  *[_type == "homePage"][0]{
-    hero{
-      headline,
-      subheadline,
-      background{
-        mode,
-        image,
-        videoUrl
-      },
-      showPrimaryCta,
-      secondaryCta{
-        label,
-        url
-      }
-    },
-    introText{
-      body
-    },
-    manifesto{
-      title,
-      body
-    },
-    filosofia{
-      title,
-      body
-    },
-    servicesTeaser{
-      title,
-      body,
-      linkLabel,
-      linkUrl
-    },
-    finalCta{
-      title,
-      body,
-      usePrimaryCta
-    },
-    services{
-      title,
-      items[]->{
-        _id,
-        title,
-        slug,
-        icon,
-        shortDescription,
-        order
-      }
-    },
-    featuredProjects{
-      title,
-      items[]->{
-        _id,
-        title,
-        slug,
-        excerpt,
-        coverImage,
-        video{
-          provider,
+      logo{
+        asset->{
+          _id,
           url
-        },
-        categories
+        }
+      },
+      favicon{
+        asset->{
+          _id,
+          url
+        }
       }
     }
   }
@@ -194,27 +156,35 @@ export const projectsArchiveQuery = groq`
 `
 
 /**
+ * Query to fetch related projects by shared categories
+ * Used for the carousel at the bottom of project detail pages
+ */
+export const relatedProjectsQuery = groq`
+  *[_type == "project" && slug.current != $currentSlug && count(categories[lower(@) in $categoriesLower]) > 0]
+    | order(_createdAt desc)[0...8]{
+      _id,
+      title,
+      "slug": slug.current,
+      excerpt,
+      coverImage {
+        asset-> {
+          _id,
+          url
+        },
+        alt
+      }
+    }
+`
+
+/**
  * Query to fetch about page data for workspace panel
  * Used for about panel in workspace
  */
-export const aboutPageWorkspaceQuery = groq`
-  *[_type == "aboutPage"][0]{
-    title,
-    body,
-    image {
-      asset-> {
-        _id,
-        url
-      },
-      alt
-    },
-    cta {
-      text,
-      url
-    },
-    seo {
-      metaTitle,
-      metaDescription
+export const workspaceSettingsQuery = groq`
+  *[_type == "siteSettings"][0]{
+    workspace{
+      greeting
     }
   }
 `
+

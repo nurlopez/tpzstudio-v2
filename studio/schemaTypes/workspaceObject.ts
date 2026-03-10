@@ -14,15 +14,15 @@ import { defineField, defineType } from 'sanity'
  */
 export const workspaceObject = defineType({
     name: 'workspaceObject',
-    title: 'Workspace Object',
+    title: 'Inicio',
     type: 'document',
-    description: 'Represents a capability or tool in the workspace. Appears as an interactive object on the canvas.',
+    description: 'Elementos del inicio (objetos interactivos del canvas).',
     fields: [
         defineField({
             name: 'title',
-            title: 'Title',
+            title: 'Título',
             type: 'string',
-            description: 'Name of the capability (e.g., "Film & Social Media"). Appears as object label on hover.',
+            description: 'Nombre de la capacidad (ej: "Film y redes sociales"). Aparece como etiqueta al pasar el cursor.',
             validation: (Rule) => Rule.required(),
         }),
 
@@ -31,24 +31,24 @@ export const workspaceObject = defineType({
             title: 'Slug',
             type: 'slug',
             options: { source: 'title', maxLength: 96 },
-            description: 'URL identifier (e.g., "film", "voiceovers"). Used in workspace routes.',
+            description: 'Identificador de URL (ej: "film", "voiceovers"). Se usa en rutas del workspace.',
             validation: (Rule) => Rule.required(),
         }),
 
         defineField({
             name: 'objectType',
-            title: 'Object Type',
+            title: 'Tipo de objeto',
             type: 'string',
-            description: 'Determines visual representation of the object on the canvas.',
+            description: 'Determina la representación visual del objeto en el canvas.',
             options: {
                 list: [
-                    { title: 'Camera', value: 'camera' },
-                    { title: 'Waveform / Speaker', value: 'waveform' },
-                    { title: 'Blueprint / Grid', value: 'blueprint' },
-                    { title: 'Book / Timeline', value: 'book' },
-                    { title: 'Lightbulb / Sticky Notes', value: 'lightbulb' },
-                    { title: 'Stack / Archive', value: 'stack' },
-                    { title: 'Envelope / Contact', value: 'envelope' },
+                    { title: 'Cámara', value: 'camera' },
+                    { title: 'Onda / Altavoz', value: 'waveform' },
+                    { title: 'Plano / Rejilla', value: 'blueprint' },
+                    { title: 'Libro / Línea de tiempo', value: 'book' },
+                    { title: 'Bombilla / Notas', value: 'lightbulb' },
+                    { title: 'Pila / Archivo', value: 'stack' },
+                    { title: 'Sobre / Contacto', value: 'envelope' },
                 ],
                 layout: 'dropdown',
             },
@@ -57,17 +57,17 @@ export const workspaceObject = defineType({
 
         defineField({
             name: 'shortIntent',
-            title: 'Short Intent',
+            title: 'Intención corta',
             type: 'text',
             rows: 2,
-            description: 'Brief explanation of what this capability is (1-2 lines). Not marketing copy. Example: "Film production for social media and digital content".',
+            description: 'Breve explicación de la capacidad (1–2 líneas). No es copy de marketing. Ej: "Producción de vídeo para redes y contenido digital".',
         }),
 
         defineField({
             name: 'capabilities',
-            title: 'Capabilities',
+            title: 'Capacidades',
             type: 'array',
-            description: 'Links to projects, courses, or experiments that demonstrate this capability. Projects can appear under multiple objects.',
+            description: 'Enlaces a proyectos, cursos o experimentos que demuestran esta capacidad. Un proyecto puede aparecer en varios objetos.',
             of: [
                 {
                     type: 'reference',
@@ -83,56 +83,75 @@ export const workspaceObject = defineType({
 
         defineField({
             name: 'featuredCapabilities',
-            title: 'Featured Capabilities',
+            title: 'Capacidades destacadas',
             type: 'array',
-            description: 'Featured projects or courses to highlight prominently in the object panel.',
+            description: 'Proyectos destacados para resaltar en el panel.',
             of: [
                 {
                     type: 'reference',
                     to: [
                         { type: 'project' },
-                        // TODO: Add course when schema is created
-                        // { type: 'course' },
                     ],
                 },
             ],
         }),
 
         defineField({
-            name: 'visibility',
-            title: 'Visible on Canvas',
+            name: 'relatedPosts',
+            title: 'Artículos relacionados',
+            type: 'array',
+            description: 'Blog posts relacionados con esta capacidad. Aparecen como enlaces en el panel.',
+            of: [
+                {
+                    type: 'reference',
+                    to: [{ type: 'blogPost' }],
+                },
+            ],
+        }),
+
+        defineField({
+            name: 'showThumbnails',
+            title: 'Mostrar miniaturas',
             type: 'boolean',
-            description: 'Whether this object appears on the workspace canvas.',
+            description: 'Muestra miniaturas de portada de proyectos y artículos enlazados en el panel.',
+            initialValue: false,
+        }),
+
+        defineField({
+            name: 'visibility',
+            title: 'Visible en el canvas',
+            type: 'boolean',
+            description: 'Define si este objeto aparece en el canvas del workspace.',
             initialValue: true,
         }),
 
         defineField({
             name: 'order',
-            title: 'Order',
+            title: 'Orden',
             type: 'number',
-            description: 'Determines object position on canvas (lower numbers appear first). Can be used with manual positioning.',
+            description: 'Determina la posición en el canvas (números menores aparecen primero).',
             initialValue: 1,
             validation: (Rule) => Rule.min(1).max(100),
         }),
 
         defineField({
             name: 'position',
-            title: 'Manual Position',
+            title: 'Posición manual',
             type: 'object',
-            description: 'Optional manual canvas positioning. Overrides automatic positioning.',
+            description: 'Posicionamiento manual opcional. Anula el posicionamiento automático.',
             fields: [
                 defineField({
                     name: 'x',
-                    title: 'X Position (%)',
+                    title: 'Posición X (%)',
                     type: 'number',
-                    description: 'Horizontal position (0-100).',
+                    description: 'Posición horizontal (0-100).',
                     validation: (Rule) => Rule.min(0).max(100),
                 }),
                 defineField({
                     name: 'y',
-                    title: 'Y Position (%)',
+                    title: 'Posición Y (%)',
                     type: 'number',
-                    description: 'Vertical position (0-100).',
+                    description: 'Posición vertical (0-100).',
                     validation: (Rule) => Rule.min(0).max(100),
                 }),
             ],
@@ -140,48 +159,48 @@ export const workspaceObject = defineType({
 
         defineField({
             name: 'visual',
-            title: 'Object Visual',
+            title: 'Visual del objeto',
             type: 'image',
             options: { 
                 hotspot: false,
                 accept: 'image/svg+xml',
             },
-            description: 'Upload a single isometric SVG (transparent background). Text label remains primary if visual is set.',
+            description: 'Sube un SVG isométrico (fondo transparente). La etiqueta de texto sigue siendo la principal.',
             fields: [
                 defineField({
                     name: 'alt',
-                    title: 'Alt Text',
+                    title: 'Texto alternativo',
                     type: 'string',
-                    description: 'Alternative text for accessibility. If visual is decorative and text label fully describes object, can be empty.',
+                    description: 'Texto alternativo para accesibilidad. Si es decorativo, puede estar vacío.',
                 }),
             ],
         }),
 
         defineField({
             name: 'coverImage',
-            title: 'Cover Image',
+            title: 'Imagen de portada',
             type: 'image',
             options: { hotspot: true },
-            description: 'Optional visual representation in object panel. Object type provides default visual if not set.',
+            description: 'Imagen opcional en el panel. Si no se define, se usa el visual del tipo de objeto.',
         }),
 
         defineField({
             name: 'description',
-            title: 'Description',
+            title: 'Descripción',
             type: 'array',
             of: [{ type: 'block' }],
-            description: 'Longer explanation of this capability. Appears in object panel. Can include process, approach, philosophy.',
+            description: 'Explicación más larga de la capacidad. Aparece en el panel del objeto.',
         }),
 
         defineField({
             name: 'cta',
-            title: 'Call to Action',
+            title: 'Llamada a la acción',
             type: 'object',
-            description: 'Optional CTA for this object. If empty, uses global CTA from site settings.',
+            description: 'CTA opcional para este objeto. Si está vacío, se usa el CTA global.',
             fields: [
                 defineField({
                     name: 'label',
-                    title: 'Label',
+                    title: 'Etiqueta',
                     type: 'string',
                 }),
                 defineField({
@@ -194,17 +213,17 @@ export const workspaceObject = defineType({
     ],
     orderings: [
         {
-            title: 'Order (ascending)',
+            title: 'Orden (ascendente)',
             name: 'orderAsc',
             by: [{ field: 'order', direction: 'asc' }],
         },
         {
-            title: 'Order (descending)',
+            title: 'Orden (descendente)',
             name: 'orderDesc',
             by: [{ field: 'order', direction: 'desc' }],
         },
         {
-            title: 'Title (A-Z)',
+            title: 'Título (A-Z)',
             name: 'titleAsc',
             by: [{ field: 'title', direction: 'asc' }],
         },
@@ -220,7 +239,7 @@ export const workspaceObject = defineType({
         prepare({ title, subtitle, objectType, visibility, media }) {
             return {
                 title,
-                subtitle: `${objectType}${!visibility ? ' (hidden)' : ''}${subtitle ? ` • ${subtitle}` : ''}`,
+                subtitle: `${objectType}${!visibility ? ' (oculto)' : ''}${subtitle ? ` • ${subtitle}` : ''}`,
                 media,
             }
         },

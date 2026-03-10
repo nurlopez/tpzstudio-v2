@@ -70,39 +70,20 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
   const [content, setContent] = useState<WorkspaceObjectContent | null>(null)
   const [loading, setLoading] = useState(false)
 
-  // Debug logging
-  console.log('[Panel] Render:', { isOpen, type, slug, hasChildren: !!children })
-
   // Fetch content when panel opens with a slug
   useEffect(() => {
-    console.log('[Panel] useEffect triggered:', { isOpen, slug, type })
-    
     if (!isOpen || !slug || type !== 'service') {
-      console.log('[Panel] Skipping fetch - conditions not met:', { isOpen, slug, type })
       setContent(null)
       return
     }
 
-    console.log('[Panel] Fetching content for slug:', slug)
     setLoading(true)
     getWorkspaceObject(slug)
       .then((data) => {
-        console.log('[Panel] Content fetched successfully:', data)
-        console.log('[Panel] Content type:', typeof data)
-        console.log('[Panel] Content.title:', data?.title)
-        console.log('[Panel] Content.title truthy?', !!data?.title)
-        console.log('[Panel] Content.visual:', data?.visual)
-        console.log('[Panel] Content.visual?.url:', data?.visual?.url)
         setContent(data)
         setLoading(false)
-        // Force a re-render check
-        setTimeout(() => {
-          console.log('[Panel] State after setContent - content:', data)
-          console.log('[Panel] State after setContent - visual:', data?.visual)
-        }, 100)
       })
-      .catch((error) => {
-        console.error('[Panel] Error fetching content:', error)
+      .catch(() => {
         setContent(null)
         setLoading(false)
       })
@@ -114,17 +95,6 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
   // Desktop: Side panel that feels like expansion from workspace
   // Mobile: Full-screen for content focus (workspace context maintained via dimming)
   const isFullScreen = state.isMobile
-
-  console.log('[Panel] Rendering panel:', { isOpen, type, slug, loading })
-  console.log('[Panel] Content state:', content)
-  console.log('[Panel] Content object (stringified):', JSON.stringify(content, null, 2))
-  console.log('[Panel] Content.visual:', content?.visual)
-  console.log('[Panel] Content.visual?.url:', content?.visual?.url)
-  console.log('[Panel] Will render visual?', !!(content && content.visual && content.visual.url))
-  console.log('[Panel] Content.title value:', content?.title)
-  console.log('[Panel] Content.title type:', typeof content?.title)
-  console.log('[Panel] Content.title truthy check:', !!content?.title)
-  console.log('[Panel] Will render title?', !!(content && content.title))
 
   return (
     <div
@@ -142,7 +112,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
       <button
         onClick={onClose}
         className="absolute cursor-pointer font-inherit"
-        aria-label="Close panel"
+        aria-label="Cerrar panel"
         style={{
           top: 'var(--space-lg)',
           right: 'var(--space-lg)',
@@ -193,7 +163,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                       marginBottom: 'var(--space-md)',
                     }}
                   >
-                    Loading...
+                    Cargando...
                   </p>
                 )}
 
@@ -234,13 +204,15 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
 
                   {/* Object title */}
                   {content.title && (
-                    <h2 
+                    <h2
                       style={{
-                        fontSize: 'var(--font-size-xl)',
-                        fontWeight: 'var(--font-weight-medium)',
+                        fontFamily: 'var(--font-lacquer), cursive',
+                        fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+                        fontWeight: 400,
                         color: 'var(--paper-ink-primary)',
                         marginBottom: 'var(--space-sm)',
-                        lineHeight: 'var(--line-height-tight)',
+                        lineHeight: 1.2,
+                        letterSpacing: '-0.02em',
                       }}
                     >
                       {content.title}
@@ -286,15 +258,27 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                   </div>
                 )}
 
-                {/* Exit Points - capabilities links */}
+                {/* Proyectos relacionados */}
                 {content.capabilities && content.capabilities.length > 0 && (
                   <nav
                     style={{
                       marginTop: 'var(--space-2xl)',
                       paddingTop: 'var(--space-xl)',
                     }}
-                    aria-label="Related projects"
+                    aria-label="Proyectos relacionados"
                   >
+                    <h3
+                      style={{
+                        fontSize: 'var(--font-size-xs)',
+                        fontWeight: 500,
+                        color: 'var(--paper-ink-muted)',
+                        marginBottom: 'var(--space-md)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                      }}
+                    >
+                      Proyectos
+                    </h3>
                     <ul
                       style={{
                         listStyle: 'none',
@@ -302,45 +286,239 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                         margin: 0,
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 'var(--space-sm)',
+                        gap: content.showThumbnails ? 'var(--space-xs)' : 'var(--space-sm)',
                       }}
                     >
                       {content.capabilities.map((capability) => (
                         <li key={capability._id}>
-                          <Link
-                            href={`/workspace/projects/${capability.slug}`}
-                            style={{
-                              fontSize: 'var(--font-size-sm)',
-                              color: 'var(--paper-ink-interactive)',
-                              textDecoration: 'none',
-                              display: 'inline-block',
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.textDecoration = 'underline'
-                              e.currentTarget.style.color = '#c14444'
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.textDecoration = 'none'
-                              e.currentTarget.style.color = 'var(--paper-ink-interactive)'
-                            }}
-                          >
-                            {capability.title}
-                          </Link>
+                          {content.showThumbnails ? (
+                            <Link
+                              href={`/proyectos/${capability.slug}`}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--space-sm)',
+                                textDecoration: 'none',
+                                color: 'inherit',
+                                padding: 'var(--space-xs)',
+                                borderRadius: '8px',
+                                transition: 'background-color var(--motion-fast) var(--ease-out)',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'
+                                const title = e.currentTarget.querySelector('[data-thumb-title]') as HTMLElement
+                                if (title) title.style.textDecoration = 'underline'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent'
+                                const title = e.currentTarget.querySelector('[data-thumb-title]') as HTMLElement
+                                if (title) title.style.textDecoration = 'none'
+                              }}
+                            >
+                              {capability.coverImage?.url && (
+                                <Image
+                                  src={capability.coverImage.url}
+                                  alt=""
+                                  width={60}
+                                  height={40}
+                                  style={{
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(0,0,0,0.06)',
+                                    objectFit: 'cover',
+                                    flexShrink: 0,
+                                  }}
+                                />
+                              )}
+                              <div style={{ minWidth: 0 }}>
+                                <span
+                                  data-thumb-title
+                                  style={{
+                                    fontSize: 'var(--font-size-sm)',
+                                    color: 'var(--paper-ink-interactive)',
+                                    display: 'block',
+                                  }}
+                                >
+                                  {capability.title}
+                                </span>
+                                {capability.excerpt && (
+                                  <span
+                                    style={{
+                                      fontSize: 'var(--font-size-xs)',
+                                      color: 'var(--paper-ink-muted)',
+                                      display: '-webkit-box',
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: 'vertical',
+                                      overflow: 'hidden',
+                                      lineHeight: '1.4',
+                                    }}
+                                  >
+                                    {capability.excerpt}
+                                  </span>
+                                )}
+                              </div>
+                            </Link>
+                          ) : (
+                            <Link
+                              href={`/proyectos/${capability.slug}`}
+                              style={{
+                                fontSize: 'var(--font-size-sm)',
+                                color: 'var(--paper-ink-interactive)',
+                                textDecoration: 'none',
+                                display: 'inline-block',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.textDecoration = 'underline'
+                                e.currentTarget.style.color = '#c14444'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.textDecoration = 'none'
+                                e.currentTarget.style.color = 'var(--paper-ink-interactive)'
+                              }}
+                            >
+                              {capability.title}
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>
                   </nav>
                 )}
 
-                    {/* Empty state - show if not loading and no content */}
+                {/* Artículos relacionados */}
+                {content.relatedPosts && content.relatedPosts.length > 0 && (
+                  <nav
+                    style={{
+                      marginTop: 'var(--space-xl)',
+                      paddingTop: 'var(--space-xl)',
+                    }}
+                    aria-label="Artículos relacionados"
+                  >
+                    <h3
+                      style={{
+                        fontSize: 'var(--font-size-xs)',
+                        fontWeight: 500,
+                        color: 'var(--paper-ink-muted)',
+                        marginBottom: 'var(--space-md)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.08em',
+                      }}
+                    >
+                      Blog
+                    </h3>
+                    <ul
+                      style={{
+                        listStyle: 'none',
+                        padding: 0,
+                        margin: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: content.showThumbnails ? 'var(--space-xs)' : 'var(--space-sm)',
+                      }}
+                    >
+                      {content.relatedPosts.map((post) => (
+                        <li key={post._id}>
+                          {content.showThumbnails ? (
+                            <Link
+                              href={`/blog/${post.slug}`}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--space-sm)',
+                                textDecoration: 'none',
+                                color: 'inherit',
+                                padding: 'var(--space-xs)',
+                                borderRadius: '8px',
+                                transition: 'background-color var(--motion-fast) var(--ease-out)',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'
+                                const title = e.currentTarget.querySelector('[data-thumb-title]') as HTMLElement
+                                if (title) title.style.textDecoration = 'underline'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent'
+                                const title = e.currentTarget.querySelector('[data-thumb-title]') as HTMLElement
+                                if (title) title.style.textDecoration = 'none'
+                              }}
+                            >
+                              {post.coverImage?.url && (
+                                <Image
+                                  src={post.coverImage.url}
+                                  alt=""
+                                  width={60}
+                                  height={40}
+                                  style={{
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(0,0,0,0.06)',
+                                    objectFit: 'cover',
+                                    flexShrink: 0,
+                                  }}
+                                />
+                              )}
+                              <div style={{ minWidth: 0 }}>
+                                <span
+                                  data-thumb-title
+                                  style={{
+                                    fontSize: 'var(--font-size-sm)',
+                                    color: 'var(--paper-ink-interactive)',
+                                    display: 'block',
+                                  }}
+                                >
+                                  {post.title}
+                                </span>
+                                {post.excerpt && (
+                                  <span
+                                    style={{
+                                      fontSize: 'var(--font-size-xs)',
+                                      color: 'var(--paper-ink-muted)',
+                                      display: '-webkit-box',
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: 'vertical',
+                                      overflow: 'hidden',
+                                      lineHeight: '1.4',
+                                    }}
+                                  >
+                                    {post.excerpt}
+                                  </span>
+                                )}
+                              </div>
+                            </Link>
+                          ) : (
+                            <Link
+                              href={`/blog/${post.slug}`}
+                              style={{
+                                fontSize: 'var(--font-size-sm)',
+                                color: 'var(--paper-ink-interactive)',
+                                textDecoration: 'none',
+                                display: 'inline-block',
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.textDecoration = 'underline'
+                                e.currentTarget.style.color = '#c14444'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.textDecoration = 'none'
+                                e.currentTarget.style.color = 'var(--paper-ink-interactive)'
+                              }}
+                            >
+                              {post.title}
+                            </Link>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                )}
+
+                    {/* Empty state */}
                     {!loading && !content && slug && (
-                      <p 
+                      <p
                         style={{
                           fontSize: 'var(--font-size-sm)',
                           color: 'var(--paper-ink-muted)',
                         }}
                       >
-                        No content available
+                        Sin contenido disponible
                       </p>
                     )}
                   </>
@@ -350,7 +528,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
 
             {/* For contact, about, and archive panels: render children (server-rendered content) */}
             {(type === 'contact' || type === 'about' || type === 'archive') && (
-              <div data-panel-children>
+              <div data-panel-children style={{ paddingBottom: 'var(--space-3xl)' }}>
                 {children || (
                   <p 
                     style={{
@@ -358,7 +536,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                       color: 'var(--paper-ink-muted)',
                     }}
                   >
-                    Content loading... (No children prop received)
+                    Cargando contenido... (no se recibió `children`)
                   </p>
                 )}
               </div>

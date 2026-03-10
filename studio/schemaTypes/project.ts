@@ -7,7 +7,7 @@ export const project = defineType({
     fields: [
         defineField({
             name: 'title',
-            title: 'Title',
+            title: 'Título',
             type: 'string',
             validation: (Rule) => Rule.required(),
         }),
@@ -23,41 +23,41 @@ export const project = defineType({
 
         defineField({
             name: 'featured',
-            title: 'Featured (show on Home)',
+            title: 'Destacado (mostrar en Inicio)',
             type: 'boolean',
             initialValue: false,
         }),
 
         defineField({
             name: 'coverImage',
-            title: 'Cover image',
+            title: 'Imagen de portada',
             type: 'image',
             options: { hotspot: true },
-            description: 'Imagen de portada para listados/cards.',
+            description: 'Imagen de portada para listados/tarjetas.',
         }),
 
         defineField({
             name: 'excerpt',
-            title: 'Short description',
+            title: 'Descripción corta',
             type: 'text',
             rows: 3,
-            description: '1–2 frases para cards y previews.',
+            description: '1–2 frases para tarjetas y vistas previas.',
         }),
 
         defineField({
             name: 'video',
-            title: 'Video',
+            title: 'Vídeo',
             type: 'object',
             fields: [
                 defineField({
                     name: 'provider',
-                    title: 'Provider',
+                    title: 'Proveedor',
                     type: 'string',
                     options: {
                         list: [
                             { title: 'Vimeo', value: 'vimeo' },
                             { title: 'YouTube', value: 'youtube' },
-                            { title: 'Other / Embed URL', value: 'other' },
+                            { title: 'Otro / URL embed', value: 'other' },
                         ],
                         layout: 'radio',
                     },
@@ -65,7 +65,7 @@ export const project = defineType({
                 }),
                 defineField({
                     name: 'url',
-                    title: 'Video URL',
+                    title: 'URL del vídeo',
                     type: 'url',
                     description: 'Pega la URL del vídeo (Vimeo/YouTube o embed).',
                 }),
@@ -74,25 +74,25 @@ export const project = defineType({
 
         defineField({
             name: 'categories',
-            title: 'Categories',
+            title: 'Categorías',
             type: 'array',
             of: [{ type: 'string' }],
             options: {
                 layout: 'tags',
             },
-            description: 'Ej: spot, branded content, fotografía, diseño…',
+            description: 'Escribe etiqueta y pulsa Enter',
         }),
 
         defineField({
             name: 'credits',
-            title: 'Credits (optional)',
+            title: 'Créditos (opcional)',
             type: 'array',
             of: [
                 {
                     type: 'object',
                     fields: [
-                        defineField({ name: 'role', title: 'Role', type: 'string' }),
-                        defineField({ name: 'name', title: 'Name', type: 'string' }),
+                        defineField({ name: 'role', title: 'Rol', type: 'string' }),
+                        defineField({ name: 'name', title: 'Nombre', type: 'string' }),
                     ],
                     preview: {
                         select: { title: 'role', subtitle: 'name' },
@@ -103,7 +103,7 @@ export const project = defineType({
 
         defineField({
             name: 'body',
-            title: 'Project description',
+            title: 'Descripción del proyecto',
             type: 'array',
             of: [{ type: 'block' }],
             description: 'Texto largo (opcional).',
@@ -112,37 +112,37 @@ export const project = defineType({
         // SEO Fields
         defineField({
             name: 'seo',
-            title: 'SEO Settings',
+            title: 'SEO',
             type: 'object',
-            description: 'Customize how this project appears in search engines and when shared on social media.',
+            description: 'Configura cómo aparece este proyecto en buscadores y redes sociales.',
             fields: [
                 defineField({
                     name: 'metaTitle',
-                    title: 'Meta Title',
+                    title: 'Meta título',
                     type: 'string',
                     validation: (Rule) => Rule.max(60),
-                    description: 'Custom title for search engines and social sharing (max 60 characters). If empty, the project title will be used.',
+                    description: 'Título para buscadores y redes (máx 60 caracteres). Si está vacío, se usa el título del proyecto.',
                 }),
                 defineField({
                     name: 'metaDescription',
-                    title: 'Meta Description',
+                    title: 'Meta descripción',
                     type: 'text',
                     rows: 3,
                     validation: (Rule) => Rule.max(160),
-                    description: 'Custom description for search engines and social sharing (max 160 characters). If empty, the excerpt will be used.',
+                    description: 'Descripción para buscadores y redes (máx 160 caracteres). Si está vacío, se usa el resumen.',
                 }),
                 defineField({
                     name: 'ogImage',
-                    title: 'Social Sharing Image',
+                    title: 'Imagen para compartir',
                     type: 'image',
                     options: { hotspot: true },
-                    description: 'Custom image for social media sharing (Open Graph). Recommended: 1200x630px. If empty, the cover image will be used.',
+                    description: 'Imagen para redes sociales (Open Graph). Recomendado: 1200x630px. Si está vacío, se usa la portada.',
                     fields: [
                         {
                             name: 'alt',
-                            title: 'Alt Text',
+                            title: 'Texto alternativo',
                             type: 'string',
-                            description: 'Describe the image for accessibility.',
+                            description: 'Describe la imagen para accesibilidad.',
                         },
                     ],
                 }),
@@ -158,7 +158,7 @@ export const project = defineType({
         prepare({ title, media, featured }) {
             return {
                 title,
-                subtitle: featured ? '★ Featured' : '',
+                subtitle: featured ? '★ Destacado' : '',
                 media,
             }
         },

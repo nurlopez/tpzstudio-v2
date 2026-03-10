@@ -1,6 +1,8 @@
 import './globals.css'
 import { Poppins, Lacquer } from 'next/font/google'
 import { Metadata } from 'next'
+import { client } from '@/sanity/lib/client'
+import { siteSettingsQuery } from '@/sanity/lib/queries'
 
 const poppins = Poppins({
     subsets: ['latin'],
@@ -15,52 +17,61 @@ const lacquer = Lacquer({
 })
 
 /**
- * Default SEO Metadata
+ * Dynamic SEO Metadata — fetches favicon and site info from Sanity
  * Can be overridden by individual pages
  */
-export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || 
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://tpzstudio.com')
-  ),
-  title: {
-    default: 'TPZ Studio',
-    template: '%s | TPZ Studio',
-  },
-  description: 'Creative studio specializing in film, voiceovers, branding, and strategic consulting.',
-  keywords: ['creative studio', 'film production', 'voiceovers', 'branding', 'design', 'consulting'],
-  authors: [{ name: 'TPZ Studio' }],
-  creator: 'TPZ Studio',
-  publisher: 'TPZ Studio',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'es_ES',
-    url: '/',
-    siteName: 'TPZ Studio',
-    title: 'TPZ Studio',
-    description: 'Creative studio specializing in film, voiceovers, branding, and strategic consulting.',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'TPZ Studio',
-    description: 'Creative studio specializing in film, voiceovers, branding, and strategic consulting.',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await client.fetch(siteSettingsQuery)
+  const faviconUrl = settings?.branding?.favicon?.asset?.url
+  const seoDescription = settings?.seo?.metaDescription || ''
+
+  return {
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://tpzstudio.com')
+    ),
+    title: {
+      default: 'tpz·studio',
+      template: '%s | tpz·studio',
+    },
+    description: seoDescription,
+    keywords: ['estudio creativo', 'producción audiovisual', 'locuciones', 'branding', 'diseño', 'consultoría'],
+    authors: [{ name: 'TPZ Studio' }],
+    creator: 'TPZ Studio',
+    publisher: 'TPZ Studio',
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    icons: faviconUrl
+      ? { icon: faviconUrl, apple: faviconUrl }
+      : undefined,
+    openGraph: {
+      type: 'website',
+      locale: 'es_ES',
+      url: '/',
+      siteName: 'tpz·studio',
+      title: 'tpz·studio',
+      description: seoDescription,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'tpz·studio',
+      description: seoDescription,
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
+  }
 }
 
 /**

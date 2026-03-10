@@ -138,6 +138,15 @@ body {
     overflow-x: hidden;
 }
 
+/* Utility: hide scrollbar but keep scroll behavior */
+.scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
 /* --------------------------------------------
    Workspace-specific base styles
    -------------------------------------------- */
@@ -189,7 +198,6 @@ body {
    Workspace Objects
    -------------------------------------------- */
 [data-workspace-object] {
-    position: absolute;
     cursor: pointer;
     transition: 
         opacity var(--motion-standard) var(--ease-in-out),
@@ -247,35 +255,16 @@ body {
     max-width: var(--object-size, 180px);
 }
 
-/* Convert black SVG lines to red on hover (desktop) */
+/* Monochrome on hover (desktop) */
 [data-workspace-object][data-state="hovered"] [data-workspace-object-visual] img {
-    /* Convert black to red (#c14444) using CSS filters */
-    /* This filter chain converts black (rgb(0,0,0)) to approximately #c14444 */
-    filter: 
-        brightness(0) 
-        saturate(100%) 
-        invert(24%) 
-        sepia(98%) 
-        saturate(1352%) 
-        hue-rotate(340deg) 
-        brightness(0.85) 
-        contrast(1.15);
+    filter: grayscale(100%);
     transition: filter var(--motion-standard) var(--ease-out);
 }
 
-/* Convert black SVG lines to red when focused on mobile (touch devices) */
+/* Monochrome when focused on mobile (touch devices) */
 @media (max-width: 768px) {
     [data-workspace-object][data-state="focused"] [data-workspace-object-visual] img {
-        /* Same filter chain to convert black to red (#c14444) */
-        filter: 
-            brightness(0) 
-            saturate(100%) 
-            invert(24%) 
-            sepia(98%) 
-            saturate(1352%) 
-            hue-rotate(340deg) 
-            brightness(0.85) 
-            contrast(1.15);
+        filter: grayscale(100%);
         transition: filter var(--motion-standard) var(--ease-out);
     }
 }
@@ -373,7 +362,8 @@ body {
     bottom: 0;
     width: 100vw;
     height: 100vh;
-    background: var(--bg-canvas);
+    background: #ffffff;
+    color: var(--paper-ink-primary);
     z-index: 2000;
     overflow-y: auto;
     transition: opacity var(--motion-slow) var(--ease-out);
@@ -811,13 +801,13 @@ h3 {
 
 /* Blog related post link hover */
 .blog-related-post-link:hover {
-  border-color: var(--border-visible) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Back to workspace button hover */
-.back-to-workspace-button:hover {
-  background-color: var(--bg-surface) !important;
-  border-color: var(--border-visible) !important;
+/* Back to home button hover */
+.back-to-home-button:hover {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
 /* ============================================
@@ -981,5 +971,146 @@ h3 {
     padding-left: 24px;
     border-left: 2px solid rgba(255, 255, 255, 0.2);
     opacity: 0.85;
+    font-style: italic;
+}
+
+/* ============================================
+   FLOATING ACTION BUTTONS (FAB)
+   Bottom-right vertical stack with floating drawers
+   ============================================ */
+
+/* FAB Container */
+[data-fab-container] {
+    /* Base positioning handled by Tailwind classes */
+}
+
+/* FAB Button - Entrance Animation */
+[data-fab-button] {
+    animation: fab-enter var(--motion-slow) var(--ease-out) forwards;
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+}
+
+@keyframes fab-enter {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* FAB Drawer - Entrance/Exit Animation */
+[data-fab-drawer] {
+    animation: fab-drawer-enter var(--motion-standard) var(--ease-out) forwards;
+    transform-origin: bottom right;
+}
+
+@keyframes fab-drawer-enter {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Mobile: Bottom sheet style drawer */
+@media (max-width: 768px) {
+    [data-fab-drawer] {
+        transform-origin: bottom center;
+    }
+
+    @keyframes fab-drawer-enter {
+        from {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    [data-fab-button],
+    [data-fab-drawer] {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    [data-fab-button] {
+        transition: opacity var(--motion-fast);
+    }
+}
+
+/* PortableText styling for FAB drawer (dark text on white bg) */
+.portable-text-fab p {
+    margin: 0 0 1em 0;
+    line-height: 1.75;
+    color: rgba(0, 0, 0, 0.75);
+}
+
+.portable-text-fab p:last-child {
+    margin-bottom: 0;
+}
+
+.portable-text-fab h2,
+.portable-text-fab h3,
+.portable-text-fab h4 {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+    line-height: 1.3;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.portable-text-fab a {
+    color: rgba(0, 0, 0, 0.75);
+    text-decoration: underline;
+    text-decoration-color: rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.portable-text-fab a:hover {
+    color: rgba(0, 0, 0, 0.95);
+    text-decoration-color: rgba(0, 0, 0, 0.6);
+}
+
+.portable-text-fab ul,
+.portable-text-fab ol {
+    margin: 1em 0;
+    padding-left: 1.5em;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.portable-text-fab li {
+    margin: 0.5em 0;
+    line-height: 1.75;
+}
+
+.portable-text-fab strong {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.portable-text-fab em {
+    font-style: italic;
+}
+
+.portable-text-fab blockquote {
+    margin: 1.5em 0;
+    padding-left: 1.5em;
+    border-left: 2px solid rgba(0, 0, 0, 0.15);
+    color: rgba(0, 0, 0, 0.65);
     font-style: italic;
 }

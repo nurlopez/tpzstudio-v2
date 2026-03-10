@@ -7,6 +7,7 @@ import { Canvas } from './Canvas'
 import { Panel } from './Panel'
 import { Overlay } from './Overlay'
 import { Dock } from './Dock'
+import { FloatingActionButtons } from './FloatingActionButtons'
 import { useWorkspaceRoute } from './hooks/useWorkspaceRoute'
 import { WorkspaceObjectData } from './types'
 
@@ -32,12 +33,14 @@ import { WorkspaceObjectData } from './types'
  * - objects?: WorkspaceObjectData[] - Workspace objects fetched server-side
  * - children?: ReactNode - Page content
  */
-export function WorkspaceRoot({ 
+export function WorkspaceRoot({
   children,
   objects,
-}: { 
+  greeting,
+}: {
   children?: React.ReactNode
   objects?: WorkspaceObjectData[]
+  greeting?: string | null
 }) {
   const { state, actions } = useWorkspace()
   const pathname = usePathname()
@@ -52,10 +55,14 @@ export function WorkspaceRoot({
       if (e.key === 'Escape') {
         if (state.overlayOpen) {
           actions.closeOverlay()
-          // TODO: Navigate to appropriate route when overlay closes
+          if (state.panelOpen) {
+            router.back()
+          } else {
+            router.push('/')
+          }
         } else if (state.panelOpen) {
           actions.closePanel()
-          router.push('/workspace')
+          router.push('/')
         }
       }
     }
@@ -79,7 +86,8 @@ export function WorkspaceRoot({
       style={{ touchAction: 'pan-y' }}
     >
       <Dock />
-      <Canvas objects={objects} />
+      <FloatingActionButtons />
+      <Canvas objects={objects} greeting={greeting} />
       
       {state.panelOpen && state.panelType && (
         <Panel
@@ -88,7 +96,7 @@ export function WorkspaceRoot({
           slug={state.panelSlug || undefined}
           onClose={() => {
             actions.closePanel()
-            router.push('/workspace')
+            router.push('/')
           }}
         >
           {children}
@@ -96,22 +104,16 @@ export function WorkspaceRoot({
       )}
 
       {state.overlayOpen && state.overlayType && (
-        <Overlay
-          isOpen={state.overlayOpen}
-          type={state.overlayType}
-          slug={state.overlaySlug || undefined}
-          onClose={() => {
-            actions.closeOverlay()
-            // Navigate back to previous route or workspace home
-            if (state.panelOpen) {
-              // If panel was open before overlay, go back to panel route
-              router.back()
-            } else {
-              router.push('/workspace')
-            }
-          }}
-        >
-          {children}
+      <Overlay
+        isOpen={state.overlayOpen}
+        type={state.overlayType}
+        slug={state.overlaySlug || undefined}
+        onClose={() => {
+          actions.closeOverlay()
+          router.push('/')
+        }}
+      >
+        {children}
         </Overlay>
       )}
     </div>

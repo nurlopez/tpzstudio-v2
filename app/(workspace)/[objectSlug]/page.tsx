@@ -5,8 +5,8 @@ import { groq } from 'next-sanity'
 /**
  * Object Expanded Page
  * 
- * Route: /workspace/[objectSlug]
- * Examples: /workspace/film, /workspace/voiceovers
+ * Route: /[objectSlug]
+ * Examples: /film, /voiceovers
  * 
  * This page is rendered when an object is expanded.
  * The Panel component is rendered by WorkspaceRoot based on workspace state.
@@ -43,24 +43,24 @@ export async function generateMetadata({ params }: ObjectPageProps): Promise<Met
   
   if (!object) {
     return {
-      title: 'Service Not Found | TPZ Studio',
+      title: 'No encontrado',
     }
   }
 
   const title = object.title || objectSlug
-  const description = object.shortIntent || object.description || `Learn more about ${title} services at TPZ Studio.`
+  const description = object.shortIntent || ''
 
   return {
     title,
     description,
     openGraph: {
-      title: `${title} | TPZ Studio`,
+      title: `${title} | tpz·studio`,
       description,
-      url: `/workspace/${objectSlug}`,
+      url: `/${objectSlug}`,
     },
     twitter: {
       card: 'summary',
-      title: `${title} | TPZ Studio`,
+      title: `${title} | tpz·studio`,
       description,
     },
   }

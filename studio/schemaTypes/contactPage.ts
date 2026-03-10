@@ -7,7 +7,7 @@ export const contactPage = defineType({
     fields: [
         defineField({
             name: 'title',
-            title: 'Page Title',
+            title: 'Título de la página',
             type: 'string',
             initialValue: 'Contacto',
             validation: (Rule) => Rule.required(),
@@ -15,7 +15,7 @@ export const contactPage = defineType({
 
         defineField({
             name: 'introText',
-            title: 'Intro Text',
+            title: 'Texto introductorio',
             type: 'text',
             rows: 3,
             initialValue: 'Si desea contactar con nosotros aquí tiene los siguientes datos:',
@@ -36,7 +36,7 @@ export const contactPage = defineType({
                 }),
                 defineField({
                     name: 'url',
-                    title: 'URL (WhatsApp link)',
+                    title: 'URL (link de WhatsApp)',
                     type: 'url',
                     description: 'Link de WhatsApp (opcional). Ej: https://wa.me/346231567410',
                 }),
@@ -45,12 +45,12 @@ export const contactPage = defineType({
 
         defineField({
             name: 'email',
-            title: 'Email',
+            title: 'Correo',
             type: 'object',
             fields: [
                 defineField({
                     name: 'address',
-                    title: 'Dirección de email',
+                    title: 'Dirección de correo',
                     type: 'string',
                     initialValue: 'tpzstudio@gmail.com',
                     validation: (Rule) => Rule.required().email(),
@@ -60,7 +60,7 @@ export const contactPage = defineType({
                     title: 'Etiqueta/Descripción',
                     type: 'string',
                     initialValue: 'informa sobre tu proyecto',
-                    description: 'Texto que aparece junto al email.',
+                    description: 'Texto que aparece junto al correo.',
                 }),
             ],
         }),
@@ -106,13 +106,13 @@ export const contactPage = defineType({
             fields: [
                 defineField({
                     name: 'metaTitle',
-                    title: 'Meta title',
+                    title: 'Meta título',
                     type: 'string',
                     validation: (Rule) => Rule.max(60),
                 }),
                 defineField({
                     name: 'metaDescription',
-                    title: 'Meta description',
+                    title: 'Meta descripción',
                     type: 'text',
                     rows: 3,
                     validation: (Rule) => Rule.max(160),
@@ -126,7 +126,7 @@ export const contactPage = defineType({
         },
         prepare({ title }) {
             return {
-                title: title || 'Contact Page',
+                title: title || 'Página de contacto',
             }
         },
     },

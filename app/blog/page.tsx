@@ -1,20 +1,25 @@
 import { client } from '@/sanity/lib/client'
 import { blogPostsQuery } from '@/sanity/lib/queries/blog'
+import { siteSettingsQuery } from '@/sanity/lib/queries'
 import Image from 'next/image'
 import Link from 'next/link'
 
 /**
  * Blog Listing Page
- * 
+ *
  * Route: /blog
- * 
+ *
  * Displays all blog posts in a listing format.
  * SEO-friendly with proper metadata.
  */
 export async function generateMetadata() {
+  const settings = await client.fetch(siteSettingsQuery)
+  const title = settings?.pages?.blog?.metaTitle || 'Blog | tpz·studio'
+  const description = settings?.pages?.blog?.metaDescription || settings?.seo?.metaDescription || ''
+
   return {
-    title: 'Blog | TPZ Studio',
-    description: 'News, updates, reflections, and insights from TPZ Studio.',
+    title,
+    description,
   }
 }
 
@@ -23,20 +28,21 @@ export default async function BlogPage() {
 
   if (!posts || posts.length === 0) {
     return (
-      <main style={{ padding: 'var(--space-3xl) var(--space-xl)', minHeight: '100vh' }}>
+      <main style={{ padding: 'var(--space-3xl) var(--space-xl)', minHeight: '100vh', backgroundColor: 'var(--paper-bg)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <h1
             style={{
-              fontSize: 'var(--font-size-2xl)',
-              fontWeight: 'var(--font-weight-medium)',
-              color: 'var(--ink-primary)',
+              fontFamily: 'var(--font-lacquer), cursive',
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+              fontWeight: 400,
+              color: 'var(--paper-ink-primary)',
               marginBottom: 'var(--space-xl)',
             }}
           >
             Blog
           </h1>
-          <p style={{ fontSize: 'var(--font-size-md)', color: 'var(--ink-secondary)' }}>
-            No blog posts available yet.
+          <p style={{ fontSize: 'var(--font-size-md)', color: 'var(--paper-ink-secondary)' }}>
+            Aún no hay publicaciones disponibles.
           </p>
         </div>
       </main>
@@ -44,28 +50,28 @@ export default async function BlogPage() {
   }
 
   return (
-    <main style={{ padding: 'var(--space-3xl) var(--space-xl)', minHeight: '100vh' }}>
+    <main style={{ padding: 'var(--space-3xl) var(--space-xl)', minHeight: '100vh', backgroundColor: 'var(--paper-bg)' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {/* Back to Workspace Button */}
         <div style={{ marginBottom: 'var(--space-xl)' }}>
           <Link
-            href="/workspace"
+            href="/"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: 'var(--space-xs)',
               fontSize: 'var(--font-size-sm)',
-              color: 'var(--ink-interactive)',
+              color: 'var(--paper-ink-interactive)',
               textDecoration: 'none',
               padding: 'var(--space-sm) var(--space-md)',
-              border: '1px solid var(--border-subtle)',
+              border: '1px solid rgba(0,0,0,0.08)',
               borderRadius: '4px',
-              backgroundColor: 'var(--bg-elevated)',
+              backgroundColor: 'white',
               transition: 'background-color var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out)',
             }}
-            className="back-to-workspace-button"
+            className="back-to-home-button"
           >
-            ← Back to Workspace
+            ← Inicio
           </Link>
         </div>
 
@@ -73,9 +79,10 @@ export default async function BlogPage() {
         <header style={{ marginBottom: 'var(--space-3xl)' }}>
           <h1
             style={{
-              fontSize: 'var(--font-size-2xl)',
-              fontWeight: 'var(--font-weight-medium)',
-              color: 'var(--ink-primary)',
+              fontFamily: 'var(--font-lacquer), cursive',
+              fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+              fontWeight: 400,
+              color: 'var(--paper-ink-primary)',
               marginBottom: 'var(--space-md)',
             }}
           >
@@ -84,11 +91,11 @@ export default async function BlogPage() {
           <p
             style={{
               fontSize: 'var(--font-size-md)',
-              color: 'var(--ink-secondary)',
+              color: 'var(--paper-ink-secondary)',
               maxWidth: 600,
             }}
           >
-            News, updates, reflections, and insights from TPZ Studio.
+            Noticias, reflexiones e ideas de TPZ Studio.
           </p>
         </header>
 
@@ -106,10 +113,10 @@ export default async function BlogPage() {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '8px',
+                border: '1px solid rgba(0,0,0,0.08)',
+                borderRadius: '12px',
                 overflow: 'hidden',
-                backgroundColor: 'var(--bg-elevated)',
+                backgroundColor: 'white',
                 transition: 'transform var(--motion-standard) var(--ease-out), box-shadow var(--motion-standard) var(--ease-out)',
               }}
             >
@@ -125,12 +132,12 @@ export default async function BlogPage() {
                       width: '100%',
                       aspectRatio: '16 / 9',
                       overflow: 'hidden',
-                      backgroundColor: 'var(--bg-surface)',
+                      backgroundColor: 'rgba(0,0,0,0.03)',
                     }}
                   >
                     <Image
                       src={post.coverImage.asset.url}
-                      alt={post.coverImage.alt || post.title || 'Blog post cover'}
+                      alt={post.coverImage.alt || post.title || 'Portada del artículo'}
                       fill
                       style={{
                         objectFit: 'cover',
@@ -143,7 +150,7 @@ export default async function BlogPage() {
                 {/* Content */}
                 <div style={{ padding: 'var(--space-lg)' }}>
                   {/* Categories */}
-                  {post.categories && post.categories.length > 0 && (
+              {post.categories && post.categories.length > 0 && (
                     <div
                       style={{
                         display: 'flex',
@@ -159,9 +166,9 @@ export default async function BlogPage() {
                             fontSize: 'var(--font-size-xs)',
                             padding: 'var(--space-xs) var(--space-sm)',
                             borderRadius: '4px',
-                            border: '1px solid var(--border-subtle)',
-                            backgroundColor: 'var(--bg-surface)',
-                            color: 'var(--ink-secondary)',
+                            border: '1px solid rgba(0,0,0,0.1)',
+                            backgroundColor: 'rgba(0,0,0,0.03)',
+                            color: 'var(--paper-ink-secondary)',
                             fontWeight: 'var(--font-weight-medium)',
                           }}
                         >
@@ -176,7 +183,7 @@ export default async function BlogPage() {
                     style={{
                       fontSize: 'var(--font-size-lg)',
                       fontWeight: 'var(--font-weight-medium)',
-                      color: 'var(--ink-primary)',
+                      color: 'var(--paper-ink-primary)',
                       marginBottom: 'var(--space-sm)',
                       lineHeight: 'var(--line-height-tight)',
                     }}
@@ -189,7 +196,7 @@ export default async function BlogPage() {
                     <p
                       style={{
                         fontSize: 'var(--font-size-sm)',
-                        color: 'var(--ink-secondary)',
+                        color: 'var(--paper-ink-secondary)',
                         lineHeight: 'var(--line-height-relaxed)',
                         marginBottom: 'var(--space-md)',
                         display: '-webkit-box',
@@ -209,7 +216,7 @@ export default async function BlogPage() {
                       alignItems: 'center',
                       gap: 'var(--space-md)',
                       fontSize: 'var(--font-size-xs)',
-                      color: 'var(--ink-muted)',
+                      color: 'var(--paper-ink-muted)',
                     }}
                   >
                     {post.publishedAt && (
@@ -222,7 +229,7 @@ export default async function BlogPage() {
                       </time>
                     )}
                     {post.readingTime && (
-                      <span>• {post.readingTime} min read</span>
+                      <span>• {post.readingTime} min de lectura</span>
                     )}
                   </div>
                 </div>

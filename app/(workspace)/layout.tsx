@@ -1,6 +1,8 @@
 import { WorkspaceProvider } from '../_workspace/WorkspaceProvider'
 import { WorkspaceRoot } from '../_workspace/WorkspaceRoot'
 import { getWorkspaceObjects } from '../_workspace/lib/getWorkspaceObjects'
+import { client } from '@/sanity/lib/client'
+import { workspaceSettingsQuery } from '@/sanity/lib/queries'
 
 /**
  * Workspace Layout
@@ -15,22 +17,26 @@ import { getWorkspaceObjects } from '../_workspace/lib/getWorkspaceObjects'
  * 
  * Key behavior: This layout NEVER UNMOUNTS when navigating between workspace routes.
  * It persists across:
- * - /workspace (canvas home)
- * - /workspace/[objectSlug] (object expanded)
- * - /workspace/projects/[slug] (project detail)
- * - /workspace/contact (contact panel)
+ * - / (canvas home)
+ * - /[objectSlug] (object expanded)
+ * - /proyectos (project archive)
+ * - /proyectos/[slug] (project detail)
  */
 export default async function WorkspaceLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Fetch workspace objects server-side (where Sanity client works reliably)
-  const objects = await getWorkspaceObjects()
-  
+  // Fetch workspace objects and settings server-side
+  const [objects, settings] = await Promise.all([
+    getWorkspaceObjects(),
+    client.fetch(workspaceSettingsQuery),
+  ])
+  const greeting = settings?.workspace?.greeting || null
+
   return (
     <WorkspaceProvider>
-      <WorkspaceRoot objects={objects}>{children}</WorkspaceRoot>
+      <WorkspaceRoot objects={objects} greeting={greeting}>{children}</WorkspaceRoot>
     </WorkspaceProvider>
   )
 }

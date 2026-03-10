@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { useWorkspace } from './WorkspaceProvider'
 import { ObjectType, WorkspaceObjectVisual } from './types'
 import { getIcon } from '../_components/IconMap'
@@ -42,6 +43,8 @@ interface WorkspaceObjectProps {
   visual?: WorkspaceObjectVisual
   isFocused: boolean
   onClick: () => void
+  /** Stagger index for entrance animation */
+  index?: number
 }
 
 /**
@@ -74,6 +77,16 @@ function getObjectTypeIcon(objectType: ObjectType | string): React.ReactNode {
   return getIcon(iconName)
 }
 
+/** Simple seeded random 0-1 for deterministic per-object values */
+function seededRandom(seed: string): number {
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) {
+    hash = ((hash << 5) - hash) + seed.charCodeAt(i)
+    hash = hash & hash
+  }
+  return Math.abs(hash) / 2147483647
+}
+
 export function WorkspaceObject({
   slug,
   type,
@@ -82,9 +95,24 @@ export function WorkspaceObject({
   visual,
   isFocused,
   onClick,
+  index = 0,
 }: WorkspaceObjectProps) {
   const { state, actions } = useWorkspace()
   const [isHovered, setIsHovered] = useState(false)
+  const [hasEntered, setHasEntered] = useState(false)
+
+  // Entrance delay: objects appear after logo (0.3s) + greeting (~0.8s)
+  const entranceDelay = 1.0 + index * 0.12
+
+  // Entrance direction — each object flies in from a different angle
+  const entranceAngle = seededRandom(`${slug}-angle`) * Math.PI * 2
+  const entranceDistance = 30 + seededRandom(`${slug}-entrance`) * 20
+  const entranceX = Math.cos(entranceAngle) * entranceDistance
+  const entranceY = Math.sin(entranceAngle) * entranceDistance
+
+  // Per-object idle float parameters (deterministic from slug, ~3s)
+  const floatDuration = 2.5 + seededRandom(slug) * 1
+  const floatDistance = 3 + seededRandom(`${slug}-dist`) * 3
 
   const handleMouseEnter = () => {
     // Only handle hover if not on touch device (desktop only)
@@ -127,30 +155,50 @@ export function WorkspaceObject({
   // Objects appear in consistent locations across reloads
   const positionStyle: React.CSSProperties = position
     ? {
-        left: `${position.x}%`,
-        top: `${position.y}%`,
+        left: `${position.x}px`,
+        top: `${position.y}px`,
         transform: 'translate(-50%, -50%)',
-        transition: 'opacity var(--motion-standard) var(--ease-in-out), transform var(--motion-standard) var(--ease-in-out)',
       }
-    : {
-        transition: 'opacity var(--motion-standard) var(--ease-in-out), transform var(--motion-standard) var(--ease-in-out)',
-      }
+    : {}
 
   return (
     <div
-      data-workspace-object
-      data-object-slug={slug}
-      data-object-type={type}
-      data-state={objectState}
-      data-debug="true"
       data-position-x={position?.x}
       data-position-y={position?.y}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
       style={positionStyle}
-      className="absolute cursor-pointer will-change-[transform,opacity] touch-auto pointer-events-auto"
+      className="absolute"
     >
+      <motion.div
+        data-workspace-object
+        data-object-slug={slug}
+        data-object-type={type}
+        data-state={objectState}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+        initial={{ opacity: 0, x: entranceX, y: entranceY, scale: 0.85 }}
+        animate={hasEntered
+          ? { opacity: 1, x: 0, y: [0, -floatDistance, 0], scale: 1 }
+          : { opacity: 1, x: 0, y: 0, scale: 1 }
+        }
+        transition={hasEntered
+          ? {
+              y: { duration: floatDuration, repeat: Infinity, ease: 'easeInOut' },
+              x: { duration: 0 },
+              opacity: { duration: 0 },
+              scale: { duration: 0 },
+            }
+          : {
+              duration: 0.6,
+              delay: entranceDelay,
+              ease: [0.22, 1, 0.36, 1],
+            }
+        }
+        onAnimationComplete={() => {
+          if (!hasEntered) setHasEntered(true)
+        }}
+        className="cursor-pointer will-change-[transform,opacity] touch-auto pointer-events-auto"
+      >
       {/* Object visual */}
       <div 
         data-workspace-object-visual
@@ -231,6 +279,7 @@ export function WorkspaceObject({
       >
         {title}
       </div>
+      </motion.div>
     </div>
   )
 }

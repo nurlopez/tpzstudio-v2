@@ -1,5 +1,5 @@
 import { client } from '@/sanity/lib/client'
-import { contactPageQuery } from '@/sanity/lib/queries'
+import { contactPageQuery, siteSettingsQuery } from '@/sanity/lib/queries'
 import { PageFade } from '@/app/_components/PageFade'
 import { Reveal } from '@/app/_components/Motion'
 import { getSocialIcon } from '@/app/_components/IconMap'
@@ -7,22 +7,25 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const contact = await client.fetch(contactPageQuery)
+  const [contact, settings] = await Promise.all([
+    client.fetch(contactPageQuery),
+    client.fetch(siteSettingsQuery),
+  ])
   
   const title = contact?.seo?.metaTitle || contact?.title || 'Contacto'
-  const description = contact?.seo?.metaDescription || contact?.introText || 'Get in touch with TPZ Studio. Contact us for inquiries about our services in film, voiceovers, branding, and more.'
+  const description = contact?.seo?.metaDescription || contact?.introText || settings?.seo?.metaDescription || ''
 
   return {
     title,
     description,
     openGraph: {
-      title: `${title} | TPZ Studio`,
+      title: `${title} | tpz·studio`,
       description,
       url: '/contacto',
     },
     twitter: {
       card: 'summary',
-      title: `${title} | TPZ Studio`,
+      title: `${title} | tpz·studio`,
       description,
     },
   }
@@ -34,15 +37,15 @@ export default async function ContactPage() {
     if (!contact) {
         return (
             <PageFade>
-                <main style={{ padding: '48px 24px 96px' }}>
+                <main style={{ padding: 'var(--space-2xl) var(--space-lg) var(--space-4xl)' }}>
                     <div style={{ maxWidth: 1200, margin: '0 auto' }}>
                         <Reveal y={16}>
                             <h1 style={{
                                 fontSize: 'clamp(2rem, 5vw, 3rem)',
                                 margin: 0,
-                                letterSpacing: '-0.04em',
+                                letterSpacing: '-0.02em',
                                 fontWeight: 400,
-                                fontFamily: 'var(--font-serif), Georgia, serif',
+                                fontFamily: 'var(--font-lacquer), cursive',
                             }}>
                                 Contacto
                             </h1>
@@ -68,15 +71,15 @@ export default async function ContactPage() {
 
     return (
         <PageFade>
-            <main style={{ padding: '48px 24px 96px' }}>
+                <main style={{ padding: 'var(--space-2xl) var(--space-lg) var(--space-4xl)' }}>
                 <div style={{ maxWidth: 1200, margin: '0 auto' }}>
                     <Reveal y={16}>
                         <h1 style={{
                             fontSize: 'clamp(2rem, 5vw, 3rem)',
                             margin: 0,
-                            letterSpacing: '-0.04em',
+                            letterSpacing: '-0.02em',
                             fontWeight: 400,
-                            fontFamily: 'var(--font-serif), Georgia, serif',
+                            fontFamily: 'var(--font-lacquer), cursive',
                         }}>
                             {contact.title || 'Contacto'}
                         </h1>
@@ -97,22 +100,22 @@ export default async function ContactPage() {
                         </Reveal>
                     )}
 
-                    <div style={{ marginTop: 48, display: 'grid', gap: 32 }}>
+                    <div style={{ marginTop: 'var(--space-2xl)', display: 'grid', gap: 'var(--space-xl)' }}>
                         {/* Phone */}
                         {contact.phone?.number && (
                             <Reveal delay={0.2} y={16}>
                                 <div style={{
-                                    padding: '32px',
+                                    padding: 'var(--space-xl)',
                                     border: '1px solid rgba(255,255,255,0.12)',
-                                    borderRadius: 16,
+                                    borderRadius: 12,
                                     background: 'rgba(255,255,255,0.02)',
                                 }}>
                                     <div style={{
-                                        fontSize: 12,
-                                        letterSpacing: '0.1em',
+                                        fontSize: 'var(--font-size-xs)',
+                                        letterSpacing: '0.08em',
                                         textTransform: 'uppercase',
                                         opacity: 0.65,
-                                        marginBottom: 12,
+                                        marginBottom: 'var(--space-xs)',
                                         fontWeight: 500,
                                     }}>
                                         Teléfono
@@ -127,7 +130,7 @@ export default async function ContactPage() {
                                                 color: 'inherit',
                                                 textDecoration: 'none',
                                                 fontWeight: 400,
-                                                transition: 'opacity 0.3s ease',
+                                                transition: 'opacity var(--motion-standard) var(--ease-out)',
                                                 display: 'inline-block',
                                             }}
                                             className="contact-link"
@@ -150,20 +153,20 @@ export default async function ContactPage() {
                         {contact.email?.address && (
                             <Reveal delay={0.3} y={16}>
                                 <div style={{
-                                    padding: '32px',
+                                    padding: 'var(--space-xl)',
                                     border: '1px solid rgba(255,255,255,0.12)',
-                                    borderRadius: 16,
+                                    borderRadius: 12,
                                     background: 'rgba(255,255,255,0.02)',
                                 }}>
                                     <div style={{
-                                        fontSize: 12,
-                                        letterSpacing: '0.1em',
+                                        fontSize: 'var(--font-size-xs)',
+                                        letterSpacing: '0.08em',
                                         textTransform: 'uppercase',
                                         opacity: 0.65,
-                                        marginBottom: 12,
+                                        marginBottom: 'var(--space-xs)',
                                         fontWeight: 500,
                                     }}>
-                                        {contact.email.label || 'Email'}
+                                        {contact.email.label || 'Correo'}
                                     </div>
                                     <Link
                                         href={`mailto:${contact.email.address}`}
@@ -172,7 +175,7 @@ export default async function ContactPage() {
                                             color: 'inherit',
                                             textDecoration: 'none',
                                             fontWeight: 400,
-                                            transition: 'opacity 0.3s ease',
+                                            transition: 'opacity var(--motion-standard) var(--ease-out)',
                                             display: 'inline-block',
                                         }}
                                         className="contact-link"
@@ -187,24 +190,24 @@ export default async function ContactPage() {
                         {socialLinks.length > 0 && (
                             <Reveal delay={0.4} y={16}>
                                 <div style={{
-                                    padding: '32px',
+                                    padding: 'var(--space-xl)',
                                     border: '1px solid rgba(255,255,255,0.12)',
-                                    borderRadius: 16,
+                                    borderRadius: 12,
                                     background: 'rgba(255,255,255,0.02)',
                                 }}>
                                     <div style={{
-                                        fontSize: 12,
-                                        letterSpacing: '0.1em',
+                                        fontSize: 'var(--font-size-xs)',
+                                        letterSpacing: '0.08em',
                                         textTransform: 'uppercase',
                                         opacity: 0.65,
-                                        marginBottom: 24,
+                                        marginBottom: 'var(--space-md)',
                                         fontWeight: 500,
                                     }}>
                                         Síguenos en nuestras redes sociales
                                     </div>
                                     <div style={{
                                         display: 'flex',
-                                        gap: 20,
+                                        gap: 'var(--space-md)',
                                         flexWrap: 'wrap',
                                     }}>
                                         {socialLinks.map((social) => (
@@ -220,12 +223,12 @@ export default async function ContactPage() {
                                                     justifyContent: 'center',
                                                     width: 48,
                                                     height: 48,
-                                                    borderRadius: 12,
+                                                    borderRadius: 8,
                                                     border: '1px solid rgba(255,255,255,0.12)',
                                                     background: 'rgba(255,255,255,0.04)',
                                                     color: 'rgba(255,255,255,0.9)',
                                                     textDecoration: 'none',
-                                                    transition: 'all 0.3s cubic-bezier(0.22, 1, 0.36, 1)',
+                                                    transition: 'all var(--motion-standard) var(--ease-out)',
                                                 }}
                                                 aria-label={social.name}
                                             >
