@@ -69,9 +69,10 @@ export function calculateWorkspaceLayout(
 
   const count = objects.length
   const isMobile = viewportWidth < MOBILE_BREAKPOINT
+  const isSmallMobile = viewportWidth < 400
   const horizontalPadding = isMobile ? 30 : 60
-  const verticalPadding = isMobile ? 60 : 80
-  const maxObjSize = isMobile ? 120 : MAX_OBJECT_SIZE
+  const verticalPadding = isMobile ? 130 : 80
+  const maxObjSize = isSmallMobile ? 100 : isMobile ? 120 : MAX_OBJECT_SIZE
   const availableWidth = viewportWidth - horizontalPadding * 2
   const availableHeight = viewportHeight - verticalPadding * 2
 

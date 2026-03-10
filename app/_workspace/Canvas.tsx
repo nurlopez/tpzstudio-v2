@@ -236,7 +236,7 @@ export function Canvas({ objects, greeting }: CanvasProps) {
       {greeting && (
         <div
           data-workspace-greeting
-          className="absolute top-[8%] left-1/2 -translate-x-1/2 z-0
+          className="absolute top-[16%] sm:top-[8%] left-1/2 -translate-x-1/2 z-0
                      text-center pointer-events-none select-none
                      max-w-[500px] px-4"
           style={{
