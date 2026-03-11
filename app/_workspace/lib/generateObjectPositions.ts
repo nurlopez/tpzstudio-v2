@@ -96,6 +96,10 @@ export function generateObjectPositions(
     })
   })
   
-  // Combine objects with existing positions and newly generated positions
-  return [...objectsWithPositions, ...generatedPositions]
+  // Rebuild array in original order, replacing position-less objects with generated ones
+  let genIndex = 0
+  return objects.map((obj) => {
+    if (obj.position !== undefined) return obj
+    return generatedPositions[genIndex++]
+  })
 }
