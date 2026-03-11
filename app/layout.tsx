@@ -1,6 +1,7 @@
 import './globals.css'
 import { Poppins, Lacquer } from 'next/font/google'
 import { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
 import { client } from '@/sanity/lib/client'
 import { siteSettingsQuery } from '@/sanity/lib/queries'
 
@@ -89,6 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="es" className={`${poppins.variable} ${lacquer.variable}`}>
             <body>
                 {children}
+                <Analytics />
             </body>
         </html>
     )
