@@ -232,14 +232,15 @@ export function Canvas({ objects, greeting }: CanvasProps) {
         })}
       </div>
 
-      {/* Greeting — word-by-word reveal */}
+      {/* Greeting — word-by-word reveal, sits in the reserved top area */}
       {greeting && (
         <div
           data-workspace-greeting
-          className="absolute top-[16%] sm:top-[8%] left-1/2 -translate-x-1/2 z-0
+          className="absolute left-1/2 -translate-x-1/2 z-0
                      text-center pointer-events-none select-none
                      max-w-[500px] px-4"
           style={{
+            top: '80px',
             fontFamily: 'var(--font-heading)',
             fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
             color: 'var(--paper-ink-primary)',
