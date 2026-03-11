@@ -104,7 +104,13 @@ export const projectBySlugQuery = groq`
     title,
     "slug": slug.current,
     excerpt,
-    body,
+    body[] {
+      ...,
+      _type == "image" => {
+        ...,
+        asset-> { _id, url }
+      }
+    },
     video {
       provider,
       url

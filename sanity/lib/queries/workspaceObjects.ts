@@ -45,7 +45,13 @@ export const workspaceObjectQuery = groq`
     "slug": slug.current,
     objectType,
     shortIntent,
-    description,
+    description[] {
+      ...,
+      _type == "image" => {
+        ...,
+        asset-> { _id, url }
+      }
+    },
     visibility,
     order,
     position,

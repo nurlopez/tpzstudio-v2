@@ -1,6 +1,7 @@
 import { client } from '@/sanity/lib/client'
 import { blogPostBySlugQuery } from '@/sanity/lib/queries/blog'
 import { PortableText } from '@portabletext/react'
+import { portableTextComponents } from '@/app/_components/PortableTextComponents'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Metadata } from 'next'
@@ -232,9 +233,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {post.excerpt && (
             <p
               style={{
-                fontSize: 'var(--font-size-lg)',
-                color: 'var(--paper-ink-primary)',
-                lineHeight: 'var(--line-height-relaxed)',
+                fontSize: 'clamp(1.15rem, 2.5vw, 1.3rem)',
+                color: 'var(--paper-ink-secondary)',
+                lineHeight: '1.6',
                 fontWeight: 'var(--font-weight-regular)',
                 marginBottom: 0,
               }}
@@ -254,7 +255,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               marginBottom: 'var(--space-3xl)',
             }}
           >
-            <PortableText value={post.body} />
+            <PortableText value={post.body} components={portableTextComponents} />
           </div>
         )}
 

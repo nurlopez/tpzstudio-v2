@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { PortableText } from '@portabletext/react'
+import { portableTextComponents } from '@/app/_components/PortableTextComponents'
 import { useWorkspace } from './WorkspaceProvider'
 import { PanelType } from './types'
 import { getWorkspaceObject, WorkspaceObjectContent } from './lib/getWorkspaceObject'
@@ -223,9 +225,9 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                   {content.shortIntent && (
                     <p 
                       style={{
-                        fontSize: 'var(--font-size-md)',
-                        color: 'var(--paper-ink-primary)',
-                        lineHeight: 'var(--line-height-relaxed)',
+                        fontSize: 'clamp(1.05rem, 2vw, 1.15rem)',
+                        color: 'var(--paper-ink-secondary)',
+                        lineHeight: '1.6',
                         marginBottom: 0,
                       }}
                     >
@@ -236,7 +238,8 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
 
                 {/* Body Content - description, rich text */}
                 {content.description && (
-                  <div 
+                  <div
+                    className="portable-text-fab"
                     style={{
                       fontSize: 'var(--font-size-md)',
                       color: 'var(--paper-ink-primary)',
@@ -244,17 +247,7 @@ export function Panel({ isOpen, type, slug, children, onClose }: PanelProps) {
                       marginBottom: content.capabilities && content.capabilities.length > 0 ? 'var(--space-2xl)' : 0,
                     }}
                   >
-                    {portableTextToPlainText(content.description).split('\n\n').map((paragraph, index, array) => (
-                      <p
-                        key={index}
-                        style={{
-                          marginTop: 0,
-                          marginBottom: index < array.length - 1 ? 'var(--space-md)' : 0,
-                        }}
-                      >
-                        {paragraph}
-                      </p>
-                    ))}
+                    <PortableText value={content.description} components={portableTextComponents} />
                   </div>
                 )}
 
