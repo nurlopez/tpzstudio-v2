@@ -6,5 +6,8 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
+  // Disable CDN so on-demand revalidation always sees fresh data.
+  // With tag-based revalidation, Next.js handles caching — the CDN
+  // would serve stale responses and defeat the purpose.
+  useCdn: false,
 })
