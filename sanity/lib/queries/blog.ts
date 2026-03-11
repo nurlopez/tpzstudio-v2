@@ -49,7 +49,13 @@ export const blogPostBySlugQuery = groq`
     title,
     "slug": slug.current,
     excerpt,
-    body,
+    body[] {
+      ...,
+      _type == "image" => {
+        ...,
+        asset-> { _id, url }
+      }
+    },
     coverImage {
       asset-> {
         _id,

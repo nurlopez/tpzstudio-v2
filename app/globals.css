@@ -909,6 +909,7 @@ h3 {
     margin-top: 0;
 }
 
+.portable-text-content h1,
 .portable-text-content h2,
 .portable-text-content h3,
 .portable-text-content h4 {
@@ -1062,6 +1063,7 @@ h3 {
     margin-bottom: 0;
 }
 
+.portable-text-fab h1,
 .portable-text-fab h2,
 .portable-text-fab h3,
 .portable-text-fab h4 {

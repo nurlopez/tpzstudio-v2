@@ -1,6 +1,7 @@
 import { groq } from 'next-sanity'
 import { client } from '@/sanity/lib/client'
 import { PortableText } from '@portabletext/react'
+import { portableTextComponents } from '@/app/_components/PortableTextComponents'
 import { projectBySlugQuery, relatedProjectsQuery } from '@/sanity/lib/queries'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -232,7 +233,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               : 0,
           }}
         >
-          <PortableText value={project.body} />
+          <PortableText value={project.body} components={portableTextComponents} />
         </div>
       )}
 

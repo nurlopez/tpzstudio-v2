@@ -39,6 +39,13 @@ export const blogPost = defineType({
             of: [
                 {
                     type: 'block',
+                    styles: [
+                        { title: 'Normal', value: 'normal' },
+                        { title: 'H2', value: 'h2' },
+                        { title: 'H3', value: 'h3' },
+                        { title: 'H4', value: 'h4' },
+                        { title: 'Cita', value: 'blockquote' },
+                    ],
                 },
                 {
                     type: 'image',
@@ -50,6 +57,35 @@ export const blogPost = defineType({
                             description: 'Importante para SEO y accesibilidad.',
                         },
                     ],
+                },
+                {
+                    name: 'video',
+                    type: 'object',
+                    title: 'Vídeo',
+                    fields: [
+                        {
+                            name: 'url',
+                            title: 'URL del vídeo',
+                            type: 'url',
+                            description: 'URL de YouTube, Vimeo o archivo .mp4',
+                            validation: (Rule: any) => Rule.required(),
+                        },
+                        {
+                            name: 'caption',
+                            title: 'Pie de vídeo',
+                            type: 'string',
+                            description: 'Texto descriptivo debajo del vídeo (opcional).',
+                        },
+                    ],
+                    preview: {
+                        select: { title: 'caption', subtitle: 'url' },
+                        prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+                            return {
+                                title: title || 'Vídeo',
+                                subtitle: subtitle || '',
+                            }
+                        },
+                    },
                 },
             ],
             validation: (Rule) => Rule.required(),
